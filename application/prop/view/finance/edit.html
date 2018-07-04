@@ -1,0 +1,105 @@
+<style type="text/css">
+    label{padding-left: 1.5em}
+    .form{margin-top: 20px;}
+    .form input{height: 30px;width: 300px}
+    .formdata{width: 450px;float: left}
+    .left{display:block;position:absolute;width:120px}
+    .right{display:block;margin-left:120px}
+</style>
+<form method="post" action="{:url('prop/finance/review',0,false)}" onsubmit="return validateCallback(this);">
+    <input type="hidden" name="id" value="{$page_info.prop_data.id}">
+    <div>
+        <div class="formdata">
+            <div class="form">
+                <span class="left" ><label>资产编号：</label></span>
+                <span class='right'><input type="text" name="reg_prop_num" disabled="disabled" value="{$page_info.prop_data.reg_prop_num}"> </span>
+            </div>
+            <div class="form">
+                <span class="left" ><label>规格型号：</label></span>
+                <span class='right'><input type="text" name="product_model" disabled="disabled" value="{$page_info.prop_data.product_model}"> </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>购买日期：</label></span>
+                 <span class='right'>
+
+                     <input disabled="disabled" value="{$page_info.prop_data.buy_time}"  disabled="disabled" class="laydate-icon-molv dateControl" id="buy_time" format='YYYY-MM-DD ' festival="" skin="molv" name="buy_time">
+                 </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>使用部门：</label></span>
+                <span class='right'>
+                    <input type="text" name="use_dep" ><span style="color:red ">*</span>
+                </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>备注：</label></span>
+                <span class='right'><input type="text" name="prop_remark" disabled="disabled" value="{$page_info.prop_data.prop_remark}"></span>
+            </div>
+
+
+            <div class="form">
+                <span class="left"><label>资产所属类型：</label></span>
+                <span class="right">
+                    <select name="prop_type" disabled="disabled">
+                        {$page_info.prop_type_str}
+                    </select>
+                </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>净值：</label></span>
+                 <span class="right">
+                      <input type="text"  name="net_val" value="{$page_info.prop_data.net_val ? $page_info.prop_data.net_val:'';}"><span style="color:red ">*</span>
+                 </span>
+            </div>
+        </div>
+        <div class="formdata">
+            <div class="form">
+                <span class="left"> <label>资产名称：</label></span>
+                <span class="right"><input type="text" name="reg_prop_name" disabled="disabled" value="{$page_info.prop_data.reg_prop_name}"></span>
+            </div>
+            <div class="form">
+                <span class="left"><label>使用人：</label></span>
+                <span class="right"><input type="text" name="prop_user" disabled="disabled" value="{$page_info.prop_data.prop_user}"></span>
+            </div>
+            <div class="form">
+                <span class="left"><label>申请人：</label></span>
+                <span class="right"><input type="text" name="propuser" disabled="disabled" value="{$page_info.prop_data.propuser}"></span>
+            </div>
+            <div class="form">
+                <span class="left"><label>所在部门：</label></span>
+                <span class="right" name="dep">
+                     <select name="dep" disabled="disabled">
+                         {$page_info.dep}
+                     </select>
+                </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>负责部门：</label></span>
+                 <span class="right">
+                        <select name="respon_dep" disabled="disabled">
+                            {$page_info.respon_dep}
+                        </select>
+                 </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>注销时间：</label></span>
+                 <span class="right">
+                      <input disabled="disabled" value="{$page_info.prop_data.logoff_time}" class="laydate-icon-molv dateControl" id="logoff_time" format='YYYY-MM-DD ' festival="" skin="molv" name="logoff_time">
+                 </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>原值：</label></span>
+                 <span class="right">
+                      <input type="text" name="orginal_val" value="{$page_info.prop_data.orginal_val ? $page_info.prop_data.orginal_val:'';}"><span style="color:red ">*</span>
+                 </span>
+            </div>
+        </div>
+        <div style="clear: both;float: right;">
+            <button class="layui-btn layui-btn-small">审核</button>
+            <button type="button" class="layui-btn layui-btn-small closeLayer">取消</button>
+        </div>
+    </div>
+</form>
+<script>
+
+</script>

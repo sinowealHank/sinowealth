@@ -1,0 +1,158 @@
+<div class="row">
+	<div class="col-xs-12" name="family_div">
+        <form class="form-horizontal" role="form" name="family_form" >
+        	<input type="hidden" name="user_id" value="{$page_info.user_id}" />
+            <input type="hidden" name="family_id" value="" />
+            	<legend>家庭成员信息</legend>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-1 control-label no-padding-right"> 姓名</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="col-sm-11" placeholder="姓名" id="name" value="" name="name"> <span class="red"> * </span> 
+                        </div>
+                        <label for="hr_family_type_id" class="col-sm-1 control-label no-padding-right"> 关系</label>
+                        <div class="col-sm-3">
+                            <select class="form-control" id="hr_family_type_id" name="hr_family_type_id">
+                            		<option value="">&nbsp;&nbsp;</option>
+                            	{volist name="page_info['hr_family_type_arr']" id="vo"}
+                                    <option value="{$i}">{$vo}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                        <label for="conn_num" class="col-sm-1 control-label no-padding-right"> 联系方式</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="col-sm-12" placeholder="手机或固定电话" id="conn_num" value="" name="conn_num">
+                        </div>
+                        
+                    </div>
+                    <div class="form-group">
+                        <label for="address" class="col-sm-1 control-label no-padding-right">地址</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="col-sm-10" placeholder="地址" id="address" value="" name="address">
+                        </div>
+                        <label for="sex" class="col-sm-2 control-label no-padding-right"> </label>
+                        <div class="col-sm-2 pull-right text-right">
+                        	<button type="button" class="btn" name="family_clear">清空</button>                     
+                            <button type="submit" class="btn btn-primary " name="family_save">保存</button>
+                        </div>
+                    </div>    
+            </form>
+    </div>
+</div>
+	<div class="row"><!-- /.col -->
+    	<div class="col-xs-12">
+            <table class="table table-striped table-bordered table-hover" name="family_list_tb">
+            	<thead>
+                	<tr>
+                    	<th>姓名</th>
+                        <th>关系</th>
+                        <th>联系方式</th>
+                        <th>地址</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                	{if condition="empty($page_info.list)"}						
+						<tr>
+							<td colspan="9" align="center">暂无数据！</td>
+						</tr>
+						{else/}
+						{volist name="$page_info.list" id="vo"}
+                            <tr>
+                                <td>{$vo.name}</td>
+                                <td>{:get_cache_data('hr_family_type',$vo.hr_family_type_id)}</td>                                
+                                <td>{$vo.address}</td>
+                                <td>{$vo.conn_num}</td>
+                                <td>
+                                    <div class="visible-md visible-lg btn-group">
+                                        <button class="btn btn-xs btn-info" name="user_family_edit" family_id="{$vo.id}" title="编辑成员" onclick="edit_family(this)">
+                                            <i class="icon-edit bigger-120"></i>
+                                        </button>
+                                        <button class="btn btn-xs btn-info" name="user_family_delete" family_id="{$vo.id}" title="删除成员" onclick="del_family(this)">
+                                            <i class="icon-trash"></i>
+                                        </button>
+                                    </div>
+                                   
+                                </td>
+                            </tr>
+                    	{/volist}
+                    {/if}
+                </tbody>
+            </table>
+            
+        </div>
+	</div><!-- /.row -->
+
+<script>
+	$div=$('div[name=family_div]');
+	//家庭成员form提交
+	$('form[name=family_form]').submit(function(){
+			$.ajax({
+				url:'family/',
+				type:'POST',
+				data:$('form[name=family_form]').serialize(),
+				success:function(result){
+						json_obj=eval('('+result+')');
+						if(json_obj.statusCode==1){
+								//提交成功,数据清理
+								$('form[name=family_form]').find('input').not("[name=user_id]").val('');
+								$('form[name=family_form]').find('select').find('option').attr('selected',false);
+								$('form[name=family_form]').find('select').find('option').eq(0).attr('selected',true);		
+																
+								json_obj=eval('('+json_obj.message+')');
+								reload_family_tb(json_obj);
+							}else{
+								//给出报错信息
+								alert(json_obj.message);
+								}
+					},
+				});
+				
+				return false;
+		});
+		
+	//编辑某家庭成员
+	function edit_family(obj){
+		$obj=$(obj);
+		$.post('get_family_info/id/'+$obj.attr('family_id'),function(result){
+				json_obj=eval('('+result+')');
+				form_obj=$('form[name=family_form]');
+				form_obj.find('input[name=family_id]').val(json_obj.id);
+				form_obj.find('input[name=name]').val(json_obj.name);
+				form_obj.find('select[name=hr_family_type_id]').val(json_obj.hr_family_type_id);				
+				form_obj.find('input[name=conn_num]').val(json_obj.conn_num);
+				form_obj.find('input[name=address]').val(json_obj.address);
+			});
+		}
+		
+	//删除某家庭成员
+	function del_family(obj){
+		$obj=$(obj);
+		if(confirm('确定删除此成员?')){
+			$.post('del_family/id/'+$obj.attr('family_id'),function(result){
+				json_obj=eval('('+result+')');
+				json_obj=eval('('+json_obj.message+')');
+				reload_family_tb(json_obj);
+				});
+			}
+		}
+	
+	//根据传递过来的json重新绑定家庭成员列表
+	function reload_family_tb(json_obj){
+		//清空家庭成员表
+		family_tb=$('table[name=family_list_tb]');
+		family_tb.find('tbody tr').remove();
+		//重新绑定家庭成员列表
+		$.each(json_obj,function(index,val){
+				str= '<tr><td>'+val.name+'</td><td>'+val.hr_family_type+'</td><td>'+val.conn_num+'</td><td>'+val.address+'</td>';
+				str += "<td><div class='visible-md visible-lg btn-group'><button class='btn btn-xs btn-info' name='user_family_edit' family_id='"+val.id+"' title='编辑成员'  onclick='edit_family(this)'><i class='icon-edit bigger-120'></i></button><button class='btn btn-xs btn-info' name='user_family_delete' family_id='"+val.id+"' title='删除成员'  onclick='del_family(this)'><i class='icon-trash'></i></button></div></td></tr>";
+				family_tb.find('tbody').append(str);
+			});
+		}
+		
+	//清空表单
+	$('button[name=family_clear]').click(function(){
+			$div.find('input').not('input[name=user_id]').val('');
+			$div.find('select[name=hr_family_type_id]').find('option').attr('selected',false);
+			$div.find('select[name=hr_family_type_id]').find('option:eq(0)').attr('selected',true);
+		});
+</script>

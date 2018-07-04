@@ -1,0 +1,40 @@
+<div class="row">
+	<div class="col-xs-12">
+        <form class="form-horizontal" role="form" method="post" action="add/"  onsubmit="return validateCallback(this)">
+            <div class="form-group">
+                <label for="form-field-1" class="col-sm-2 control-label no-padding-right"> 规则名称</label>
+                <div class="col-sm-4">
+                    <input type="text" class="col-sm-11" placeholder="上海7:30班次" id="form-field-1" value="" name="role_name"> <span class="red"> * </span> 
+                </div>
+                <label for="form-field-2" class="col-sm-2 control-label no-padding-right"> 短名称</label>
+                <div class="col-sm-4">
+                    <input type="text" class="col-sm-11" placeholder="早班" id="form-field-2" value="" name="s_role_name"><span class="red"> * </span> 
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="form-field-3" class="col-sm-2 control-label no-padding-right"> 上班时间 </label>
+                <div class="col-sm-4">
+                    <input type="text" class="col-sm-11" placeholder="7:30" id="form-field-3" value="" name="begin_time">
+                </div>
+                <label for="form-field-4" class="col-sm-2 control-label no-padding-right"> 下班时间</label>
+                <div class="col-sm-4">
+                    <input type="text" class="col-sm-11" placeholder="16:00" id="form-field-4" value="" name="end_time"><span class="red"> * </span> 
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="form-field-5" class="col-sm-2 control-label no-padding-right"> 所属站点 </label>
+                <div class="col-sm-4">
+                    <select name="site_id">
+                    	{volist name="$page_info.site_info" id="vo"}
+                            <option value="{$vo.id}">{$vo.site}</option>
+                        {/volist}
+                    </select>
+                </div>
+            	<label for="form-field-6" class="col-sm-2 control-label no-padding-right"> 排序 </label>
+                <div class="col-sm-4">
+                    <input type="text" class="col-sm-11" placeholder="1" id="form-field-6" value="" name="order_id">
+                </div>
+            </div>
+            </form>
+    </div>
+</div>

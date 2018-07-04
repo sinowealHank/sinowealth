@@ -1,0 +1,149 @@
+<link href="__PUBLIC__/static/assets/css/bootstrap.min.css" rel="stylesheet" />
+<meta charset="utf-8" />
+  <div style="margin-left:5%">
+	   	<table cellpadding="8"  border="1" cellspacing="0" cellpadding="0" style='border-collapse:collapse'>
+			<tr><span style='font-size:18px;'>字段及显示名称对应关系:</span></tr>
+	   		<tr>
+	   			<th>CP1 time：</th>
+	   			<td>cp1_time</td>
+	   			<th>CP2 time：</th>
+	   			<td>cp2_time</td>
+	   			<th>CP3 time：</th>
+	   			<td>cp3_time</td>
+	   			<th>CP4 time：</th>
+	   			<td>cp4_time</td>
+	   		</tr>
+	   		<tr>
+	   			<th>CP5 time：</th>
+	   			<td>cp5_time</td>
+	   			<th>CP6 time：</th>
+	   			<td>cp6_time</td>
+	   			<th>CP7 time：</th>
+	   			<td>cp7_time</td>
+	   			<th>index time：</th>
+	   			<td>index_time</td>
+	   		</tr>
+	   		<tr>
+	   			<th>flash site數：</th>
+	   			<td>flash_site</td>
+	   			<th>logic site數：</th>
+	   			<td>logic_site</td>
+	   			<th>cp1-cp3 touch down次數：</th>
+	   			<td>cp1_cp3</td>
+	   			<th>cp5 touch down次數：</th>
+	   			<td>cp5_td</td>
+	   		</tr>
+	   		<tr>
+	   			<th>等待時間：</th>
+	   			<td>wait_time</td>
+	   			<th>test time/pcs：</th>
+	   			<td>tt_pcs</td>
+	   			<th>qty/d(pcs)：</th>
+	   			<td>qd_pcs</td>
+	   			<th>cp tester：</th>
+	   			<td>Tester</td>
+	   		</tr>
+	   		<tr>
+	   			
+	   			<th>已跨机台数量：</th>
+	   			<td>cross_plat_ct</td>
+	   			<th>日最大产能：</th>
+	   			<td>max_daily_output</td>
+	   			<th>cp測試程式：</th>
+	   			<td>by61</td>
+	   			<th>qc 程式：</th>
+	   			<td>qc</td>
+	   		</tr>
+	   		<tr>
+	   			
+	   			<th>CP全/抽測：</th>
+	   			<td>by59</td>
+	   			<th>cp cost/pcs：</th>
+	   			<td>cp_cost</td>
+	   			<th>h/r：</th>
+	   			<td>h_r</td>
+	   			<th>bake：</th>
+	   			<td>back</td>
+	   		</tr>	
+	   		<tr>
+	   			
+	   			<th>uv：</th>
+	   			<td>uv</td>
+	   			<th>TRIM：</th>
+	   			<td>trim</td>
+	   		</tr>
+	   	</table>
+   </div>
+   <div style="margin:2% 0 0 5%;">
+
+   <form action="testTime" method="post" id="rowForm">
+   		<table cellpadding="8"  border="1" cellspacing="0" cellpadding="0" style='border-collapse:collapse'>
+   			<tr><span style='font-size:18px'>Test time计算栏位公式:</span></tr><br />
+   			<tr><textarea name="formula" cols="120" rows="10" style="resize:none;">{$page_info.content}</textarea></tr>
+   		</table>
+	    <!--<div style="margin-bottom: 10px;">-->
+			<!--<label style="font-size: 14px">标题</label> <input style="margin-left: 20px;" type="text" name="title">-->
+			<!--<label style="font-size: 14px;margin-left: 20px;">添加计算公式</label> <input type="text" name="offical" style="width: 800px;margin-left: 20px;">-->
+		<!--</div>-->
+	    <!--<table class="table table-hover" style="width: 993px;overflow: auto;height:100px;" >-->
+			<!--<tr>-->
+				<!--<td>编号</td>-->
+				<!--<td>标题</td>-->
+				<!--<td>计算公式</td>-->
+			<!--</tr>-->
+			<!--{volist name="$page_info.official" id="vo"}-->
+				<!--<tr style="cursor:pointer">-->
+					  <!--<td>{$vo.id}</td>-->
+					  <!--<td>{$vo.title}</td>-->
+					  <!--<td>{$vo.offical}</td>-->
+				<!--</tr>-->
+			<!--{/volist}-->
+		<!--</table>-->
+   </form>
+
+   </div>
+
+	<div style="margin:3% 0 10% 40%">
+	   	<button onclick="rowSubmit()" type="button" style='cursor:pointer;'>提交</button>
+	   	<button class='closeLayer' style='cursor:pointer;'>关闭</button>
+   	</div>
+<script>
+    function rowSubmit(){
+    	var $form = $('#rowForm');
+		var url = "{:url('cost/CostTableCp/testTime')}";
+		$.ajax({
+			type:'POST',
+//			url:$form.attr("action"),
+			url:url,
+			data:$form.serializeArray(),
+			dataType:"json",
+			success:function(result){
+				showMsg(result);
+				if(result.statusCode == 1){
+					reload_list();
+				}
+			},
+		});
+    }
+
+//   //添加计算公式
+//    function rowSubmit(){
+//    	var $form = $('#rowForm');
+//		var url = "{:url('cost/CostTableCp/testTime')}";
+//		$.ajax({
+//			type:'POST',
+//			url:url,
+//			data:$form.serializeArray(),
+//			dataType:"json",
+//			success:function(result){
+//				showMsg(result);
+//				if(result.statusCode == 1){
+//					reload_list();
+//				}
+//			},
+//		});
+//    }
+
+    
+</script>
+

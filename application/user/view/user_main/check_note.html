@@ -1,0 +1,94 @@
+<div class="row">
+	<div class="col-xs-12">
+        <form class="form-horizontal" role="form" method="post" name="update_check_note" action="update_check_note/"  onsubmit="return validateCallback(this)">
+        	<input type="hidden" value="{$page_info.note_info.id}" name="id" />
+            <fieldset>
+            	<legend>
+                	<span class="label label-lg label-pink arrowed-right">申请人: {:get_cache_data('user_info',$page_info.note_info.user_id,'nickname')}</span>
+                	<span class="label label-xlg label-primary arrowed arrowed-right">请假类型: {:get_note_type_name($page_info.note_info.note_type)}({:config('hr_note_type')[$page_info.note_info.hr_note_id]})</span>
+                    <span class="label label-lg label-primary  arrowed arrowed-right">
+                    	申请时间: {$page_info.note_info.note_hour}
+                    </span>
+                    <span class="label label-info  arrowed arrowed-right">时间范围: {$page_info.note_info.begin_time} ~ {$page_info.note_info.end_time}</span>                    
+                    
+                    {if condition=" ($page_info.note_info.age_user_id eq $page_info.user_id) and ($page_info.note_info.note_step eq 1)"}
+                    	<span class="label label-info arrowed arrowed-right">代理人: {:get_cache_data('user_info',$page_info.note_info.age_user_id,'nickname')}</span>
+                    {/if}
+                    {if condition=" ($page_info.note_info.age_user_id gt 0) and ($page_info.note_info.note_step gt 1)"}
+                    	<span class="label label-info arrowed arrowed-right">代理人: {:get_cache_data('user_info',$page_info.note_info.age_user_id,'nickname')}</span>
+                    {/if}
+                    {if condition=" ($page_info.note_info.hr_user_id eq $page_info.user_id) and ($page_info.note_info.note_step eq 2)"}
+                        <span class="label label-info arrowed arrowed-right">考勤审核人: {:get_cache_data('user_info',$page_info.note_info.hr_user_id,'nickname')}</span>
+                    {/if}
+                    {if condition=" ($page_info.note_info.hr_adv_user_id eq $page_info.user_id) and ($page_info.note_info.note_step eq 3)"}
+                    	<span class="label label-info arrowed arrowed-right">转上级考勤审核人: {:get_cache_data('user_info',$page_info.note_info.hr_adv_user_id,'nickname')}</span>
+                    {/if}
+					{if condition=" $page_info.flag eq 'note_view'"}
+                    	<span class="label label-info arrowed arrowed-right">申请单状态: {:get_note_step($page_info.note_info.note_step)}</span>
+                    {/if}
+                   </legend>
+                    <div class="col-sm-11 form-group">
+                    	<h4 class="header blue">申请单详情:</h4>
+                        <label class="col-sm-1 control-label no-padding-right">标题: </label>
+                        <div class="col-sm-5">
+                        	<ul class="list-unstyled">
+                            	<li style="line-height:25px; padding:0 0 0 20px;">{$page_info.note_info.note_title}</li>
+                            </ul>
+                        </div>
+                        <label class="col-sm-1 control-label no-padding-right"> 详细说明: </label>
+                        <div class="col-sm-5">
+                        	<ul class="list-unstyled">
+                            	<li style="line-height:25px;">{$page_info.note_info.note_desc}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    {if condition=" $page_info.flag eq 'note_view'"}
+                    	<div class="col-sm-11 form-group">
+                        <h4 class="header blue">申请单记录:</h4>
+                        	{:get_note_info($page_info.note_info)}
+                        </div>
+                   {else/} 
+                       <div class="col-sm-11 form-group">
+                       <h4 class=" header green">审核:</h4>
+                            <label class="col-sm-1 control-label no-padding-right">审核意见: </label>
+                            <div class="col-sm-5">
+                                <div name="check_div" class="left col-sm-4">
+                                    <label class=" pull-left inline">
+                                       <input class="ace ace-switch ace-switch-5 check_switch" type="checkbox" checked="checked">
+                                       <span class="lbl"></span>
+                                       <input type="hidden" name="check_val" value="1" />
+                                     </label>
+                                        
+                                </div>
+                                {if condition="($page_info.adv_manage_flag eq 1) and ($page_info.note_info.note_step gt 1)"}	                                
+                                    <span class="label label-warning" name="hr_to_adv_manage_flag">{:get_cache_data('user_info',$page_info.note_info.hr_adv_user_id,'nickname')}</span>                                    <span class="label label-info arrowed-in-right arrowed" name="hr_to_adv_manage_flag">转上级主管</span>
+                                {/if}
+                            </div>
+                            <label class="col-sm-1 control-label no-padding-right"> 备注:</label>
+                            <div class="col-sm-5">
+                                <textarea class="form-control"  style="width: 350px; height: 138px;"  placeholder="审核意见说明"  name="remark">同意</textarea>
+                            </div>
+                        </div>
+                   {/if}
+                    
+             </fieldset>
+            </form>
+    </div>
+</div>
+
+<script>
+//审核是否通过按钮
+$('.check_switch').click(function(){	
+		$obj=$(this).nextAll('input[name=check_val]');
+		if($obj.val()==0){
+				$obj.val('1');
+				$('textarea[name=remark]').val('同意');
+				$('span[name=hr_to_adv_manage_flag]').show();
+			}else{
+				$obj.val('0');
+				$('textarea[name=remark]').val('不同意');
+				$('span[name=hr_to_adv_manage_flag]').hide();
+				}
+	});
+</script>

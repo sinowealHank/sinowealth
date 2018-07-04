@@ -1,0 +1,138 @@
+<form style=" " class="form-horizontal" role="form" id="editForm" autocomplete="off"  action="{:url('sys/privilege/editPriData',0,false)}" method="post" onsubmit="return validateCallback(this);">
+    <div class="modal-body">
+        <input type="hidden" name="level">
+        <input type="hidden" name="id" >
+        <div class="form-group">
+            <label class="col-sm-3 control-label">上级权限:</label>
+            <div class="col-sm-8">
+                <select name="parent_id" id="parent_id">
+                    <option value="0" level="0">顶级权限</option>
+                    {$page_info.str}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label  class="col-sm-3 control-label">权限名称:</label>
+            <div class="col-sm-8">
+                <input type="text"   value="{$page_info.privilege.pri_name}" name="pri_name"   placeholder="必填" ><span style="color:red;top: -5px;position:relative;">*</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label  class="col-sm-3 control-label">module名称:</label>
+            <div class="col-sm-8">
+                <input type="text"  value="{$page_info.privilege.module_name}" name="module_name"   placeholder="必填"><span style="color:red;top: -5px;position:relative;">*</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label  class="col-sm-3 control-label">Controller名称:</label>
+            <div class="col-sm-8">
+                <input type="text"  value ="{$page_info.privilege.controller_name}" name="controller_name"  placeholder="必填"><span style="color:red;top: -5px;position:relative;">*</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Action名称:</label>
+            <div class="col-sm-8">
+                <input type="text" value ="{$page_info.privilege.action_name}" name="action_name"   placeholder="请输入方法名称"><span style="color:red;top: -5px;position:relative;">*</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label  class="col-sm-3 control-label">左侧菜单显示:</label>
+            <div class="col-sm-9">
+                <select name="is_show">
+                    <option value="1" {if condition="$page_info.privilege.is_show eq '1'"} selected="selected"{/if}>显示</option>
+                    <option value="0" {if condition="$page_info.privilege.is_show eq '0'"} selected="selected"{/if}>不显示</option>
+                </select>
+                 选择样式：<select name="class_style"><option value="0">默认样式</option>{$page_info.class_str}</select><i style="padding-left: 10px;"></i>
+            </div>
+        </div>
+        <div class="form-group">
+            <label  class="col-sm-3 control-label">状态:</label>
+            <div class="col-sm-8">
+                <select name="status">
+                    <option value="1" {if condition="$page_info.privilege.status eq '1'"} selected="selected"{/if}>启用</option>
+                    <option value="0" {if condition="$page_info.privilege.status eq '0'"} selected="selected"{/if}>禁用</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label  class="col-sm-3 control-label">不合法IP:</label>
+            <div class="col-sm-8">
+                <select name="is_check_ip" id="ip">
+                    <option value="1"{if condition="$page_info.privilege.is_check_ip eq 1"} selected="selected"{/if}>不开放</option>
+                    <option value="0" {if condition="$page_info.privilege.is_check_ip eq 0"} selected="selected"{/if}>开放</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label  class="col-sm-3 control-label">是否为新窗口:</label>
+            <div class="col-sm-8">
+                <input name="new_open" type="checkbox" value="1" {if condition="$page_info.privilege.new_open eq '1'"} checked="checked"{/if}>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">排序:</label>
+            <div class="col-sm-8">
+                <input type="text" value="{$page_info.privilege.order_id}" name="order_id"  placeholder="请输入排序id">
+            </div>
+        </div>
+        <div class="pull-right">
+            <button class="btn btn-info" RBAC_flag="editpridata">编辑</button>
+            <a class="btn btn-info layerSubmit" confirm='是否确认删除权限' RBAC_flag="deleteajaxnode">删除</a >
+            <a class="btn btn-default closeLayer">取消</a>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+    var class_name = $("select[name=class_style]").find("option:selected").text();
+    $("select[name=class_style] + i").addClass(class_name);
+    $("select[name=class_style]").change(function(){
+        var text =  $("select[name=class_style]").find("option:selected").text();
+        $("select[name=class_style] + i").removeClass().addClass(text);
+    });
+
+        var level = '{$page_info.level}';
+        var parent_id = '{$page_info.privilege.parent_id}';
+        var id = '{$page_info.privilege.id}';
+        $("input[name=id]").val(id);
+        $("input[name=level]").val(level);
+        $("select[name=parent_id]").val(parent_id);
+        /*给删除加上url*/
+        var url = "{:url('/sys/privilege/deleteajaxNode/id/')}"+id;
+        $("a[RBAC_flag='deleteajaxnode']").attr('url',url);
+
+        if(level == '0'){
+            $("input[name=controller_name] + span").hide();
+            $("input[name=action_name] + span").hide();
+        }else if (level == '1'){
+            $("input[name=action_name] + span").hide();
+        }
+
+
+    $("select[name=parent_id]").change(function(){
+        var level = $("select[id=parent_id]>option:selected").attr("level");
+        var module_name = $("select[id=parent_id]>option:selected").attr("module_name");
+        var controller_name = $("select[id=parent_id]>option:selected").attr("controller_name");
+        if(level == '0'){
+            $('input[name=controller_name] + span').hide();
+            $('input[name=action_name] + span').hide();
+        }else if(level == '1'){
+            $('input[name=module_name]').val(module_name);
+            $('input[name=controller_name]').val(controller_name);
+            $('input[name=controller_name] + span').show();
+            $('input[name=action_name] + span').hide();
+        }else if(level == '2'){
+            $('input[name=module_name]').val(module_name);
+            $('input[name=controller_name]').val(controller_name);
+            $('input[name=controller_name] + span').show();
+            $('input[name=action_name] + span').show();
+        }
+    })
+
+
+
+
+
+</script>

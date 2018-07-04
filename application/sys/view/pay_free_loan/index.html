@@ -1,0 +1,809 @@
+<title>无息贷款</title>
+	<link rel="stylesheet" href="__PUBLIC__/static/assets/css/ace.min.css" />
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/demo.css">
+	<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.min.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/easyui-lang-zh_CN.js"></script>		
+	<script src="__PUBLIC__/static/assets/js/layer.js"></script>
+	<script src="__PUBLIC__/static/assets/js/laydate/laydate.js"></script>
+
+<script src="__PUBLIC__/static/assets/js/wtq.js"></script>
+<div class="panel datagrid" style="margin: 7px;">
+	<div class="panel-header" style="width: 100%">
+		<div class="panel-title">
+			<span>无息贷款相关项</span>
+		</div>
+		<div class="panel-tool"></div>
+	</div>
+	<div wtq="loading" class="datagrid-wrap panel-body">
+		<div id="tb" class="datagrid-toolbar" style="padding-bottom: 5px;">
+			<a onclick="$('[sour]').val('');" href="#" class="easyui-linkbutton l-btn l-btn-small" iconcls="icon-search">清空</a>
+			<select sour="2" name="b.free_id" class="pagination-page-list" style="height: 31px;">
+				<option value="">全部项目</option>
+        		{foreach $free as $k=>$key}
+        			<option selected="selected" remark="{$key['remarks']}" value="{$key['id']}">{$key['name']}</option>
+	            {/foreach}
+			</select>
+			<select sour="2" name="b.free_status" class="pagination-page-list" style="height: 31px;">
+				<option value="">所有状态</option>
+        		<option value="1">已结清</option>
+        		<option value="2">未结清</option>
+			</select>
+			<a onclick="indexd_ajax()" href="#" class="easyui-linkbutton l-btn l-btn-small" iconcls="icon-search">查询</a>
+			<a onclick="new_free()" href="#" class="easyui-linkbutton l-btn l-btn-small" iconcls="icon-search">项目维护</a>
+			<a onclick="new_free_user()" href="#" class="easyui-linkbutton l-btn l-btn-small" iconcls="icon-search">新增贷款人</a>
+		</div>
+	 	<div wtq="1">
+	 		<div div_left style="width: 100%;display:block;overflow-x:auto">
+				<table id="tableExcel" class="datagrid-htable" cellpadding="0" cellspacing="0" style="width:100%">
+					<thead style="background: linear-gradient(to bottom,#F9F9F9 0,#efefef 100%);">
+						<tr>
+							{foreach $title as $k=>$key}
+								{if condition="$k=='balance'"}
+									<td style="cursor: pointer; position: relative;">
+						               <div tr_shu='{$k}' style="float:left;overflow: hidden;{$width[$k]}" class="datagrid-sort {if condition="$k=='b.id'"}datagrid-sort-asc{/if}">
+					                   	<span>{$key}</span>
+					                  	</div>
+					                  	<div onmousedown="name_th_width_down('{$k}','fu')" style="position: absolute;right: 0px;height:68%;cursor: e-resize;width:1px"></div>
+						           </td>
+								{else \}
+									<td onclick="paixu(this,'{$k}','')" style="cursor: pointer; position: relative;">
+					                  	<div tr_shu='{$k}' style="float:left;overflow: hidden;{$width[$k]}" class="datagrid-sort {if condition="$k=='b.id'"}datagrid-sort-asc{/if}">
+					                   	<span>{$key}</span>
+					                   	<span class="datagrid-sort-icon"></span>
+					                  	</div>
+					                  	<div onmousedown="name_th_width_down('{$k}','fu')" style="position: absolute;right: 0px;height:68%;cursor: e-resize;width:1px"></div>
+					                </td>
+				                {/if}
+							{/foreach}
+							<td style="cursor: pointer; position: relative;">
+				               <div><span>操作</span></div>
+				           </td>
+			            </tr>
+					</thead>
+					<tbody>
+			            
+					</tbody>
+				</table>
+				<div wtq="no_td_show" style="display:none;background-color: #d7d7d7;color: #1d90a8;font-size: 38px;">没有该条件数据</div>
+			</div>
+	 	</div>
+	</div>
+	<!--style>
+		tr:hover {background-color:#EAF2FF;}
+	</style-->
+	<div class="datagrid-pager pagination">
+		<table cellspacing="0" cellpadding="0" border="0">
+			<tbody>
+				<tr>
+					<td>
+						<select wtq_id="shul" class="pagination-page-list" onchange="ok('',$(this).val())">
+							<option>5</option>
+							<option>10</option>
+							<option selected='selected'>20</option>
+							<option>30</option>
+							<option>40</option>
+							<option>50</option>
+							<!--option rbq style="background-color:#e6ce68" onclick="you_look(this)"></option-->
+						</select>
+					</td>
+					<td>
+						<div class="pagination-btn-separator"></div>
+					</td>
+					<td onclick="ok(1)">
+						<a wtq_p='s' onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+							<span class="l-btn-left l-btn-icon-left">
+								<span class="l-btn-text l-btn-empty">&nbsp;</span>
+								<span class="l-btn-icon pagination-first">&nbsp;</span>
+							</span>
+						</a>
+					</td>
+					<td onclick="ok('s')" wtq_p='ss';>
+						<a wtq_p='s' onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+							<span class="l-btn-left l-btn-icon-left">
+							<span class="l-btn-text l-btn-empty">&nbsp;</span>
+							<span class="l-btn-icon pagination-prev">&nbsp;</span>
+							</span>
+						</a>
+					</td>
+					<td>
+						<div class="pagination-btn-separator"></div>
+					</td>
+					<td>
+						<span style="padding-left:6px;">第</span>
+					</td>
+					<td>
+						<input wtq_id="yeshu" class="pagination-num" value="" size="2" type="text" style="width:50px" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9^.]/,'');}).call(this)" onblur="this.v();">
+					</td>
+					<td>
+						<span style="padding-right:6px;">共<span wtq="all_page" style="padding:0"></span>页</span>
+					</td>
+					<td>
+						<div class="pagination-btn-separator"></div>
+					</td>
+					<td onclick="ok('x')" wtq_p='ee'>
+						<a wtq_p='e' onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+							<span class="l-btn-left l-btn-icon-left">
+								<span class="l-btn-text l-btn-empty">&nbsp;</span>
+								<span class="l-btn-icon pagination-next">&nbsp;</span>
+							</span>
+						</a>
+					</td>
+					<td onclick="ok('e')" wtq_p='end'>
+						<a wtq_p='e' onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+							<span class="l-btn-left l-btn-icon-left">
+								<span class="l-btn-text l-btn-empty">&nbsp;</span>
+								<span class="l-btn-icon pagination-last">&nbsp;</span>
+							</span>
+						</a>
+					</td>
+					<td>
+						<div class="pagination-btn-separator"></div>
+					</td>
+					<td>
+						<a a_d onclick="table_width('定',this)" onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+							<span class="l-btn-left l-btn-icon-left">
+								<span class="l-btn-text l-btn-empty" style="width: 50px;">固定栏位</span>
+							</span>
+						</a>
+					</td>
+					<td>
+						<a onclick="table_width('全散',this)" onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+							<span class="l-btn-left l-btn-icon-left">
+								<span class="l-btn-text l-btn-empty" style="width: 50px;">自动布局</span>
+							</span>
+						</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="pagination-info">显示<span wtq="show">1到20,共{//$i-1}记录</span></div>
+		<div style="clear:both;"></div>
+	</div>	
+</div>
+<div style="display:none" wtq_html="new_free_user">
+	<div style="margin:5px;">
+		<div style="height: 120px;">
+			<div style="float:left;">
+				项目：
+				<select name="free_id" style="width: 178px;">
+					<option value="">全部</option>
+		       		{foreach $free as $k=>$key}
+		       			<option value="{$key['id']}">{$key['name']}</option>
+		            {/foreach}
+				</select>
+				<br><br>
+				<input name="user_gh" style="display:none;width: 178px;">
+				姓名：<span wtq_show="user" style="color: #b100ffcc;"></span>
+				<br><br>
+				金额：<input style="width: 90px;" name="free_all" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9^.]/,'');}).call(this);cool_look($(this).val(),'1')" onblur="this.v();">
+				<span wtq_show='look'  style="width: 90px"></span>
+				<br><br>
+				备注：<textarea name="user_remarks" style="width: 178px; height: 89px;"></textarea>
+				<br>
+				<hr>
+				<button onclick="new_free_user_save()" style="margin-left:20px;" class="btn btn-success" type="button">确定新增</button>&nbsp&nbsp&nbsp
+				<a wtq_up_index_alert_close="close" class="btn btn-success layui-layer-close">取消</a>
+			</div>
+			<div style="float:right;width: 250px;margin-top: 5px;">
+				<input wtq_name="user_sour">
+				<button onclick="user_sour()" type="button">搜索</button>
+				<div show="user_sour" style="overflow-y:auto;height:230px;padding-top: 5px;"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<div style="display:none" wtq_html="new_free">
+	<div style="margin:5px;">
+		<table class='old_free'>
+			<tr><td><div>id</div></td><td><div>名称</div></td><!--td><div>总金额</div></td--><td style="width:200px"><div>备注</div></td><td><div>操作</div></td></tr>
+			{foreach $free as $k=>$key}
+				<tr wtq_del_id="{$key['id']}">
+					<td><div>{$key['id']}</div></td>
+					<td><div wtq_type="name">{$key['name']}</div></td>
+					<!--td><div>{$key['money']}</div></td-->
+					<td><div wtq_type="remarks">{$key['remarks']}</div></td>
+					<td>
+						<div>
+							<button class="btn btn-xs btn-info" onclick="change_free({$key['id']})">改</button> 
+							<button class="btn btn-xs btn-info" onclick="del_free({$key['id']})">删</button>
+						</div>
+					</td>
+				</tr>
+	    	{/foreach}
+		</table>
+		<br>
+		<hr>
+		<button onclick="show_new_free()" style="margin-left:320px;" class="btn btn-success">新增</button>&nbsp&nbsp&nbsp
+		<a wtq_up_index_alert_close="close" class="btn btn-success layui-layer-close">取消</a>
+	</div>
+</div>
+<div style="display:none" wtq_html="new_free2">
+	<div style="margin:5px;">
+		<input wtq_name="id" style="display:none">
+		名称：<input wtq_name="new_free_name" style="width: 441px;"><br><br>
+		备注：<textarea wtq_name="new_free_remarks" style="width: 441px; height: 139px;"></textarea>
+		<hr>
+		<button onclick="save_new_free()" style="margin-left:20px;" class="btn btn-success">保存</button>&nbsp&nbsp&nbsp
+		<a wtq_up_index_alert_close="close" class="btn btn-success layui-layer-close">取消</a>
+	</div>
+</div>
+<!-- 发邮件 -->
+<script>
+	$("*").css("font-size","14px");
+	function email(id,name){
+		if(!confirm('确定给'+name+'发送邮件么')){
+			return false;
+		}
+		$.post('{:url("free_email")}',{id:id},
+				function (data) {
+			 		mythisalert(data[0],data[1]);
+			 		if(data[0]==1){
+			 			indexd_ajax();
+			 		}
+				}
+			,"json").error(
+	        		function() {mythisalert(0,'失败');}
+	        );
+	}
+</script>
+<!-- 借款人还款信息 -->
+<script>
+	function user_money(id,free_status,nickname){
+		if(free_status==1){free_status='已结案';}else{{free_status='未结案';}}
+		$.post('{:url("user_money")}',{id:id},
+				function (data) {
+					layer.open({
+						  type: 1,
+						  skin: 'layui-layer-rim', //加上边框
+						  area: ['700px', '500px'], //宽高
+						  content: data,
+						  title:nickname+'的还款详情'+' 状态：'+free_status,
+						});
+				}
+		,"json").error(
+        		function() {mythisalert(0,'失败');}
+        );
+	}
+</script>
+<!-- 新借款人 -->
+<script>
+	function new_free_user(){
+		$("span[wtq_show=user]").html('');
+		$("tr[user_in]").css("background-color","#FFFFFF");
+		layer.open({
+			  type: 1,
+			  skin: 'layui-layer-rim', //加上边框
+			  area: ['550px', '350px'], //宽高
+			  content: '<form wtq_form="new_free_user">'+$("div[wtq_html=new_free_user]").html()+'</form>',
+			  title:'新的借款人',
+			});
+	}
+	function new_free_user_save(){
+		var form = new FormData($('form[wtq_form=new_free_user]')[0]);
+		$.ajax({
+	        type: "POST",
+	        url:'{:url("new_free_user")}',
+	        data:form,// 你的formid
+	        processData:false,
+	        contentType:false,
+	        dataType:'json',
+	        error: function(request) {
+	            mythisalert(0,'失败');
+	        },
+	        success: function(data) {
+	        	indexd_ajax();
+	            mythisalert(data[0],data[1]);
+	        }
+	    });
+	}
+	
+	//双击转input  子页面
+	function input_cli_2(thi,id,shu){
+		var change_w=$(thi).html();
+		var td=$(thi).parent("td");
+		//判断是否错误数据
+	 	td.children("div").css('display','none');
+		td.append("<input old='"+td.children("div").html()+"' key='"+id+"' wtq_input='' wtq_bg='"+td.children("div").attr("tr_shu")+"' value='"+shu+"' style='width:100%;height:23px'  onkeyup=\"(this.v=function(){this.value=this.value.replace(/[^0-9^.]/,'');}).call(this)\" onblur=\"this.v();\">")
+		td.children("input").focus();
+		
+		var t=td.children("input").val();
+		td.children("input").focus();
+		td.children("input").val('');
+		td.children("input").val(t);
+	}
+</script>
+<script>
+	function user_sour(){
+		$.post('{:url("user_sour")}',{sour:$("input[wtq_name=user_sour]").eq(1).val()},
+				function (data) {
+					$("span[wtq_show=user]").html('')
+					$("div[show=user_sour]").html(data);
+				}
+			,"json").error(
+	        		function() {mythisalert(0,'失败');}
+	        );
+	}
+	function user_in(user_gh,nickname){
+		$("input[name=user_gh]").val(user_gh);
+		$("span[wtq_show=user]").html(nickname);
+		$("tr[user_in]").css("background-color","#FFFFFF");
+		$("tr[user_in='"+user_gh+"']").css("background-color","#FFE48D");
+	}
+</script>
+<!-- 新项目 -->
+<script>
+	function del_free(id){
+		$.post('{:url("del_free")}',{id:id},
+				function (data) {
+					if(data[0]==1){
+						$("tr[wtq_del_id="+data[2]+"]").remove();
+						$("select[name='b.free_id']").find("option[value='"+data[2]+"']").remove();
+						$("select[name='free_id']").find("option[value='"+data[2]+"']").remove();
+					}
+					mythisalert(data[0],data[1]);
+				}
+		,"json").error(
+        		function() {mythisalert(0,'失败');}
+        );
+	}
+	function change_free(id){
+		layer.open({
+			  type: 1,
+			  skin: 'layui-layer-rim', //加上边框
+			  area: ['500px', '300px'], //宽高
+			  content: $("div[wtq_html=new_free2]").html(),
+			  title:'修改项目'+id,
+			});
+		$("span[free_stau]").html("修改")
+		$("input[wtq_name=id]").eq(1).val(id);
+		$("input[wtq_name=new_free_name]").eq(1).val($("tr[wtq_del_id="+id+"]").find("div[wtq_type=name]").html());
+		$("textarea[wtq_name=new_free_remarks]").eq(1).html($("tr[wtq_del_id="+id+"]").find("div[wtq_type=remarks]").html());
+	}
+	function new_free(){
+		layer.open({
+			  type: 1,
+			  skin: 'layui-layer-rim', //加上边框
+			  area: ['800px', '500px'], //宽高
+			  content: $("div[wtq_html=new_free]").html(),
+			  title:'项目维护',
+			});
+	}
+	function show_new_free(){
+		layer.open({
+			  type: 1,
+			  skin: 'layui-layer-rim', //加上边框
+			  area: ['500px', '300px'], //宽高
+			  content: $("div[wtq_html=new_free2]").html(),
+			  title:'新的项目',
+			});
+	}
+	function save_new_free(){
+		var id=$("input[wtq_name=id]").eq(1).val();
+		var name=$("input[wtq_name=new_free_name]").eq(1).val();
+		var remarks=$("textarea[wtq_name=new_free_remarks]").eq(1).val();
+		$.post('{:url("new_free")}',{id:id,name:name,remarks:remarks},
+			function (data) {
+				if(data[0]==1){
+					var div='<td><div>'+data[2]+'<div></td><td><div wtq_type="name">'+name+'</div></td>'+
+							'<td><div wtq_type="remarks">'+remarks+'</div></td>'+
+							'<td><div>'+
+							'<button class="btn btn-xs btn-info" onclick="change_free('+data[2]+')">改</button> '+ 
+							'<button class="btn btn-xs btn-info" onclick="del_free('+data[2]+')">删</button>'+
+						'</div></td>';
+					var option='';
+					if(id==''){
+						$(".old_free").append('<tr wtq_del_id="'+data[2]+'">'+div+'</tr>');
+						$("select[name='b.free_id']").append('<option remark="'+remarks+'" value="'+data[2]+'">'+name+'</option>');
+						$("select[name='free_id']").append('<option remark="'+remarks+'" value="'+data[2]+'">'+name+'</option>');
+					}else{
+						$("tr[wtq_del_id="+data[2]+"]").html(div);
+						$("select[name='b.free_id']").find("option[value='"+data[2]+"']").html(name);
+						$("select[name='free_id']").find("option[value='"+data[2]+"']").html(name);
+					}
+				}
+				
+				mythisalert(data[0],data[1]);
+			}
+		,"json").error(
+        		function() {mythisalert(0,'失败');}
+        );
+				
+	}
+</script>
+<!-- 数据 -->
+<script>
+	//排序
+	function paixu(thi,ii,a){
+		sour['ii']=ii;
+		sour['a']=a;
+		indexd_ajax();
+		$("div[tr_shu]").attr('class',"datagrid-sort");
+		if(a==1){a=0;
+			$("div[tr_shu='"+ii+"']").attr("class","datagrid-sort datagrid-sort-asc");
+		}else{a=1;
+			$("div[tr_shu='"+ii+"']").attr("class","datagrid-sort datagrid-sort-desc");
+		}
+		$(thi).attr('onclick','paixu(this,"'+ii+'","'+a+'")')
+	}
+	function ok(page,show=$("select[wtq_id=shul]").val()){
+		sour['page']=page;
+		sour['show']=show;
+		indexd_ajax();
+	}
+	var sour={};
+	indexd_ajax()
+	function indexd_ajax(){
+		sour['free_id']=$("select[name='b.free_id']").val();
+		sour['free_status']=$("select[name='b.free_status']").val();
+		$("<div class=\"datagrid-mask\"></div>").css({display:"block",width:"100%",height:$("[wtq=loading]").height()}).appendTo("[wtq=loading]"); 
+		$("<div class=\"datagrid-mask-msg\"></div>").html("正在处理，请稍候。。。").appendTo("[wtq=loading]").css({display:"block",left:($(document.body).outerWidth(true) - 190) / 2,top:($("[wtq=loading]").height() - 45) / 2}); 
+		$.post('{:url("index_ajax")}',sour,
+	            function (data) {
+					var div='';
+					$.each(data[0], function (index, item) {
+						var style='';
+						if(item.balance<=<?php echo \think\Config::get('free_little_money'); ?>){
+							style='color:red';
+						}
+						var button='';
+						if(item.balance<=0){
+							if(item.free_status!=1){
+								button='<button class="btn btn-xs btn-info" onclick="email(\''+item.id+'\',\''+item.nickname+'\')">发送邮件</button>';
+							}
+							style='color:blue';
+						}
+						div=div+'<tr ondblclick="user_money('+item.id+',\''+item.free_status+'\',\''+item.nickname+'\')" onclick="tr_colors(\''+item.id+'\')" onmouseenter="if($(\'tr[tr_color=\'+$(this).attr(\'tr_color\')+\']\').attr(\'no\')!=1){$(\'tr[tr_color=\'+$(this).attr(\'tr_color\')+\']\').css(\'background-color\',\'#EAF2FF\')}" onmouseleave="if($(\'tr[tr_color=\'+$(this).attr(\'tr_color\')+\']\').attr(\'no\')!=1){$(\'tr[tr_color=\'+$(this).attr(\'tr_color\')+\']\').css(\'background-color\',\'white\')}" tr_color="'+item.id+'">'+
+							'<td><div tr_shu="b.id" style="overflow: hidden;"><span style="overflow: hidden;">'+item.id+'</span></div></td>'+
+							'<td><div tr_shu="name" wtq_o_id="'+item.id+'" style="overflow: hidden;"><span style="overflow: hidden;">'+item.name+'</span></div></td>'+
+							'<td><div tr_shu="en_name" style="overflow: hidden;"><span style="overflow: hidden;">'+item.en_name+'</span></div></td>'+
+							'<td><div tr_shu="user_gh" style="overflow: hidden;"><span style="overflow: hidden;">'+item.user_gh+'</span></div></td>'+
+							'<td><div tr_shu="nickname" style="overflow: hidden;"><span style="overflow: hidden;'+style+'">'+item.nickname+'</span></div></td>'+
+							'<td><div ondblclickkk="event.stopPropagation();input_cli_2(this,'+item.id+',\''+item.free_all+'\')" tr_shu="free_all" style="overflow: hidden;"><span style="overflow: hidden;">'+cool_look(item.free_all)+'</span></div></td>'+
+							'<td><div tr_shu="balance" style="overflow: hidden;"><span style="overflow: hidden;'+style+'">'+cool_look(item.balance)+'</span></div></td>'+
+							'<td><div tr_shu="free_data" style="overflow: hidden;"><span style="overflow: hidden;">'+item.free_data+'</span></div></td>'+
+							'<td><div tr_shu="user_remarks" style="overflow: hidden;width: 200px;"><span style="overflow: hidden;">'+item.user_remarks+'</span></div></td>'+
+							'<td><div tr_shu="remarks" wtq_o_id="'+item.id+'" style="overflow: hidden;width: 100px;"><span style="overflow: hidden;">'+item.remarks+'</span></div></td>'+
+							'<td style="width: 100px;"><div style="overflow: hidden;"><center><span style="overflow: hidden;">'+button+'</span></center></div></td>'+
+							'</tr>'
+					})
+					$("div[wtq=1]").find('tbody').html(div);
+					var ss=data[1]-1;
+					var ee=data[1]*1+1*1;
+					$("td[wtq_p=ss]").attr('onclick','ok('+ss+')');
+					$("input[wtq_id=yeshu]").val(data[1]);
+					$("td[wtq_p=ee]").attr('onclick','ok('+ee+')');
+					$("td[wtq_p=end]").attr('onclick','ok('+data[4]+')');
+					
+					$("span[wtq=all_page]").html(data[4]);
+					
+					$("a[wtq_p]").removeClass('l-btn-disabled')
+					if(data[1]==1){
+						$("a[wtq_p=s]").addClass('l-btn-disabled');
+					}
+					if(data[1]==data[4]){
+						$("a[wtq_p=e]").addClass('l-btn-disabled');
+					}
+					var star=data[2]*1+1*1;
+					var end=data[2]*1+data[5]*1;
+					if(end>data[3]){end=data[3];}
+					$("span[wtq=show]").html('显示'+star+'到'+end+',共'+data[3]+'记录');
+					
+					var len=$("div[tr_shu=name]").length;
+					var html=$("div[tr_shu=name]").eq(0).html();
+					var rowspan={};
+					var row_star=0;var row_end=0;var row_shu=0;
+					for(var i=1;i<len;i++){
+						row_shu++;
+						if(html!=$("div[tr_shu=name]").eq(i).html()){
+							rowspan[i]={row_star:$('div[tr_shu=name]').eq(row_star).attr("wtq_o_id"),row_end:row_end,row_shu:row_shu};
+							row_star=i;
+							row_shu=0;
+							html=$("div[tr_shu=name]").eq(i).html();
+						}else{
+							if(i==len-1){
+								row_end++;row_shu++;
+								rowspan[i]={row_star:$('div[tr_shu=name]').eq(row_star).attr("wtq_o_id"),row_end:row_end,row_shu:row_shu};
+							}
+							$("div[tr_shu=name]").eq(i).parent("td").attr("del","del")
+							$("div[tr_shu=remarks]").eq(i).parent("td").attr("del","del")
+						}
+						row_end++;
+					}
+					$("td[del=del]").remove();
+					$.each(rowspan, function (index, item) {
+						$("div[tr_shu=name][wtq_o_id='"+item['row_star']+"']").parent("td").attr("rowspan",item['row_shu']);
+						$("div[tr_shu=remarks][wtq_o_id='"+item['row_star']+"']").parent("td").attr("rowspan",item['row_shu']);
+					})
+					endd();
+	            },"json").error(
+	            		function() {mythisalert(0,'失败');endd();}
+	           );
+	}
+	function cool_look(shu,pd=0){
+		var    shu    =    shu.toString(); 
+		
+		var strs= new Array(); //定义一数组
+		var strs=shu.split("."); //字符分割 
+		var str=strs[0];
+		var str=str.split('').reverse().join('').replace(/(\d{3})/g,'$1,').replace(/\,$/,'').split('').reverse().join('');
+		if(pd==1){
+			$("span[wtq_show='look']:last").html(str);
+		}else{
+			if(strs[1]){
+				return str+"."+strs[1];
+			}else{
+				return str;
+			}
+		}
+	}
+//隐藏覆盖层
+function endd(){
+	$(".datagrid-mask").hide();
+	$(".datagrid-mask-msg").hide();
+}
+</script>
+<!-- 选中行 -->
+<script>
+//选中行
+var tr_colors_del=1;var end_id='';
+function tr_colors(id){
+	//0：按下ctrl状态1：正常状态2：shift状态
+	//标签为1选中
+	//标记为1和2 所有颜色转为败的
+	if(tr_colors_del==1 || tr_colors_del==2){
+		$('tr[tr_color]').removeAttr('no');
+		$('tr[tr_color]').css('background-color','white');
+	}
+	//标记为0并且标签为1取消选中
+	if(tr_colors_del==0 && $('tr[tr_color="'+id+'"]').attr('no')==1){
+		$('tr[tr_color="'+id+'"]').removeAttr('no');
+		$('tr[tr_color="'+id+'"]').css('background-color','white');
+	}else if(tr_colors_del==2){
+		//end_id按下shift是否有最后一次点击的存在，并且是否和当前点击的为同一个
+		if(end_id && $('tr[tr_color="'+end_id+'"]').attr("tr_color")==end_id){
+			
+		}else{
+			//如果没有点击过，那么迷人为第一个开始
+			end_id=$('tr:visible[tr_color]').eq(0).attr("tr_color");
+		}
+		//转化数字以避免判断出错
+		id=parseInt(id);
+		end_id=parseInt(end_id);
+		//判断是象前延伸还是向后延伸
+		if(id<end_id){
+			for(var id;id<=end_id;id++){
+				$('tr[tr_color="'+id+'"]').css('background-color','#FFE48D');
+				$('tr[tr_color="'+id+'"]').attr('no','1');
+			}
+			return false;
+		}
+		if(id>=end_id){
+			for(var id;id>=end_id;id--){
+				$('tr[tr_color="'+id+'"]').css('background-color','#FFE48D');
+				$('tr[tr_color="'+id+'"]').attr('no','1');
+			}
+			return false;
+		}
+		
+		
+	}else{
+		//正常情况下只显示当前点击的那一个
+		$('tr[tr_color="'+id+'"]').css('background-color','#FFE48D');
+		$('tr[tr_color="'+id+'"]').attr('no','1');
+	}
+	//在点下shift前end_id会变成你最后点击的哪一个tr
+	if(tr_colors_del!=2){
+		end_id=id;
+	}
+}
+</script>
+<!-- 宽度 -->
+<script>
+//手动改变的宽度数组
+var arr = {};//定义一个数组
+	
+	function table_width(a,thi){
+		//固定宽度
+		if(a=="定"){
+			//a_d=1;
+			//所有宽度固定为当前宽度
+			var tr=$("thead").find("[tr_shu]");
+			for(var i=0;i<tr.length;i++){
+				var tr_wid=tr.eq(i).parent("td").css('width');
+				var tr_wid=tr_wid.substring(0,tr_wid.length-2);
+				$("div[tr_shu='"+tr.eq(i).attr("tr_shu")+"']").css('width',tr_wid-8);
+			}
+			$(thi).css("background-color","#9fd3ff");
+			$(thi).attr("onclick","table_width('散',this)");
+			$(thi).children("span").children("span").html("解散栏位");
+		}else if(a=="散"){
+			//a_d=0;
+			//所有宽度释放为自动宽度
+			$("div[tr_shu]").css('width','');
+			//手动改变过的宽度不释放或者说在固定回去
+			$.each(arr, function (index, item) {
+				$("div[tr_shu='"+index+"']").css('width',item);
+			})
+			$(thi).css("background-color","#fcfcfc");
+			$(thi).attr("onclick","table_width('定',this)");
+			$(thi).children("span").children("span").html("固定栏位");
+		}else if(a=="全散"){
+			//所有宽度释放为自动宽度
+			$("div[tr_shu]").css('width','');
+		}
+		//宽度矫正
+		wid_correct()
+	}
+	
+	$(function(){
+		document.onkeydown = function(e){
+		    var ev = document.all ? window.event : e;
+		    if(ev.keyCode==16){
+		    	//点下shift的时候转化为2
+		    	tr_colors_del=2;
+		    	//避免按下shift的时候选中文字
+				$("body").css('-moz-user-select','none');/*火狐*/
+				$("body").css('-webkit-user-select','none');/*webkit浏览器*/
+				$("body").css('-ms-user-select','none');/*IE10*/
+				$("body").css('-khtml-user-select','none');/*早期浏览器*/
+				$("body").css('-user-select','none');
+		    }
+		    if(ev.keyCode==17) {
+		    	//按下ctrl的时候转化为0
+		    	tr_colors_del=0;
+		    }
+		}
+		document.onkeyup = function(e){
+			//松开的时候还为1
+			var ev = document.all ? window.event : e;
+			if(ev.keyCode==16){
+				//同时去掉选中限制
+				$("body").attr('style','');
+		    	tr_colors_del=1;
+		    }
+		    if(ev.keyCode==17) {
+		    	tr_colors_del=1;
+		    }
+		}
+	});
+	
+	//改变宽度
+	var star='';var side='';var old_width='';var fu_w='';var change_click='';
+	function name_th_width_down(thi,fuu){
+		//获取当前点击的鼠标的位置
+		star=lastX;
+		//获取是那一列,是否为左侧的
+		side=thi;
+		fu_w=fuu;
+		//获取当前的宽度
+		old_width=$("div[tr_shu='"+side+"']").parent("td").css('width');
+		old_width=old_width.substring(0,old_width.length-2);
+		//避免选中文字
+		$("body").css("cursor"," e-resize");
+		$("body").css('-moz-user-select','none');/*火狐*/
+		$("body").css('-webkit-user-select','none');/*webkit浏览器*/
+		$("body").css('-ms-user-select','none');/*IE10*/
+		$("body").css('-khtml-user-select','none');/*早期浏览器*/
+		$("body").css('-user-select','none');
+		
+		change_click=$("div[tr_shu='"+side+"']").parent("td").attr('onclick');
+		$("div[tr_shu='"+side+"']").parent("td").attr('onclick','');
+	}
+	var fx;var lastX = 0;
+	$(document).ready(function() {
+		$("body").mouseup(function() {
+			if(star){
+				star='';
+				$("body").attr('style','');
+				setTimeout(function(){$("div[tr_shu='"+side+"']").parent("td").attr('onclick',change_click);},5);
+				
+				
+				arr[side]=$("div[tr_shu='"+side+"']").css('width');
+			}
+		 }
+		)
+	    $("body").mousemove(function(e) {
+	    	//在body里移动的时候开始改变宽度
+	    	//判断是左还是右
+	        if (lastX > e.pageX) {
+	        	fx='l';
+	        } else if (lastX < e.pageX) {
+	        	fx='r';
+	        } else {
+	           $("#dirSpan").text("—");
+	        }
+	        lastX = e.pageX;
+	    	//判断star存在的情况下在进行操作
+	        if(star){
+		        //根据移动的方向进行宽度变更
+    			if(fx=='l'){
+    				wid=star-lastX;
+    				new_width=old_width-wid;
+    			}else if(fx=='r'){
+    				wid=lastX-star;
+    				new_width=wid*1+old_width*1;
+    			}
+    			//进行最大和最小的范围限制
+	    		if(new_width<10){
+	    			new_width=10;
+	    		}else if(new_width>800){
+	    			//new_width=800;
+	    		}
+				//获取当前的宽度
+	    		now_div=$("div[tr_shu='"+side+"']").css('width');
+				//改为新的宽度
+	    		$("div[tr_shu='"+side+"']").css('width',new_width+'px');
+				
+				//如果移动的是左边的
+	    		if(fu_w=='fu'){
+	    			//左右table宽度矫正
+	    			var all_width=$("#tb").css("width");
+					var ta_1_width=$("[div_left]").css("width");
+					new_width=all_width.substring(0,all_width.length-2)-ta_1_width.substring(0,ta_1_width.length-2)-13;
+					if(new_width<100){
+						//$("div[rbq]").append(now_div+'<br>');
+						//$("div[tr_shu='"+side+"']").css('width',now_div);
+						$("div[tr_shu='"+side+"']").parent("td").css('width',now_div);
+					}else{
+						
+						$("[div_right]").css("width",new_width+"px");
+					}
+					
+	    		}
+	    	}
+	    });
+	});
+	
+	$(function(){
+		document.onkeypress = function(e){
+		    var ev = document.all ? window.event : e;
+		    if(ev.keyCode==13) {
+		    	if($("input[wtq_id=yeshu]:focus").length > 0){
+		    		//翻页
+		    		ok($("input[wtq_id=yeshu]").val());
+		    	}
+		    }
+		}})
+</script>
+<style>
+	*{font-size:14px}
+	/*body{background-color: cadetblue;padding:0}*/
+	td div{padding-right: 8px;}
+	td span{padding-left: 8px;}
+	td{word-break: keep-all;white-space:nowrap;border: dotted #CCCCCC;border-width: 0 1px 1px 0;height:25px;font-size:12px;}
+	#tableExcel2 tbody tr td input{border:0;}
+	.ts{
+		width:10px;
+		height:10px;
+		border-radius: 5px;
+		font-size: 10px;
+		display: inline-block;
+		margin-top: 4px;
+	}
+	.old_free{
+		border-collapse: collapse;
+		border-spacing: 0;
+		margin: 0 auto; 
+	}
+	.old_free td{
+		border: 1px solid black;
+	}
+	.old_free div{
+		margin: 2px 5px;
+	}
+	/*input{height:34px;border: solid 1px #00f;}*/
+</style>
+<style>
+body .demo-class-error .layui-layer-title{background:#D15B47; color:#fff; border: none;}
+body .demo-class-error .layui-layer-btn{border-top:1px solid #D15B47}
+body .demo-class-error .layui-layer-btn a{background:#D15B47;}
+body .demo-class-error .layui-layer-btn .layui-layer-btn1{background:#D15B47;}
+
+body .demo-class-success .layui-layer-title{background:#87B87F; color:#fff; border: none;}
+body .demo-class-success .layui-layer-btn{border-top:1px solid #87B87F}
+body .demo-class-success .layui-layer-btn a{background:#87B87F;}
+body .demo-class-success .layui-layer-btn .layui-layer-btn1{background:#87B87F;}
+</style>

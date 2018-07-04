@@ -1,0 +1,357 @@
+<table cellspacing="0" cellpadding="0" border="0">
+	<tbody>
+		<tr>
+			<td>
+				<select wtq_id="shul" class="pagination-page-list" onchange="ok('',$(this).val())">
+					<option {if condition="$show_page==5"}selected='selected'{/if}>5</option>
+					<option {if condition="$show_page==10"}selected='selected'{/if}>10</option>
+					<option {if condition="$show_page==20"}selected='selected'{/if}>20</option>
+					<option {if condition="$show_page==30"}selected='selected'{/if}>30</option>
+					<option {if condition="$show_page==40"}selected='selected'{/if}>40</option>
+					<option {if condition="$show_page==50"}selected='selected'{/if}>50</option>
+				</select>
+			</td>
+			<td>
+				<div class="pagination-btn-separator"></div>
+			</td>
+			<td onclick="ok(1)">
+				<a wtq_p='s' onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+					<span class="l-btn-left l-btn-icon-left">
+						<span class="l-btn-text l-btn-empty">&nbsp;</span>
+						<span class="l-btn-icon pagination-first">&nbsp;</span>
+					</span>
+				</a>
+			</td>
+			<td onclick="ok('{$page-1}')" wtq_p='ss';>
+				<a wtq_p='s' onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+					<span class="l-btn-left l-btn-icon-left">
+					<span class="l-btn-text l-btn-empty">&nbsp;</span>
+					<span class="l-btn-icon pagination-prev">&nbsp;</span>
+					</span>
+				</a>
+			</td>
+			<td>
+				<div class="pagination-btn-separator"></div>
+			</td>
+			<td>
+				<span style="padding-left:6px;">第</span>
+			</td>
+			<td>
+				<input wtq_id="yeshu" class="pagination-num" value="{$page}" size="2" type="text" style="width:50px" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9^.]/,'');}).call(this)" onblur="this.v();">
+			</td>
+			<td>
+				<span style="padding-right:6px;">共<span wtq="all_page" style="padding:0">{$all_page}</span>页</span>
+			</td>
+			<td>
+				<div class="pagination-btn-separator"></div>
+			</td>
+			<td onclick="ok('{$page+1}')" wtq_p='ee'>
+				<a wtq_p='e' onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+					<span class="l-btn-left l-btn-icon-left">
+						<span class="l-btn-text l-btn-empty">&nbsp;</span>
+						<span class="l-btn-icon pagination-next">&nbsp;</span>
+					</span>
+				</a>
+			</td>
+			<td onclick="ok('{$all_page}')" wtq_p='end'>
+				<a wtq_p='e' onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+					<span class="l-btn-left l-btn-icon-left">
+						<span class="l-btn-text l-btn-empty">&nbsp;</span>
+						<span class="l-btn-icon pagination-last">&nbsp;</span>
+					</span>
+				</a>
+			</td>
+			<td>
+				<div class="pagination-btn-separator"></div>
+			</td>
+			<td>
+				<a a_d onclick="table_width('定',this)" onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+					<span class="l-btn-left l-btn-icon-left">
+						<span class="l-btn-text l-btn-empty">定</span>
+					</span>
+				</a>
+			</td>
+			<td>
+				<a onclick="table_width('全散',this)" onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+					<span class="l-btn-left l-btn-icon-left">
+						<span class="l-btn-text l-btn-empty" style="width: 20px;">全散</span>
+					</span>
+				</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<div class="pagination-info">显示<span wtq="show">{$star+1}到{$star+$show_page},共{$all_shumu}记录</span></div>
+<div style="clear:both;"></div>
+
+
+
+<!-- 批量行内修改弹框 -->
+<div wtq_all_change="all_change" style="display:none">
+	<table class="old_free_config">
+		<tr>
+			<td><div>选择栏位</div></td>
+			<td>
+				<select onchange="$('div[wtq_only_one]').find('td[wtq_all_change_show]').css('display','none');$('div[wtq_only_one]').find('td[wtq_all_change_show='+$(this).val()+']').css('display','')" style='width:100%' wtq_all_change_name="PMJ10">
+					<option value="1">请选择</option>
+					<option value="PMJ10">作业编号</option>
+					<option value="TA_PMJ33">机台</option>
+					<option value="PMJ07">新税前单价</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td><div>输入值</div></td>
+			<td wtq_all_change_show="1">请选择</td>
+			<td wtq_all_change_show="PMJ10" style="display:none">
+				<select wtq_all_change="PMJ10" style='width:100%' wtq_all_change_name="PMJ10">
+					<option value="">请选择</option>
+					{foreach $ecd as $key=>$e}
+						<option val="{$e['ECD02']}" value="{$e['ECD01']}">{$e['ECD01']}</option>
+					{/foreach}
+				</select>
+			</td>
+			<td wtq_all_change_show="TA_PMJ33" style="display:none">
+				<select wtq_all_change="TA_PMJ33" style='width:100%' wtq_all_change_name="TA_PMJ33">
+					<option value="">请选择</option>
+					{foreach $machine as $key=>$m}
+						<option val1="36" val2="2" value="{$m['ECI01']}">{$m['ECI01']}</option>
+					{/foreach}
+				</select>
+			</td>
+			<td wtq_all_change_show="PMJ07" style="display:none">
+				<input wtq_all_change="PMJ07" wtq_all_change_name="PMJ07">
+			</td>
+		</tr>
+	</table>
+	<hr>
+	<button wtq_add="save_new_add" onclick="all_change_ok()" style="margin-left:20px;" class="btn btn-success" type="button">保存</button>&nbsp&nbsp&nbsp
+	<a wtq_up_index_alert_close="close" class="btn btn-success layui-layer-close">取消</a>
+</div>
+<input tbody_show value="1" style="display:none">
+<!-- 修改添加数据div -->
+<div style="display:none" wtq_add="add">
+	<div style="margin:5px;">
+		<form wtq_form="add_a">
+			<table class="old_free_config">
+			<?php $i=2; ?>
+				{foreach $title as $k=>$key}
+					{if condition="$k!='PMJ02'"}
+						{if condition="$i==2"}
+							<tr>
+							<?php $i=0; ?>
+						{/if}
+								<td><span style="float:right">{$key}{if condition="in_array($k,$must)"}<span style="color:red">*</span>{/if}：</span></td>
+								<td style="margin-right: 10px;"><div><input {if condition="isset($change[$k])"}onchange="{$change[$k]}"{/if} {if condition="!in_array($k,$readonly)"}readonly="readonly"{/if} {if condition="!in_array($k,$no_save)"}name="{$k}"{/if} wtq_add_name="{$k}" {if condition="isset($input_val[$k])"}value="{$input_val[$k]}"{/if}>{if condition="in_array($k,$but)"}<button onclick="{$button[$k]}" class="easyui-linkbutton l-btn l-btn-small" iconcls="icon-search" type="button"><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">&nbsp</span><span class="l-btn-icon icon-search">&nbsp;</span></span></button>{/if}</div></td>
+						{if condition="$i==1"}
+							</tr>
+						{/if}
+						<?php $i++; ?>
+					{/if}
+				{/foreach}
+			</table>
+			<hr>
+			<button wtq_add="save_new_add" onclick="save_new_add()" style="margin-left:20px;" class="btn btn-success" type="button">保存</button>&nbsp&nbsp&nbsp
+			<a wtq_up_index_alert_close="close" class="btn btn-success layui-layer-close">取消</a>
+		</form>
+	</div>
+</div>
+<!-- 修改添加数据 作业编号选择弹框 -->
+<div style="display:none" wtq_add="ecd">
+	<div style="margin:5px;">
+		<div style="width:100%">
+			<div style="width:100%;text-align: center;">
+				<input wtq_ecd_sour><button onclick="ecd_sour()">查找</button>
+			</div>
+		</div>
+		<table class="old_free">
+			<tr>
+				<td><div>作业编号</div></td><td><div>作业说明</div></td>
+			</tr>
+			{foreach $ecd as $key=>$e}
+				<tr onclick="ecd_ok('{$e['ECD01']}','{$e['ECD02']}',this)" ecd01="{$e['ECD01']}" ecd02="{$e['ECD02']}">
+					<td><div>{$e['ECD01']}</div></td><td><div>{$e['ECD02']}</div></td>
+				</tr>
+			{/foreach}
+		</table>
+		<a style="display:none" wtq_up_index_alert_close="close" class="btn btn-success layui-layer-close">取消</a>
+	</div>
+</div>
+<!-- 修改添加数据 料件编号选择弹框 -->
+<div style="display:none" wtq_add="ima">
+	<div style="margin:5px;">
+		<div style="width:100%">
+			<div style="width:100%;text-align: center;">
+				<input wtq_ima_sour><button onclick="ima_sour()">查找</button>
+			</div>
+		</div>
+		<table class="old_free">
+			<tr>
+				<td><div>料件编号</div></td>
+				<td><div>品名</div></td>
+				<td><div>规格</div></td>
+				<td><div>采购单位</div></td>
+				<td><div>计价单位</div></td>
+			</tr>
+			{foreach $ima as $key=>$e}
+				<tr onclick="ima_ok('{$e['IMA01']}','{$e['IMA02']}','{$e['IMA021']}','{$e['IMA44']}','{$e['IMA908']}',this)" ima01="{$e['IMA01']}">
+					<td><div>{$e['IMA01']}</div></td>
+					<td><div>{$e['IMA02']}</div></td>
+					<td><div>{$e['IMA021']}</div></td>
+					<td><div>{$e['IMA44']}</div></td>
+					<td><div>{$e['IMA908']}</div></td>
+				</tr>
+			{/foreach}
+		</table>
+		<a style="display:none" wtq_up_index_alert_close="close" class="btn btn-success layui-layer-close">取消</a>
+	</div>
+</div>
+<!-- 修改添加数据 机台选择弹框 -->
+<div style="display:none" wtq_add="TA_PMJ33">
+	<div style="margin:5px;">
+		<div style="width:100%">
+			<div style="width:100%;text-align: center;">
+				<input wtq_TA_PMJ33_sour><button onclick="TA_PMJ33_sour()">查找</button>
+			</div>
+		</div>
+		<table class="old_free">
+				<tr>
+					<td><div>机台</div></td>
+					<td><div>h_r</div></td>
+					<td><div>p_sec</div></td>
+				</tr>
+			{foreach $machine as $key=>$e}
+				<tr onclick="TA_PMJ33_ok('{$e['ECI01']}','{//$e['factory_val2']}','{//$e['factory_val3']}',this)" factory_val1='{$e['ECI01']}'>
+					<td><div>{$e['ECI01']}</div></td>
+					<td><div>{//$e['factory_val2']}</div></td>
+					<td><div>{//$e['factory_val3']}</div></td>
+				</tr>
+			{/foreach}
+		</table>
+		<a style="display:none" wtq_up_index_alert_close="close" class="btn btn-success layui-layer-close">取消</a>
+	</div>
+</div>
+<!-- 作业编号行内编辑下拉框 -->
+<div wtq_index_name="PMJ10" style="display:none">
+	<select onchange='$(this).attr("change","ok");PMJ10_change(this);' style='width:100%' wtq_name="PMJ10">
+		{foreach $ecd as $key=>$e}
+			<option val="{$e['ECD02']}" value="{$e['ECD01']}">{$e['ECD01']}</option>
+		{/foreach}
+	</select>
+</div>
+<!-- 机台行内编辑下拉框 -->
+<div wtq_index_name="TA_PMJ33" style="display:none">
+	<select onchange='$(this).attr("change","ok");TA_PMJ33_change(this);' style='width:100%' wtq_name="TA_PMJ33">
+		{foreach $machine as $key=>$m}
+			<option val1="36" val2="2" value="{$m['ECI01']}">{$m['ECI01']}</option>
+		{/foreach}
+	</select>
+</div>
+
+<script>
+	{if condition="$need"}
+		$("#tbody_show").css("display","");
+		$("#tbody_show2").css("display","");
+		$("#tbody_show").children("span").children("span").eq(0).html('补全数据({:count($need)})');
+	{else /}
+		$("#tbody_show").css("display","none");
+		$("#tbody_show2").css("display","none");
+	{/if}
+	function PMJ10_change(thi){
+		val=$(thi).find('option[value='+$(thi).val()+']').attr('val');
+		var name=$(thi).parent('div').parent('td').siblings('td[tr_shu=ECD02]').find("div[tr_shu=ECD02]").find("span");
+		name.html(val);
+	}
+	function TA_PMJ33_change(thi,val1,val2){
+		val=$(thi).find('option[value='+$(thi).val()+']')
+		val1=val.attr('val1');
+		val2=val.attr('val2');
+		var name1=$(thi).parent('div').parent('td').siblings('td[tr_shu=TA_PMJ35]').find("div[tr_shu=TA_PMJ35]").find("span");
+		name1.html(val1);
+		//name1.attr("change","ok2");
+		var name2=$(thi).parent('div').parent('td').siblings('td[tr_shu=TA_PMJ36]').find("div[tr_shu=TA_PMJ36]").find("span");
+		name2.html(val2);
+		//name2.attr("change","ok2");
+		
+		var money=(val1/3600*val2);
+		var name3=$(thi).parent('div').parent('td').siblings('td[tr_shu=MONEY]').find("div[tr_shu=MONEY]").find("span");
+		name3.html(money);
+	}
+</script>
+<script>
+	function save_new_add(id=''){
+		if(id==''){sour['page']=1;}
+		var site_code=sour['site_code'];
+		var ima06=sour['ima06'];
+		var fac_name=sour['fac_name'];
+		var p_num=sour['p_num'];
+		var form = new FormData($('form[wtq_form=add_a]:last')[0]);
+		$.ajax({
+	        type: "POST",
+	        url:'{:url("save_new_msg")}?site_code='+site_code+'&ima06='+ima06+'&fac_name='+fac_name+'&p_num='+p_num+'&id='+id,
+	        data:form,// 你的formid
+	        processData:false,
+	        contentType:false,
+	        dataType:'json',
+	        error: function(request) {
+	            mythisalert(0,'失败')
+	        },
+	        success: function(data) {
+	        	mythisalert(data[0],data[1]);
+	        	if(data[0]==1){
+	        		index_ajax();
+	        	}
+	        }
+	    });
+	}
+	function ecd_sour(){
+		var ecd01=$("input[wtq_ecd_sour]:last").val();
+		if(ecd01){
+			$("tr[ecd01]").css('display','none');
+			$("tr[ecd01*="+ecd01+"]").css('display','');
+			$("tr[ecd02*="+ecd01+"]").css('display','');
+		}else{
+			$("tr[ecd01]").css('display','');
+		}
+	}
+	function ecd_ok(ecd01,ecd02,thi){
+		$("tr[ecd01]").css('background-color','white');
+		$(thi).css('background-color','#FFE48D');
+		$("input[wtq_add_name=PMJ10]:last").val(ecd01);
+		$("input[wtq_add_name=ECD02]:last").val(ecd02);
+	}
+	function ima_sour(){
+		var ima01=$("input[wtq_ima_sour]:last").val();
+		if(ima01){
+			$("tr[ima01]").css('display','none');
+			$("tr[ima01*="+ima01+"]").css('display','');
+		}else{
+			$("tr[ima01]").css('display','');
+		}
+	}
+	function ima_ok(ima01,ima02,ima021,ima44,ima908,thi){
+		$("tr[ima01]").css('background-color','white');
+		$(thi).css('background-color','#FFE48D');
+		$("input[wtq_add_name=PMJ03]:last").val(ima01);
+		$("input[wtq_add_name=PMJ031]:last").val(ima02);
+		$("input[wtq_add_name=PMJ032]:last").val(ima021);
+		$("input[wtq_add_name=ima44]:last").val(ima44);
+		$("input[wtq_add_name=ima908]:last").val(ima908);
+	}
+	function TA_PMJ33_sour(){
+		var TA_PMJ33=$("input[wtq_TA_PMJ33_sour]:last").val();
+		if(TA_PMJ33){
+			$("tr[factory_val1]").css('display','none');
+			$("tr[factory_val1*="+TA_PMJ33+"]").css('display','');
+		}else{
+			$("tr[factory_val1]").css('display','');
+		}
+	}
+	function TA_PMJ33_ok(TA_PMJ33,TA_PMJ35,TA_PMJ36,thi){
+		$("tr[factory_val1]").css('background-color','white');
+		$(thi).css('background-color','#FFE48D');
+		$("input[wtq_add_name=TA_PMJ33]:last").val(TA_PMJ33);
+		$("input[wtq_add_name=TA_PMJ35]:last").val(TA_PMJ35);
+		$("input[wtq_add_name=TA_PMJ36]:last").val(TA_PMJ36);
+	}
+</script>

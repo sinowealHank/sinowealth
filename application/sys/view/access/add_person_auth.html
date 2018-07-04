@@ -1,0 +1,78 @@
+{extend name="index@index/base" /}
+{block name="main"}
+<div class="breadcrumbs" id="breadcrumbs">
+    <script type="text/javascript">
+        try{ace.settings.check('breadcrumbs','fixed')}catch(e){}
+    </script>
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">首页</a>
+        </li>
+
+        <li>
+            <a href="#">后台管理</a>
+        </li>
+        <li class="active">个人权限管理</li>
+
+    </ul><!-- .breadcrumb -->
+</div>
+<div class="page-content">
+    <form id="priFrom">
+        <div class="page-header">
+            <label>
+                 用户名称(工号)：<input type="text" name="nickname">
+            </label>
+            <div class="user">
+            </div>
+        </div>
+        <div id="tree" style="height: 400px;overflow: auto;">
+            {$tree}
+        </div>
+    </form>
+    <div style="float: right;"><button id="addNav" class="btn btn-app btn-pink btn-sm">保存</button></div>
+</div>
+{/block}
+
+
+{block name="script"}
+<script src="__PUBLIC__/checktree/checktree.js"></script>
+<script>
+    makeTree('tree');
+    $("#addNav").unbind('click').bind('click',function() {
+        var id = $("input[name=id]").val();
+//        var idattr = $("input:checkbox[name='pri_id']:checked").map(function (index, elem) {
+//            return $(elem).val();
+//        }).get().join(',');
+        var id_parent_id_array = new Array();
+        $('input[name="pri_id"]:checked').each(function(){
+            id_parent_id_array.push($(this).val()+'-'+$(this).attr('parent_id'));
+        });
+        var parent_id_str = id_parent_id_array.join(',');//将数组元素连接起来以构建一个字符串
+        $.post("{:url('sys/access/add_auth',0,false)}",{id:id,id_par_arr:parent_id_str},function(data) {
+            showMsg(data);
+        },"JSON");
+
+    });
+
+    //输入
+    $("input[name=nickname]").keyup(function(){
+        var val = $(this).val();
+        $.post("{:url('sys/access/search_user')}",{nickname:val},function(result){
+            $(".user").html(result);
+            //点击选中人员
+            $("input[name=id]").click(function(){
+                var id = $(this).val();
+                var text =  $(this).next('button').val();
+                $("input[name=nickname]").val(text);
+                //获取当前人员的权限
+                $.post("{:url('sys/access/get_user_auth')}",{id:id},function(result){
+                    $("#tree").html(result);
+
+                })
+            })
+        })
+    });
+
+</script>
+{/block}

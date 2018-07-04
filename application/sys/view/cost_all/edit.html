@@ -1,0 +1,124 @@
+<style>
+    #addcost input{width: 250px;}
+</style>
+<form  id="addcost" class="form-horizontal"  role="form" autocomplete="off" action="{:url('sys/cost_all/editcost',0,false)}"
+       method="post" onsubmit="return validateCallback(this);" xmlns="http://www.w3.org/1999/html">
+    <input type="hidden" name="id" value="{$page_info.data.id}">
+    <div class="modal-body">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">凭证号：</label>
+            <div class="col-sm-8">
+                <input type="text" value="{$page_info.data.vou_num}" name="vou_num"><span style="color:red;top: -5px;position:relative;">*</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">部门名称：</label>
+            <div class="col-sm-8">
+                <select name="dep_id" style="width:250px;">
+                    {$page_info.dep}
+                </select><span style="color:red;top: -5px;position:relative;">*</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">部门号：</label>
+            <div class="col-sm-8" id="use_prop_name">
+                <input name="dep_num" type="text" value="{$page_info.data.dep_num}"><span style="color:red;top: -5px;position:relative;">*</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">员工名称：</label>
+            <div class="col-sm-8">
+                <select name="user_id" style="width:250px;">
+                    <option>请选择部门</option>
+                    {$page_info.user}
+                </select><span style="color:red;top: -5px;position:relative;">*</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">员工工号：</label>
+            <div class="col-sm-8">
+                <input type="text" name="user_job_num" value="{$page_info.data.user_job_num}"><span style="color:red;top: -5px;position:relative;">*</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">费用类型名称：</label>
+            <div class="col-sm-8">
+                <select name="free_type_select" style="width:250px;">
+                    <option value="">选择下拉框的内容</option>
+                    {$page_info.cost_type}
+                </select><span style="color:red;top: -5px;position:relative;">*</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">类型号:</label>
+            <div class="col-sm-8">
+                <input type="text" name="type_num" value="{$page_info.data.type_num}"><span style="color:red;top: -5px;position:relative;">*</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">费用额：</label>
+            <div class="col-sm-8">
+                <input type="text" name="cost_amout" value="{$page_info.data.cost_amout?$page_info.data.cost_amout:''}"><span class="amout" style="color:red;top: -5px;position:relative;">*</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">备注：</label>
+            <div class="col-sm-8">
+                <input type="text" name="remark" value="{$page_info.data.remark}">
+            </div>
+        </div>
+        <!--<div class="form-group">-->
+            <!--<label class="col-sm-3 control-label">是否已报销：</label>-->
+            <!--<div class="col-sm-8">-->
+                <!--<input id="id-button-border" {if condition="$page_info.data.is_expend eq 1"} checked="checked"  disabled="disabled" {/if} class="ace ace-switch ace-switch-5" type="checkbox" name="is_expend">-->
+                <!--<span class="lbl"></span>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="pull-right">
+
+            {switch name="$page_info.data.is_expend"}
+              {case value="1"}<button class="btn btn-info " style="padding-left: 10px;">修改</button>{/case}
+              {case value="0"}<button class="btn btn-info true_edit" style="padding-left: 10px;">修改</button>{/case}
+            {/switch}
+            <button type="button" class="btn btn-default closeLayer ">取消</button>
+        </div>
+    </div>
+</form >
+<script>
+    $("select[name=dep_id]").change(function(){
+        var id = $(this).find("option:selected").val();
+
+        $.post("{:url('sys/cost_all/get_user',0,false)}",{id:id},function(result){
+            $("input[name=dep_num]").val(id);
+            $("select[name=user_id]").empty();
+            $("select[name=user_id]").html(result);
+            $("input[name=user_job_num]").val("");
+        })
+    });
+
+    $("select[name=user_id]").change(function(){
+        var user_gh = $(this).find("option:selected").attr('user_job_name');
+        $("input[name=user_job_num]").val(user_gh);
+    });
+
+    $("select[name=free_type_select]").change(function(){
+        var id = $(this).find("option:selected").val();
+        $("input[name=type_num]").val(id);
+    });
+
+    $("#id-button-border").click(function(){
+
+        if($(this).is(":checked")){
+            $(".true_edit").text('确认结案');
+
+        }else{
+            $(".true_edit").text('修改');
+
+        }
+    })
+
+
+
+</script>

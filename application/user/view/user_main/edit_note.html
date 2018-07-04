@@ -1,0 +1,292 @@
+<form class="form-horizontal" role="form" method="post" name="add_note_form" action="{:url()}"  onsubmit="return validateCallback(this)">
+    <input type="hidden" value="{$page_info.note_info.id}" name="note_id" />
+    <fieldset>
+        <legend>
+            <span class="label label-lg label-pink arrowed-right">{:config('site_info')[$page_info.cur_user_info.site_id]['site']}</span>
+            <span class="label label-xlg label-primary arrowed arrowed-right">{$page_info.cur_user_info.nickname}</span>
+            <span class="label label-lg label-primary  arrowed arrowed-right">
+                (班次: {:config('hr_role_info')[$page_info.cur_user_info.hr_role_id]['begin_time']}~{:config('hr_role_info')[$page_info.cur_user_info.hr_role_id]['end_time']})
+            </span>
+            <span class="label label-info  arrowed arrowed-right">年休 {$page_info.year_holiday_day}小时</span>
+            <span class="label label-info arrowed arrowed-right">补休 {$page_info.user_hr_holiday}小时</span>
+            {neq name="$page_info.cur_user_info.hr_user_id" value="0"}
+                <span class="label label-inverse">考勤人:{:get_cache_data('user_info',$page_info.cur_user_info.hr_user_id,'nickname')}</span>
+            {/neq}
+            <span class="label label-lg label-pink arrowed-left" style=" margin-left:140px;">考勤以实际考勤时间及请假单时数计算</span>
+           </legend>
+            <div class="form-group" style="margin:50px -12px 10px -12px;">
+                <label class="col-sm-1 control-label no-padding-right"> 类型</label>
+                <div class="col-sm-5">
+                    <div class="input-group" name>
+                        <select name="note_type">
+                            <option value="1" {eq name="$page_info.note_info.note_type" value="1"} selected="selected" {/eq}>请假单</option>
+                            <option value="2" {eq name="$page_info.note_info.note_type" value="2"} selected="selected" {/eq}>晚餐预订</option>
+                            <option value="3" {eq name="$page_info.note_info.note_type" value="3"} selected="selected" {/eq}>晚到</option>
+                        </select>
+                        
+                        <select name="hr_note_id" {neq name="$page_info.note_info.note_type" value="1"} style="display:none;" {/neq}>
+                            {volist name="$page_info.note_type_info" id="vo"}
+                                <option value="{$i}"  {eq name="$page_info.note_info.hr_note_id" value="$i"} selected="selected" {/eq}>{$vo}</option>
+                            {/volist}
+                        </select>
+                        
+                    </div>
+                </div>
+                <label class="col-sm-1 control-label no-padding-right">
+                    <div name="note_hour">申请时间</div>
+                    <div name="note_type_2_flag" style="display:none;">管理部代购 ?</div>                        
+                 </label>
+                <div class="col-sm-5"  {eq name="$page_info.note_info.note_type" value="3"} style="display:none;" {/eq}>
+                    <div name="note_hour" class="left col-sm-4" style=" padding:0 0 0 0;">
+                        <input type="text" name="note_hour" value="{$page_info.note_info.note_hour}" placeholder="请假时数" class="col-sm-8"> <span>小时</span>
+                    </div>
+                    <div name="note_type_2_flag" class="note_type_2_flag_switch left col-sm-4" style="display:none;">
+                        <label class="pull-left inline">
+                           <input class="ace ace-switch ace-switch-5" type="checkbox">
+                           <span class="lbl"></span>
+                           <input type="hidden" name="note_type_2_flag" value="0" />
+                         </label>
+                    </div>
+                    <div name="age_div" {lt name="$page_info.note_info.note_hour" value="$page_info.age_time_val"} style="display:none;" {/lt} class="left col-sm-7">
+                        假期代理人: 
+                        <select name="age_user_id">
+                            {volist name="$page_info.age_info" id="vo"}
+                                <option value="{$vo.id}" {eq name="$page_info.note_info.age_user_id" value="$vo.id"} selected="selected" {/eq}>{$vo.nickname}</option>
+                            {/volist}
+                        </select>
+                    </div>                            
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label no-padding-right"> 开始时间</label>
+                <div class="col-sm-5">
+                    <div name="begin_time">
+                        <input class="date-picker col-sm-4" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" id="begin_date" name="begin_date" value="{:get_date_time($page_info.note_info.begin_time,'Y-m-d')}" />
+                                <span class="input-group-addon" style="display:none;">
+                                    <i class="icon-calendar"></i>
+                                </span>
+                        {:get_h_select('begin_h',get_date_time($page_info['note_info']['begin_time'],'H'))}
+                        {:get_m_select('begin_m',get_date_time($page_info['note_info']['begin_time'],'i'))}
+                    </div>
+                </div>
+                <label class="col-sm-1 control-label no-padding-right"> 结束时间</label>
+                <div class="col-sm-5">
+                    <div class="input-group">
+                        <div  name="end_time">
+                            <input class="date-picker col-sm-12" type="text" readonly="readonly" name="end_date" value="{:get_date_time($page_info.note_info.end_time,'Y-m-d H:i:s')}" />
+                       </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label no-padding-right">标题</label>
+                <div class="col-sm-5">
+                    <ul class="list-unstyled">
+                        <li class="pull-left"><input type="text" class="col-sm-11" placeholder="申请单简要说明" value="{$page_info.note_info.note_title}" name="note_title"> <span class="red"> * </span> </li>
+                        {eq name="$page_info.auto_sqd" value="1"}
+                            <li class="bigger-110 orange pull-left"><br />
+                                {$page_info.hr_date_info.hr_status_remark}{$page_info.hr_date_info.hr_remark}
+                            </li>
+                        {/eq}
+                    </ul>
+                </div>
+                <label class="col-sm-1 control-label no-padding-right"> 详细说明</label>
+                <div class="col-sm-5">
+                    <textarea class="form-control"  placeholder="申请单详细说明" style="width: 350px; height: 138px;" name="note_desc">{$page_info.note_info.note_desc}</textarea>
+                </div>
+            </div>
+     </fieldset>
+    <div class="form-actions center">
+        <button type="submit" class="btn btn-sm btn-success">
+            提交
+        </button>
+        <button type="button" class="btn btn-sm btn-info closeLayer">
+            关闭
+        </button>
+    </div>  
+     
+    </form>
+    
+<script>
+
+//自动计算结束时间
+function auto_end_time(){
+		begin_date=$('input[name=begin_date]').val();
+		begin_h=$('select[name=begin_h]').val();
+		begin_m=$('select[name=begin_m]').val();
+		note_hour=$('input[name=note_hour]').val();
+		check_flag=false;
+		err_msg="";
+		
+		if(begin_date.length<5){
+			err_msg="开始日期错误!";
+			check_flag=true;
+			}
+		
+		if(note_hour.length==0){
+			err_msg="申请时间不能为空";			
+			check_flag=true;
+			}
+
+		if(check_flag){
+					alert(err_msg);
+				if(note_hour.length==0){
+					$('input[name=note_hour]').focus();	
+				}
+				return false;
+			}else{
+				$.post("{:url('auto_end_time')}/note_hour/"+note_hour+"/begin_date/"+begin_date+"/begin_h/"+begin_h+"/begin_m/"+begin_m,function(result){
+					$('input[name=end_date]').val(result);
+					//alert(result);
+				});
+				}
+	}
+
+
+//点击开始日期
+laydate({
+		elem:'#begin_date',
+		format:'YYYY-MM-DD',
+		festival:true,
+		choose:function(datas){
+			auto_end_time();
+			}
+	});
+
+//选择申请单类型
+$('select[name=note_type]').change(function(){
+		val=$(this).val();
+		switch(val){
+			case '1':
+				$('select[name=hr_note_id]').show();
+				$('div[name=note_hour]').show();
+				$('div[name=age_div]').hide();
+				$('div[name=note_type_2_flag]').hide();
+				$('div[name=begin_time]').show();
+				$('div[name=end_time]').show();
+				$('input[name=note_title]').attr('readonly',false);
+				$('textarea[name=note_desc]').attr('readonly',false);
+				break;
+			case '2':
+				$('select[name=hr_note_id]').hide();
+				$('div[name=note_hour]').hide();
+				$('div[name=age_div]').hide();
+				$('div[name=note_type_2_flag]').show();
+				$('div[name=begin_time]').hide();
+				$('div[name=end_time]').hide();
+				$('input[name=note_title]').attr('readonly',true);
+				$('textarea[name=note_desc]').attr('readonly',true);
+				break;			
+			case '3':
+				$('select[name=hr_note_id]').hide();
+				$('div[name=note_hour]').show();
+				$('div[name=age_div]').hide();
+				$('div[name=note_type_2_flag]').hide();
+				$('div[name=begin_time]').show();
+				$('div[name=end_time]').show();
+				$('input[name=note_title]').attr('readonly',false);
+				$('textarea[name=note_desc]').attr('readonly',false);
+				break;
+			case '4':
+				$('select[name=hr_note_id]').hide();
+				$('div[name=note_hour]').show();
+				$('div[name=age_div]').hide();
+				$('div[name=note_type_2_flag]').hide();
+				$('div[name=begin_time]').show();
+				$('div[name=end_time]').show();
+				$('input[name=note_title]').attr('readonly',false);
+				$('textarea[name=note_desc]').attr('readonly',false);
+				break;
+			}
+		
+	});
+
+		
+//点击结束日期
+$('input[name=end_date]').click(function(){
+		layer.tips('结束日期系统自动计算!',$(this),{tips:2});
+	});
+
+//请假时数点击
+$('input[name=note_hour]').click(function(){
+		layer.tips('单位:小时',$(this),{tips:2});
+	});
+	
+//申请时间,开始日期,开始时间小时&分钟发生变化时自动计算结束时间
+$('select[name=begin_h],select[name=begin_m]').change(function(){
+		auto_end_time();
+	});
+
+//管理部代购选项点击
+$('.note_type_2_flag_switch').click(function(){
+		$obj=$(this).find('input[name=note_type_2_flag]');
+		if($obj.val()==0){
+				$obj.val('1');
+			}else{
+				$obj.val('0');
+				}
+	});
+
+//申请时间变化时,判断是否需要设置代理人
+$('input[name=note_hour]').change(function(){
+		val=$(this).val();
+		var re = /^\d+(\.\d)?$/;
+        var bol = re.test(val);
+		if(bol){
+				if(val.substr(-2,1)=="."){
+					if(val.substr(-1,1)!="5" && val.substr(-1,1)!="0"){
+						alert('申请时间只能精确到半小时 如:3.5\n请重新填写!');
+						$(this).val('');
+						}
+					}
+				//判断是否超过系统设定指定代理人时间,激活代理人选择控件
+				if(parseInt(val)>parseInt('{$page_info.age_time_val}')){
+						$('div[name=age_div]').show();
+					}else{
+						if(val==8.5){
+								$('div[name=age_div]').show();
+							}else{
+								$('div[name=age_div]').hide();
+								}						
+						}
+						auto_end_time();
+			}else{
+				alert('申请时间只能为以下格式\n 3 \n 3.5 \n请重新填写!');
+				$(this).val('');
+				}
+	});
+
+//请假单类型变化,自动填写title
+$('select[name=note_type]').change(function(){
+		val=$(this).val();		
+		if(val != 2){
+			if(val==1){
+					title_str=$('select[name=hr_note_id]').find('option:selected').html();
+				}else{
+					title_str=$(this).find('option:selected').html();
+					}
+				$('input[name=note_title]').val(title_str);
+			}
+	});
+
+//请假单类型发生变化
+$('select[name=hr_note_id]').change(function(){
+		title_str=$(this).find('option:selected').html();
+		$('input[name=note_title]').val(title_str);
+		if($(this).val()==3){
+				layer.tips('病假将折扣工资,建议选择休假!',$(this),{tips:2});
+			}
+	});
+
+//判断是否自动填写申请单
+if('{$page_info.auto_sqd}'==1){
+		json_sqd=eval('('+'{$page_info.sqd_json}'+')');
+		form_obj=$('form[name=add_note_form]');
+		form_obj.find('select[name=hr_note_id]').val(2);
+		form_obj.find('input[name=note_hour]').val(json_sqd.z_work_need_time);
+		form_obj.find('input[name=begin_date]').val(json_sqd.hr_date);
+		form_obj.find('input[name=end_date]').val(json_sqd.hr_date);
+		form_obj.find('input[name=note_title]').val('休假');
+	}
+
+</script>

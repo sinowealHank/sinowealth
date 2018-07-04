@@ -1,0 +1,31 @@
+<meta charset="utf-8" />
+<div>
+<form id='backForm' action='doBack'>
+	<input type="hidden" name='id' value='{$page_info.id}'/>
+	<span style='display:block;float:left;'><b>退回理由：</b></span>
+	<textarea name="reason" id="" cols="30" rows="5" style='display:block;float:left;'></textarea>
+</div>
+</form>
+<div style="clear:both;"></div>
+<div style="margin:20% 0 10% 40%;">
+	   	<button onclick="backSubmit()" type="button" style='cursor:pointer;'>提交</button>
+	   	<button class='closeLayer' style='cursor:pointer;'>关闭</button>
+   	</div>
+<script>
+   function backSubmit(){
+   	var $form = $('#backForm');
+	$.ajax({
+		type:$form.method || 'POST',
+		url:$form.attr("action"),
+		data:$form.serializeArray(),
+		dataType:"json",
+		success:function(result){
+			showMsg(result);
+			if(result.statusCode == 1){
+				reload_list();
+			}
+		},
+	});
+   }
+</script>
+	

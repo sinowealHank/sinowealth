@@ -1,0 +1,120 @@
+{extend name="index@index/base" /}
+{block name="main"}
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<script type="text/javascript">
+		try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	</script>
+
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+				<a href="#">首页</a>
+		</li>
+
+		<li>
+			<a href="#">邮件</a>
+		</li>
+	</ul><!-- .breadcrumb -->
+    
+    
+    <div class="nav-search" id="nav-search">
+    </div>
+
+</div>
+
+<div class="page-content">
+	<div class="page-header col-xs-12">
+	
+ 
+        <div style="margin: 5px;">
+	        <input placeholder="选择" onchange="sour(this)" type="text" list="itemlist" name="" style="width: 350px;">
+			<datalist id="itemlist">
+			     {volist name="$user" id="vo"}
+                 	<option value="{$vo['nickname']},{$vo['ext_tel']},{$vo['user_gh']},{$vo['email']}">
+                 {/volist}
+			</datalist>
+			
+        </div>
+        <div id="wtq_user" style="border: #a5a0a0 solid 1px;width: 90%;height: 300px;margin: 5px;"></div>
+         邮件内容：<hr>
+        <div style="margin: 5px;">
+        	<input placeholder="标题" wtq="title" style="border: black 1px solid;margin-bottom: 5px;"><br>
+        	<textarea style="width: 90%;height: 200px;" placeholder="内容" wtq="html"></textarea>
+        </div>
+        <div><button onclick="send()" class="btn btn-info btn-sm">发送</button></div>
+        <div id="wtq"></div>
+	</div><!-- /.page-header -->
+
+	<div class="row"><!-- /.col -->
+    	<div class="col-xs-12">
+
+        </div>
+	</div><!-- /.row -->
+</div>
+
+
+<script>
+function send(thi){
+	var title=$("input[wtq=title]").val();
+	var html=$("textarea[wtq=html]").val();
+	if(title==''){
+		mythisalert(0,'标题不能为空');
+		return false;
+	}
+	if(html==''){
+		mythisalert(0,'内容不能为空');
+		return false;
+	}
+	var email={};
+	var len=$("span[wtq=em]").length;
+	var name='';
+	for(i=0;i<len;i++){
+		email[i]=$("span[wtq=em]").eq(i).attr('em');
+		name=name+","+$("span[wtq=em]").eq(i).html();
+	}
+	if(name==''){
+		mythisalert(0,'人员不能为空');
+		return false;
+	}
+	var a=confirm('你确定发送么');
+	if(a==false){
+		return false;
+	}
+	if($("span[wtq=em]").attr('em')){
+		$.post('{:url("send")}',{title:title,html:html,email:email,name:name},
+	            function (data) {
+					mythisalert(1,'完成');
+	            },"json").error(
+	            		function() {mythisalert(0,'失败');}
+	           );
+	}
+	
+}
+function del(thi){
+	$(thi).parent('div').remove();
+}
+$(function(){
+	document.onkeypress = function(e){
+	    var ev = document.all ? window.event : e;
+	    if(ev.keyCode==13) {
+	    	var arr = $("input[list=itemlist]").val().split(',');
+	    	if($("span[em='"+arr[3]+"']").attr('em')){
+	    		mythisalert(1,'已存在');
+	    		return false;
+	    	}
+	    	if(arr[1]){
+	    		$("#wtq_user").append("<div style='width: 100px;height: 20px;margin: 2px;float:left;'><span wtq='em' em='"+arr[3]+"'>"+arr[0]+"</span>&nbsp&nbsp&nbsp<i onclick='del(this)' style='float:right' class='icon-ban-circle'></i></div>");
+		    	$("input[list=itemlist]").val('');
+	    	}
+	    	
+	     }
+	}
+});
+</script>
+
+
+
+
+{/block}
+

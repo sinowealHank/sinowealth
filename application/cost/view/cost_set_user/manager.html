@@ -1,0 +1,30 @@
+<meta charset="utf-8" />
+<div>
+	<div class="col-xs-11">
+        <form class="form-horizontal" role="form" method="post" name="add_note_form" action="{:url('managerAdd')}"  onsubmit="return validateCallback(this)">
+			<div class="form-group" style="margin:10px -12px 10px -12px;">
+                    <label class="col-sm-3 control-label no-padding-right">用户工号：</label>
+                    <div class="col-sm-5">
+                        <div class="input-group">
+                           <input type="text" name='job_nb'/>                            
+                        </div>
+                    </div>
+                   
+                </div>
+              
+    			<div class="form-group" style="margin:10px -12px 10px -12px;">
+                    <label class="col-sm-3 control-label no-padding-right">生产线：</label>
+                    <div class="col-sm-5">
+                       {volist name="page_info.line" id="vo"}
+                       	{$vo}:<input type="checkbox" name='line[]' value='{$vo}'/>&nbsp;<br>
+                       {/volist}
+                    </div>
+                   
+                </div>
+                <div style="margin:10% 0 0 35%">
+                	<button class='btn btn-info btn-sm'>提交</button>
+                	<button class='btn btn-info btn-sm closeLayer' type='button'>关闭</button>
+                </div>
+           </form>
+    </div>
+</div>

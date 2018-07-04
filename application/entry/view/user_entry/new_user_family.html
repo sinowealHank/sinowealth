@@ -1,0 +1,69 @@
+<div class='new_user_add'>	
+	<br>
+	<p style="font-size:20px;">家庭成员信息</p>
+	<hr>
+	<table style="text-align:center">
+		<thead>
+			<tr>
+				<th style="text-align: center;">姓名</th>
+				<th style="text-align: center;">关系</th>
+				<th style="text-align: center;">联系方式</th>
+				<th style="text-align: center;">地址</th>
+			</tr>
+		</thead>
+		<tbody>
+			{if condition="isset($user_family)"}
+				{foreach name="$user_family" item="vo" empty="暂时没有数据"}
+				    <tr>
+						<td style="display:none"><input name="family_id[]" value="{$vo.id}"></td>
+						<td><input name="family_name_change[]" value="{$vo.name}"></td>
+						<td style="text-align: center;">
+							<select name="family_relationship_change[]" style="width:auto;float: none;">
+								{foreach name="$page_info['hr_family_type_arr']" item="voo"}
+								    <option <?php if($key==$vo['hr_family_type_id']){echo 'selected="selected"';} ?> value="{$key}">{$voo}</option>
+								{/foreach}
+							</select>
+						</td>
+						<td><input name="family_tel_change[]" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();" value="{$vo.conn_num}"></td>
+						<td><input name="family_adress_change[]" value="{$vo.address}"></td>
+					</tr>
+				{/foreach}
+			{else /}
+				<tr>
+					<td><input name="family_name[]"></td>
+					<td style="text-align: center;">
+						<select name="family_relationship[]" style="width:auto;float: none;">
+							{foreach name="$page_info['hr_family_type_arr']" item="vo"}
+							    <option value="{$key}">{$vo}</option>
+							{/foreach}
+						</select>
+					</td>
+					<td><input name="family_tel[]" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();"></td>
+					<td><input name="family_adress[]"></td>
+				</tr>
+			{/if}
+			
+			
+			
+			
+		
+			<tr onclick="add_a_line(this)">
+				<td colspan="4" class="btn btn-sm btn-primary" style="width:330%;height:35px;margin-top: 5px;">
+					再加一列
+				</td>
+			</tr>
+			<tr style="display:none">
+				<td><input name="family_name[]"></td>
+				<td style="text-align: center;">
+					<select name="family_relationship[]" style="width:auto;float: none;">
+						{foreach name="$page_info['hr_family_type_arr']" item="vo"}
+						    <option value="{$key}">{$vo}</option>
+						{/foreach}
+					</select>
+				</td>
+				<td><input name="family_tel[]" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();"></td>
+				<td><input name="family_adress[]"></td>
+			</tr>
+		</tbody>
+	</table>
+</div>

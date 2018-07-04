@@ -1,0 +1,88 @@
+<div class="row">
+	<div class="col-xs-12">
+        <form class="form-horizontal" role="form" method="post" action="edit/"  onsubmit="return validateCallback(this)">
+        <input type="hidden" name="id" value="{$page_info.id}" />
+            <div class="form-group">
+                <label for="form-field-1" class="col-sm-2 control-label no-padding-right"> 站点</label>
+                <div class="col-sm-4">
+                    <input type="text" class="col-sm-11" placeholder="站点" id="form-field-1" value="{$page_info.site}" name="site"> <span class="red"> * </span> 
+                </div>
+                <label for="form-field-2" class="col-sm-2 control-label no-padding-right"> 站点编号</label>
+                <div class="col-sm-4">
+                    <input type="text" class="col-sm-11" placeholder="站点编号" id="form-field-2" value="{$page_info.site_code}" name="site_code"><span class="red"> * </span> 
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="form-field-3" class="col-sm-2 control-label no-padding-right"> 中文全名 </label>
+                <div class="col-sm-4">
+                    <input type="text" class="col-sm-11" placeholder="中文全名" id="form-field-3" value="{$page_info.zh_full_name}" name="zh_full_name">
+                </div>
+                <label for="form-field-4" class="col-sm-2 control-label no-padding-right"> 中文名称</label>
+                <div class="col-sm-4">
+                    <input type="text" class="col-sm-11" placeholder="中文名称" id="form-field-4" value="{$page_info.zh_name}" name="zh_name"><span class="red"> * </span> 
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="form-field-5" class="col-sm-2 control-label no-padding-right"> 中文简称 </label>
+                <div class="col-sm-4">
+                    <input type="text" class="col-sm-11" placeholder="中文简称" id="form-field-5" value="{$page_info.zh_s_name}" name="zh_s_name">
+                </div>
+                
+            </div>
+            <div class="form-group">
+            	<label for="form-field-6" class="col-sm-2 control-label no-padding-right"> 英文全称 </label>
+                <div class="col-sm-4">
+                    <input type="text" class="col-sm-11" placeholder="英文全称" id="form-field-6" value="{$page_info.en_full_name}" name="en_full_name">
+                </div>
+                <label for="form-field-7" class="col-sm-2 control-label no-padding-right"> 英文名称 </label>
+                <div class="col-sm-4">
+                    <input type="text" class="col-sm-11" placeholder="英文名称" id="form-field-7" value="{$page_info.en_name}" name="en_name"><span class="red"> * </span> 
+                </div>                
+            </div>
+            <div class="form-group">
+            	<label for="form-field-8" class="col-sm-2 control-label no-padding-right"> 英文简称 </label>
+                <div class="col-sm-4">
+                    <input type="text" class="col-sm-11" placeholder="英文简称" id="form-field-8" value="{$page_info.en_s_name}" name="en_s_name">
+                </div>                              
+            </div>
+            <div class="form-group">
+            	<label for="form-field-9" class="col-sm-2 control-label no-padding-right"> 邮编 </label>
+                <div class="col-sm-4">
+                    <input type="text" class="col-sm-11" placeholder="邮编" id="form-field-9" value="{$page_info.post_code}" name="post_code">
+                </div>  
+            	<label for="form-field-10" class="col-sm-2 control-label no-padding-right"> 联系人 </label>
+                <div class="col-sm-4">
+                    <input type="text" class="col-sm-11" placeholder="联系人" id="form-field-10" value="{$page_info.conn_name}" name="conn_name"><span class="red"> * </span> 
+                </div>                               
+            </div>
+            <div class="form-group">
+            	 <label for="form-field-11" class="col-sm-2 control-label no-padding-right"> 电话 </label>
+                <div class="col-sm-4">
+                    <input type="text" class="col-sm-11" placeholder="电话" id="form-field-11" value="{$page_info.tel}" name="tel">
+                </div>
+            	<label for="form-field-12" class="col-sm-2 control-label no-padding-right"> 传真 </label>
+                <div class="col-sm-4">
+                    <input type="text" class="col-sm-11" placeholder="传真" id="form-field-12" value="{$page_info.fax}" name="fax">
+                </div>                       
+            </div>
+            <div class="form-group">
+            	 <label for="form-field-13" class="col-sm-2 control-label no-padding-right"> 手机 </label>
+                <div class="col-sm-4">
+                    <input type="text" class="col-sm-11" placeholder="手机" id="form-field-13" value="{$page_info.pho}" name="pho">
+                </div>        
+            </div>
+            <div class="form-group">
+                <label for="form-field-14" class="col-sm-2 control-label no-padding-right"> 地址 </label>
+                <div class="col-sm-10">
+                    <input type="text" class="col-sm-11" placeholder="地址" id="form-field-14" value="{$page_info.address}" name="address"><span class="red"> * </span> 
+                </div>
+            </div>
+            <div class="form-group">
+            	 <label for="form-field-11" class="col-sm-2 control-label no-padding-right">考勤开始时间</label>
+                <div class="col-sm-4">
+                    <input type="text" class="col-sm-11" placeholder="7:30" id="form-field-11" value="{$page_info.hr_begin_time}" name="hr_begin_time">
+                </div>            	                       
+            </div>
+            </form>
+    </div>
+</div>

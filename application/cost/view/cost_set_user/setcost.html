@@ -1,0 +1,15 @@
+<form name="setcost">
+    <input type="text" name="id" >
+    <button type="button" class="btn btn-primary edit">修改</button>
+</form>
+<script>
+    $(".edit").click(function(){
+        var cost_id = $("input[name=id]").val();
+
+        $.post("{:url('cost/costSetUser/mssql')}",{id:cost_id},function(result){
+            showMsg(result);
+        },"JSON")
+    });
+
+</script>
+

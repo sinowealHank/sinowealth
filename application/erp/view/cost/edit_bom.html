@@ -1,0 +1,116 @@
+<style>
+    .row{margin-top: 20px;}
+</style>
+<div>
+    <form name="edit-bom">
+        <input type="hidden" name="prd_no" value="{$bom_data['name']}">
+        <input type="hidden" name="fac_name" value="{$bom_data['fac_name']}">
+        <input type="hidden" name="imaicd04" value="{$bom_data['level']}">
+        <div class="row">
+            <!--<div class="col-md-3">-->
+                <!--&lt;!&ndash;<label style="width: 100px;">是否release:</label>&ndash;&gt;-->
+                      <!--&lt;!&ndash;<select name="is_release">&ndash;&gt;-->
+                          <!--&lt;!&ndash;<option value="1" {if condition="$bom_data['is_release'] eq 1"}selected="selected"{if/}>N</option>&ndash;&gt;-->
+                          <!--&lt;!&ndash;<option value="0" {if condition="$bom_data['is_release'] eq '' "}selected="selected"{if/}>Y</option>&ndash;&gt;-->
+                      <!--&lt;!&ndash;</select>&ndash;&gt;-->
+            <!--</div>-->
+            <div class="col-md-3">
+                <label style="width: 100px;">PM:</label>
+                <span>
+                    <input type="text" name="ta_pmh09" value="{$ErpData['ta_pmh09']?$ErpData['ta_pmh09']:''}">
+                </span>
+            </div>
+            <div class="col-md-3">
+                <label style="width: 100px;">UM:</label>
+                   <span>
+                    <input type="text" name="ta_pmh11" value="{$ErpData['ta_pmh11']?$ErpData['ta_pmh11']:''}">
+                  </span>
+            </div>
+            <div class="col-md-3">
+                <label style="width: 100px;">GOOD DIE:</label>
+                <span>
+                    <input type="text" name="ta_pmh15" value="{$ErpData['ta_pmh15']?$ErpData['ta_pmh15']:''}">
+                </span>
+            </div>
+            <div class="col-md-3">
+                <label style="width: 100px;">光罩总层数:</label>
+                <span>
+                   <input type="text" name="ta_pmh12" value="{$ErpData['ta_pmh12']?$ErpData['ta_pmh12']:''}">
+                </span>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-md-3">
+                <label style="width: 100px;">每层工时:</label>
+                <span>
+                    <input type="text" name="ta_pmh13" value="{$ErpData['ta_pmh13']?$ErpData['ta_pmh13']:''}">
+                </span>
+            </div>
+            <div class="col-md-3">
+                <label style="width: 100px;">lt_day:</label>
+                <span>
+                    <input type="text" name="ta_pmh14" value="{$ErpData['ta_pmh14']?$ErpData['ta_pmh14']:''}">
+                </span>
+            </div>
+            <div class="col-md-3">
+                <label style="width: 100px;">产能:</label>
+                <span>
+                    <input type="text" name="ta_pmh16" value="{$ErpData['ta_pmh16']?$ErpData['ta_pmh16']:''}">
+                </span>
+            </div>
+            <div class="col-md-3">
+                <label style="width: 100px;">打线图号:</label>
+                <span>
+                    <input type="text" name="pmh20"  value="{$ErpData['pmh20']?$ErpData['pmh20']:''}">
+                </span>
+            </div>
+        </div>
+
+    </form>
+    <div style="float: right">
+        <button class="btn btn-primary edit-bom">编辑</button>
+        <button class="btn btn-default closeLayer">取消</button>
+    </div>
+</div>
+<script>
+    $(".edit-bom").click(function(){
+        var fromData = $("form[name=edit-bom]").serialize();
+        $.post("{:url('erp/cost/save_bom')}",fromData,function(result){
+           var level_1 = $(".bom").attr('level');
+           var name_1 =  $(".bom").attr('prd');
+            showMsg(result);
+            //请求后台中的供应商信息；
+            $.post("{:url('erp/cost/get_agent')}",{level:level_1,name:name_1},function(result){
+                result = JSON.parse(result);
+                var bom = '';
+//                $.each(result,function(k,v){
+//                    bom += '<tr class="click_tr" prd_no="'+v.name+'" level="'+ v.level+'" fac_name="'+ v.fab_name+'"><td>'+v.fab_name+'</td><td>'+ v.fab_release+'</td><td>'+ v.fab_proces+'</td>' +
+//                            '<td>'+v.PM+'</td><td>'+ v.UM+'</td><td>'+ v.wf_price+'</td><td>'+ v.work_num+'</td><td>'+ v.wf_price_die+'</td>' +
+//                            '<td>'+ v.groces_die+'</td><td>'+ v.good_die+'</td><td>'+ v.layer_num+'</td><td>'+ v.layer_day+'</td><td>'+ v.lt_day+'</td><td>'+ v.p_day+'</td><td>'+ v.yld+'</td><td>'+ v.wire_stock+'</td><td>'+ v.drawing+'</td><td>'+ v.line+'</td></tr>';
+//                });
+//                $(".bom").empty().html(bom);
+
+                $.each(result,function(k,v){
+                    bom += '<tr class="click_tr" prd_no="'+v.name+'" level="'+ v.level+'" fac_name="'+ v.fab_name+'"><td>'+v.fab_name+'</td><td>'+ v.line+'</td><td>'+ v.fab_proces+'</td><td>'+ v.groces_die+'</td>' +
+                            '<td>'+v.ta_pmh09+'</td><td>'+ v.ta_pmh11+'</td><td>'+ v.ta_pmh12+'</td><td>'+ v.ta_pmh13+'</td><td>'+ v.ta_pmh14+'</td><td>'+ v.ta_pmh16+'</td>' +
+                            '<td>'+v.pmh20+'</td><td>'+ v.ta_pmh15+'</td></tr>';
+                });
+                $(".bom").empty().html(bom);
+                //修改数据
+                $(".click_tr").dblclick(function(){
+                    var name = $(this).attr('prd_no');
+                    var fac_name = $(this).attr('fac_name');
+                    var level = $(this).attr('level');
+                    var url = '{:url("erp/cost/edit_bom")}'+"?name="+name+"&fac_name="+fac_name+"&level="+level;
+                    layerIframe('编辑数据',url,'','','','true');
+                });
+            },"JSON");
+
+
+
+        },'JSON');
+
+
+    });
+</script>

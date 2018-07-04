@@ -1,0 +1,124 @@
+{extend name="index@index/base" /}
+{block name="main"}
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<script type="text/javascript">
+		try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	</script>
+
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+				<a href="#">首页</a>
+		</li>
+
+		<li>
+			<a href="#">导出报表</a>
+		</li>
+			<li class="active">Test</li>
+	</ul><!-- .breadcrumb -->
+</div>
+
+<div class="page-content">
+	<div class="page-header col-xs-12">
+            <h1 class="col-xs-8">
+                导出报表
+                <small>
+                    <i class="icon-double-angle-right"></i>
+                    设定条件
+                </small>
+            </h1>
+        <div class="pull-right  clearfix">
+        </div>        
+	</div><!-- /.page-header -->
+	
+    <form class="form-horizontal" role="form" method="post" action="{:url()}"  target="_blank">
+    <input type="hidden" value="" name="repo_type" />
+	<div class="row"><!-- /.col -->
+    	<div class="col-xs-12">
+        	<fieldset>
+            	<legend>过滤条件</legend>
+                    <div class="form-group">
+                        <label for="form-field-nickname" class="col-sm-1 control-label no-padding-right"> 部门</label>
+                        <div class="col-sm-3">
+                            {$page_info.dep_select} 
+                        </div>
+                        <label for="form-field-1" class="col-sm-1 control-label no-padding-right"> 站点</label>
+                        <div class="col-sm-3">                           
+                            <select class="form-control" id="form-field-site_id" name="site_id">
+                            		<option value="all">全部</option>
+                            	{volist name="page_info['site_arr']" id="data"}
+                                    <option value="{$data.id}">{$data.site}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                        <label for="form-field-identity_card" class="col-sm-1 control-label no-padding-right">职等</label>
+                        <div class="col-sm-3">
+                            <select class="form-control" id="form-field-hr_work_level_id" name="hr_work_level_id">
+                            		<option value="all">全部</option>
+                                {volist name="$page_info.hr_work_level_arr" id="vo"}
+                                	<option value="{$i}">{$vo}</option>
+                                {/volist}
+                            </select> 
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="form-field-nickname" class="col-sm-1 control-label no-padding-right"> 开始日期</label>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <input class="form-control date-picker" id="form-field-entry_date" type="text" data-date-format="yyyy-mm-dd" name="begin_date" />
+                                    <span class="input-group-addon">
+                                        <i class="icon-calendar bigger-110"></i>
+                                    </span>
+                            </div>
+                        </div>
+                        <label for="form-field-2" class="col-sm-1 control-label no-padding-right"> 结束日期</label>
+                        <div class="col-sm-3">                           
+                            <div class="input-group">
+                                <input class="form-control date-picker" id="form-field-entry_date" type="text" data-date-format="yyyy-mm-dd" name="end_date" />
+                                    <span class="input-group-addon">
+                                        <i class="icon-calendar bigger-110"></i>
+                                    </span>
+                            </div>
+                        </div>
+                        <label for="form-field-identity_card" class="col-sm-1 control-label no-padding-right"></label>
+                        <div class="col-sm-3">
+                            
+                        </div>
+                    </div>
+            </fieldset>
+            <fieldset>
+            	<legend>报表类型</legend>
+                    <div class="form-group">
+                        <label for="form-field-1" class="col-sm-1 control-label no-padding-right"> </label>
+                        <div class="col-sm-3">                           
+                           <button class="btn btn-info" name="ext_repo" repo_type="hr" type="submit">考勤报表</button>
+                        </div>
+                        <label for="form-field-identity_card" class="col-sm-1 control-label no-padding-right"></label>
+                        <div class="col-sm-3">
+                            <button class="btn btn-info" name="ext_repo" repo_type="note" type="submit">申请单报表</button>
+                        </div>
+                    </div>
+                   </div>
+            </fieldset>
+        </div>
+    </form>    
+	</div><!-- /.row -->
+</div>
+<script>
+$('.date-picker').datepicker({autoclose:true}).on('hide',function(event){
+		event.preventDefault();
+		event.stopPropagation();
+	}).next().on('click', function(){
+					$(this).prev().focus();
+				});
+				
+$('button[name=ext_repo]').click(function(){
+		repo_type=$(this).attr('repo_type');
+		$('input[name=repo_type]').val(repo_type);
+	});
+
+				
+</script>
+{/block}
+

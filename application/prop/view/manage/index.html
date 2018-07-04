@@ -1,0 +1,72 @@
+{extend name="index@index/base" /}
+{block name="main"}
+<style>
+    .page-header span{ margin-left: 10px;}
+</style>
+<div class="breadcrumbs" id="breadcrumbs">
+    <script type="text/javascript">
+        try{ace.settings.check('breadcrumbs','fixed')}catch(e){}
+    </script>
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">首页</a>
+        </li>
+
+        <li>
+            <a href="#">后台管理</a>
+        </li>
+        <li class="active">资产管理页面</li>
+    </ul><!-- .breadcrumb -->
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <span><a class="btn btn-primary btn-xs" target="_blank" href="{:url('prop/prop/index',0,false)}">资产列表</a></span>
+        <span><a href="{:url('prop/manage/show')}"  class="btn btn-primary btn-xs ">采购单列表</a></span>
+        <span><a url="{:url('prop/prop/addexcel')}" hig="200px" title="导入资产总列表" class="btn btn-primary btn-xs layerIframe">导入excel</a></span>
+        <!--<span><button class="btn btn-primary layerIframe"wid="650" hig="600px;" title="仪器验收单" url="{:url('prop/manage/acceptForm')}"><i class="icon-plus"></i>验收单</button></span>-->
+    </div><!-- /.page-header -->
+
+    <div>
+        <h1 style="text-align: center;">资产申请列表</h1>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>ID:</th>
+                <th>申请物品：</th>
+                <th>申请人：</th>
+                <th>使用人：</th>
+                <th>申请理由：</th>
+                <th>需求时间：</th>
+                <th>物品数量：</th>
+                <th>申请部门：</th>
+                <th>资产采购流程</th>
+                <th>添加采购单：</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="$page_info.apply" id="vo"}
+                <tr class="pur_tr" pur_id="{$vo.id}" style="cursor: pointer">
+                    <td>{$vo.id}</td>
+                    <td>{$vo.apply_thing}</td>
+                    <td>{$vo.nickname}</td>
+                    <td>{$vo.use_prop_name}</td>
+                    <td>{$vo.apply_reason}</td>
+                    <td>{$vo.require_time}</td>
+                    <td>{$vo.thing_num}</td>
+                    <td>{$vo.zh_name}</td>
+                    <td><button class="btn btn-primary btn-xs">{$vo.prop_process}</button></td>
+                    <td>{if condition="$vo.prop_process eq  0"}<button class="btn btn-primary btn-xs layerIframe" max="true" title="资产采购单" url="addpur?id={$vo.id}"><i class="icon-edit"></i></button>{/if}</td>
+                </tr>
+            {/volist}
+            </tbody>
+        </table>
+        {$page_info.page}
+
+
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script src="__PUBLIC__/static/assets/js/jquery.form.js"></script>
+{/block}

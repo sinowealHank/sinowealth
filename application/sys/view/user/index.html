@@ -1,0 +1,154 @@
+{extend name="index@index/base" /}
+{block name="main"}
+<div class="breadcrumbs" id="breadcrumbs">
+	<script type="text/javascript">
+		try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	</script>
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+				<a href="#">首页</a>
+		</li>
+
+		<li>
+			<a href="#">后台管理</a>
+		</li>
+        <li class="active">员工管理</li>
+        <li>
+
+              {$page_info.tit_str}
+        </li>
+	</ul><!-- .breadcrumb -->
+</div>
+
+<div class="page-content">
+	<div class="page-header col-xs-12">
+            <h1 class="col-xs-9">
+                员工管理
+                <small>
+                    <i class="icon-double-angle-right"></i>
+                    列表 {$page_info.tit_str}
+                </small>
+            </h1>
+        <div class="pull-right clearfix">
+            <a href="javascript:void(0)" url="{:url("sys/User/add")}" class="btn btn-info btn-sm layerIframe" max="true"  title="新增员工" rbac_flag="add"><span class="icon expand-icon glyphicon glyphicon-plus"></span>添加员工</a>
+            <a href="{:url('User/ext_repo')}" class="btn btn-info btn-sm" id="adduser" rbac_flag="ext_repo"><span class="icon-book"></span>导出报表</a>
+        </div>        
+	</div><!-- /.page-header -->
+
+	<div class="row"><!-- /.col -->
+    	<div class="col-xs-12">
+        	<form  class="form-horizontal" action="{:url()}">
+            	<table style="width:100%;">
+                	<tr>
+                    	<td>{$page_info.dep_select}</td>
+                        <td>&nbsp;&nbsp; 
+                        	<select name="hr_job_type_id">
+                            		<option value="all">选择岗位</option>
+                                {volist name="page_info['hr_job_type_arr']" id="vo"}
+                                    <option value="{$i}">{$vo}</option>
+                                 {/volist}
+                            </select>
+                        </td>
+                        <td>
+                        	<select name="site_id">
+                            		<option value="all">选择站点</option>
+                                {volist name="page_info['site_arr']" id="vo"}
+                                    <option value="{$vo.id}">{$vo.site}</option>
+                                 {/volist}
+                            </select>
+                        </td>
+                        <td>
+                            &nbsp;
+                            <input type="text" value="{:input('key')}" name="key" placeholder="关键字" style="width:100px;"> 
+                        </td>
+                        <td>
+                        	&nbsp;
+                            <select name="hr_status">
+                            	<option value="all" {eq name="page_info.hr_status" value="all"} selected="selected" {/eq}>选择状态</option>
+                                <option value="1" {eq name="page_info.hr_status" value="1"} selected="selected" {/eq}>在职</option>
+                                <option value="2"  {eq name="page_info.hr_status" value="2"} selected="selected" {/eq}>离职</option>
+                                <option value="3"  {eq name="page_info.hr_status" value="3"} selected="selected" {/eq}>实习</option>
+                                <option value="4"  {eq name="page_info.hr_status" value="4"} selected="selected" {/eq}>停薪留职</option>
+                            </select>
+                        </td>
+                        <td>
+                        	<button class="btn btn-minier btn-primary" type="submit">
+                                <i class="icon-ok bigger-110"></i>
+                                提交
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <br />
+            <table class="table table-striped table-bordered table-hover">
+            	<thead>
+                	<tr>
+                    	<th>工号</th>
+                        <th>姓名</th>
+                        <th>性别</th>
+                        <th>部门</th>
+                        <th>分机</th>
+                        <th>站点</th>
+                        <th>考勤主管</th>
+                        <th>薪资主管</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                	{if condition="$page_info.empty eq 1"}						
+						<tr>
+							<td colspan="9" align="center">暂无数据！</td>
+						</tr>
+						{else/}
+						{volist name="page_info.list" id="vo"}
+                            <tr>
+                                <td>{$vo.user_gh}</td>
+                                <td>{$vo.nickname}</td>
+                                <td>{$vo.sex ? '男' : '女'}</td>
+                                <td>{:get_cache_data('dep_info',$vo.dep_id,'en_name')}</td>                                
+                                <td>{$vo.ext_tel}</td>
+                                <td>{:get_cache_data('site_info',$vo.site_id,'site')}</td>
+                                <td>{:get_cache_data('user_info',$vo.hr_user_id,'nickname')}</td>
+                                <td>{:get_cache_data('user_info',$vo.pay_user_id_1,'nickname')}</td>
+                                <td class="text-center">
+                                    <div class="visible-md visible-lg btn-group">
+                                        <button class="btn btn-xs btn-info layerIframe" url="{:url('/sys/User/edit/id/')}/{$vo.id}/cur_page/{$page_info.cur_page}'"  title="编辑员工信息" max="true">
+                                            <i class="icon-edit bigger-120"></i>
+                                        </button>
+                                        <button class="btn btn-xs btn-info" name="sys_user_family" user_id="{$vo.id}" user_name="{$vo.nickname}" title="家庭成员管理">
+                                            <i class="glyphicon glyphicon-user"></i>
+                                        </button>
+                                        <a class="btn btn-xs btn-info" href="/sys/user/user_hr/user_id/{$vo.id}/cur_page/{$page_info.cur_page}"  title="考勤记录">
+                                            <i class="icon-credit-card "></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                    	{/volist}
+                    {/if}
+                </tbody>
+            </table>
+            {$page_info.page}
+        </div>
+	</div><!-- /.row -->
+</div>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+	
+	$('select[name=dep_id]').val("{$page_info.dep_id}");
+	$('select[name=site_id]').val("{$page_info.site_id}");
+	$('select[name=hr_job_type_id]').val("{$page_info.hr_job_type_id}");
+
+		$('button[name=sys_user_family]').click(function(){
+            m_dialog("{:url('/sys/User/family/id/')}"+$(this).attr('user_id'),$(this).attr('user_name')+' -- 家庭成员管理','max','max','','hideSave');
+			});
+	
+	$('input[name=key]').click(function(){
+		layer.tips('姓名,邮箱,英文名,工号', $(this),{tips:1});
+		});
+	
+</script>
+{/block}

@@ -1,0 +1,102 @@
+{extend name="index@index/base" /}
+{block name="main"}
+<style>
+    .search_form span{ margin-left: 10px;}
+    .search_form input{width: 120px;height: 25px;}
+
+</style>
+<div class="breadcrumbs" id="breadcrumbs">
+    <script type="text/javascript">
+        try{ace.settings.check('breadcrumbs','fixed')}catch(e){}
+    </script>
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">首页</a>
+        </li>
+
+        <li>
+            <a href="#">资产管理</a>
+        </li>
+        <li class="active">已结案费用报销总表</li>
+    </ul><!-- .breadcrumb -->
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <!--<h1>财务审核资产列表</h1>-->
+         <a class="btn btn-primary btn-xs layerIframe" hig="600px;" title="添加报销记录" url="{:url('sys/cost_all/add')}">添加报销记录</a>
+        <a class="btn btn-primary btn-xs layerIframe" hig="200px;" title="添加费用类型" url="{:url('sys/cost_all/addCostType')}">添加费用类型名称</a>
+         <a class="btn btn-primary btn-xs  pull-right"  href="{:url('sys/cost_all/uncost')}">未结案报销列表</a>
+    </div><!-- /.page-header -->
+    <div>
+        <form method="get" role="form" class="search_form">
+            <span>
+                凭证日期从:
+                <input  value="{$page_info.vou_data1?$page_info.vou_data1:''}" class="laydate-icon-molv dateControl" id="require_time" format='YYYY-MM-DD ' festival="" skin="molv" name="vou_data[]"> 至
+                <input  value="{$page_info.vou_data2?$page_info.vou_data2:''}" class="laydate-icon-molv dateControl" id="time" format='YYYY-MM-DD ' festival="" skin="molv" name="vou_data[]">
+            </span>
+            <span><button class="btn btn-primary btn-xs  " type="submit">查询</button></span>
+        </form>
+
+    </div>
+    <div>
+
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>ID:</th>
+                <th>凭证号 </th>
+                <th>凭证日期 </th>
+                <th>部门号 </th>
+                <th>部门名称 </th>
+                <th>员工工号 </th>
+                <th>员工名称 </th>
+                <th>类型号 </th>
+                <th>费用类型名称 </th>
+                <th>费用额 </th>
+                <th>备注 </th>
+                <th>生成日期 </th>
+                <!--<th>编辑 </th>-->
+            </tr>
+            </thead>
+            <tbody>
+            <div class="info">
+            {volist name="$page_info.data" id="vo"}
+                <tr>
+                    <td>{$vo.id}</td>
+                    <td>{$vo.vou_num} </td>
+                    <td>{$vo.vou_data}</td>
+                    <td>{$vo.dep_num} </td>
+                    <td>{:get_cache_data('dep_info',$vo.dep_id,'en_name')} </td>
+                    <td>{$vo.user_job_num} </td>
+                    <td>{:get_cache_data('user_info',$vo.user_id,'nickname')}</td>
+                    <td>{$vo.type_num} </td>
+                    <td>{:get_cost_type($vo.free_type_select)} </td>
+                    <td>{$vo.cost_amout}</td>
+                    <td>{$vo.remark} </td>
+                    <td>{$vo.create_time}</td>
+                    <!--<td><button class="btn btn-primary btn-xs layerIframe" hig="600px;" title="修改" url="edit?id={$vo.id}">编辑修改</button></td>-->
+                </tr>
+            {/volist}
+            </div>
+            </tbody>
+        </table>
+        <div class="page">
+            {$page_info.page}
+        </div>
+
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+//    function AjaxPage(page){
+//        $.post("{:url('sys/cost_all/ajax_page',0,false)}",{page:page},function(result){
+//            $(".info").empty();
+//            $(".info").html(result);
+//
+//        })
+//    }
+
+</script>
+{/block}

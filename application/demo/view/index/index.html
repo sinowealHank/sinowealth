@@ -1,0 +1,67 @@
+{extend name="index@index/base" /}
+{block name="main"}
+<div class="page-content">
+
+<select class="form-control" id="form-field-select-1" name="site_id">
+                            	{volist name="$page_info['site_arr']" id="data"}
+                                    <option value="{$data.id}">{$data.site}</option>
+                                {/volist}
+                            </select>
+    <div class="col-sm-4">
+        <div class="widget-box">
+            <div class="widget-header">
+                <h4>Date Picker</h4>
+        
+                <span class="widget-toolbar">
+                    <a href="#" data-action="settings">
+                        <i class="icon-cog"></i>
+                    </a>
+        
+                    <a href="#" data-action="reload">
+                        <i class="icon-refresh"></i>
+                    </a>
+        
+                    <a href="#" data-action="collapse">
+                        <i class="icon-chevron-up"></i>
+                    </a>
+        
+                    <a href="#" data-action="close">
+                        <i class="icon-remove"></i>
+                    </a>
+                </span>
+            </div>
+        
+            <div class="widget-body">
+                <div class="widget-main">
+                    <label for="id-date-picker-1">Date Picker</label>
+        
+                    <div class="row">
+                        <div class="col-xs-8 col-sm-11">
+                            <div class="input-group">
+                                <input class="form-control date-picker" id="id-date-picker-1" type="text" data-date-format="dd-mm-yyyy" />
+                                <span class="input-group-addon">
+                                    <i class="icon-calendar bigger-110"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+				$('.date-picker').datepicker({autoclose:true}).next().on('click', function(){
+					$(this).prev().focus();
+				});
+</script>
+{/block}

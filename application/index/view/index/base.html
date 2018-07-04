@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head>
+		<meta charset="utf-8" />
+		<title>内管-{:config('company_name_zh')}</title>
+		<!-- basic styles -->
+		<link href="__PUBLIC__/static/assets/css/bootstrap.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="__PUBLIC__/static/assets/css/font-awesome.min.css" />
+		<!--[if IE 7]>
+		  <link rel="stylesheet" href="__PUBLIC__/static/assets/css/font-awesome-ie7.min.css" />
+		<![endif]-->
+
+		<!-- page specific plugin styles -->
+
+		<!-- fonts -->
+		<link rel="stylesheet" href="__PUBLIC__/static/assets/css/css.css" />
+        
+        <!-- sinowealth styles-->
+        <link rel="stylesheet" href="__PUBLIC__/static/assets/css/bootstrap-treeview.min.css" />
+
+		<!-- ace styles -->
+
+		<link rel="stylesheet" href="__PUBLIC__/static/assets/css/ace.min.css" />
+		<link rel="stylesheet" href="__PUBLIC__/static/assets/css/ace-rtl.min.css" />
+        <link rel="stylesheet" href="__PUBLIC__/static/assets/css/datepicker.css" />
+        <link rel="stylesheet" href="__PUBLIC__/static/assets/css/bootstrap-timepicker.css" />
+
+        <link rel="stylesheet" href="__PUBLIC__/static/assets/css/zui.calendar.min.css" />
+        <link rel="stylesheet" href="__PUBLIC__/static/assets/css/dropzone.css" />
+        
+        <link rel="stylesheet" href="__PUBLIC__/static/assets/layui/css/layui.css" />
+        <link rel="stylesheet" href="__PUBLIC__/static/assets/layer/skin/myskin/style.css">
+
+        <!-- fonts -->
+		<link rel="stylesheet" href="__PUBLIC__/static/assets/css/sw.css" />        
+
+		<!--[if lte IE 8]>
+		  <link rel="stylesheet" href="__PUBLIC__/static/assets/css/ace-ie.min.css" />
+		<![endif]-->
+
+		<!-- inline styles related to this page -->
+
+		<!-- ace settings handler -->
+
+		<script src="__PUBLIC__/static/assets/js/ace-extra.min.js"></script>
+
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+		<!--[if lt IE 9]>
+		<script src="__PUBLIC__/static/assets/js/html5shiv.js"></script>
+		<script src="__PUBLIC__/static/assets/js/respond.min.js"></script>
+		<![endif]-->
+        
+		<!-- basic scripts -->
+
+		<!--[if !IE]> -->
+
+		<script src="__PUBLIC__/static/assets/js/jquery.min.js"></script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+            <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <![endif]-->
+
+		<!--[if !IE]> -->
+
+		<script type="text/javascript">
+			window.jQuery || document.write("<script src='__PUBLIC__/static/assets/js/jquery-2.0.3.min.js'>"+"<"+"script>");
+		</script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+        <script type="text/javascript">
+         window.jQuery || document.write("<script src='__PUBLIC__/static/assets/js/jquery-1.10.2.min.js'>"+"<"+"script>");
+        </script>
+        <![endif]-->
+
+		<script type="text/javascript">
+			if("ontouchend" in document) document.write("<script src='__PUBLIC__/static/assets/js/jquery.mobile.custom.min.js'>"+"<"+"script>");
+		</script>
+		<script src="__PUBLIC__/static/assets/js/bootstrap.min.js"></script>
+		<script src="__PUBLIC__/static/assets/js/typeahead-bs2.min.js"></script>
+
+		<!-- page specific plugin scripts -->
+
+		<!--[if lte IE 8]>
+		  <script src="__PUBLIC__/static/assets/js/excanvas.min.js"></script>
+		<![endif]-->
+
+		<script src="__PUBLIC__/static/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+		<script src="__PUBLIC__/static/assets/js/jquery.ui.touch-punch.min.js"></script>
+		<script src="__PUBLIC__/static/assets/js/jquery.slimscroll.min.js"></script>
+		<script src="__PUBLIC__/static/assets/js/jquery.easy-pie-chart.min.js"></script>
+		<script src="__PUBLIC__/static/assets/js/jquery.sparkline.min.js"></script>
+		<script src="__PUBLIC__/static/assets/js/flot/jquery.flot.min.js"></script>
+		<script src="__PUBLIC__/static/assets/js/flot/jquery.flot.pie.min.js"></script>
+		<script src="__PUBLIC__/static/assets/js/flot/jquery.flot.resize.min.js"></script>
+        <script src="__PUBLIC__/static/assets/js/dropzone.min.js"></script>
+        
+        <!-- sinowealth scripts -->
+        <script src="__PUBLIC__/static/assets/js/bootstrap-treeview.min.js"></script>        
+        <script src="__PUBLIC__/static/assets/js/sw.js"></script>
+        <script src="__PUBLIC__/static/assets/js/sw_ajax.js"></script>
+        <script src="__PUBLIC__/static/assets/js/tooltip.js"></script>
+
+		<!-- ace scripts -->
+		<script src="__PUBLIC__/static/assets/js/ace-elements.min.js"></script>
+		<script src="__PUBLIC__/static/assets/js/ace.min.js"></script>
+        <script src="__PUBLIC__/static/assets/js/date-time/bootstrap-datepicker.js"></script>
+		<script src="__PUBLIC__/static/assets/js/date-time/bootstrap-timepicker.min.js"></script>
+
+		<!-- zui scripts -->
+        <script src="__PUBLIC__/static/assets/js/zui.js"></script>
+        <script src="__PUBLIC__/static/assets/js/zui.calendar.js"></script>
+        <script src="__PUBLIC__/static/assets/js/messager.js"></script>       
+
+		<!-- inline scripts related to this page -->
+        <script src="__PUBLIC__/static/assets/js/layer.js"></script>
+		<script src="__PUBLIC__/static/assets/js/laydate/laydate.js"></script>
+        <script src="__PUBLIC__/static/assets/layui/layui.js"></script>
+        <script src="__PUBLIC__/static/assets/js/zrj.js"></script>
+        <script src="__PUBLIC__/static/assets/js/checktree/checktree.js"></script>
+        <!-- ...js页面太多懒得一个个复制了.. -->
+ 		<script src="__PUBLIC__/static/assets/js/wtq.js"></script>
+<style>
+	table td{word-break: keep-all;white-space:nowrap;}
+</style>    
+        
+	</head>
+
+	<body>    
+		<div class="navbar navbar-default" id="navbar">
+			<script type="text/javascript">
+				try{ace.settings.check('navbar' , 'fixed')}catch(e){}
+			</script>
+
+			<div class="navbar-container" id="navbar-container">
+				<div class="navbar-header pull-left">
+					<a href="#" class="navbar-brand">
+						<small>
+                            <span><img src="__PUBLIC__/static/img/logo.png" width="35"></span>
+							{:config('company_name_en')} 内管 <small style="font-size:12px; color:#CCC;">(<?php echo date('Y-m-d',time())?>)</small>
+						</small>
+					</a><!-- /.brand -->
+				</div><!-- /.navbar-header -->
+<div wtq_msg_ts="year" style="display:none">
+	<div class="tabbable">
+		<div style="height:54px;width:100%;overflow: hidden;">
+			<ul class="nav nav-tabs" id="myTab" style="width:99999999999999px;">
+				<?php $this_title=0; ?>
+				{foreach name="$msg" item="vo" empty="暂时没有数据" key="ke"}
+					<li class="<?php if($this_title==0){echo 'active';$this_title=1;} ?>">
+						<a data-toggle="tab" href="#{$ke}">
+							<i class="green icon-home bigger-110"></i>
+							{$ke} <span class="badge badge-danger"><?php echo count($vo); ?></span>
+						</a>
+					</li>
+				{/foreach}
+			</ul>
+		</div>
+		<div class="tab-content" style="height: 310px;overflow:auto;">
+			<?php $this_body=0; ?>
+			{foreach name="$msg" item="vo" empty="暂时没有数据" key="ke"}
+				<div id="{$ke}" class="tab-pane <?php if($this_body==0){echo 'active';$this_body=1;} ?>">
+					<table class="table table-striped table-bordered table-hover" style="width:100%">
+						<thead>
+							<tr>
+								<td>标题</td>
+								<td>内容简介</td>
+								<td>时间</td>
+								<td>操作</td>
+							</tr>
+						</thead>
+						<tbody>
+						{foreach name="$vo" item="v" empty="暂时没有数据"}
+							<tr>
+								<td>
+									{$v.name}
+								</td>
+								<td><div del='del' style="overflow: hidden;text-overflow: ellipsis;max-width: 500px;">{$v.msg_desc}</div></td>
+								<td>{$v.time}</td>
+								<td><a onclick="msg_ok({$v.id},0)" href="{$v.url}?msg_no=1" title="阅读" class="btn btn-xs btn-info "><i class="icon-desktop"></i></a></td>
+							</tr>
+						{/foreach}
+						</tbody>
+					</table>
+				</div>
+			{/foreach}
+		</div>
+	</div>
+	
+	<div style="float:right;padding-top:10px;">
+		<a onclick="wtq_close_msg()" class="btn btn-sm btn-primary layui-layer-close" style="margin:0 20px 10px 0;position: initial;">关闭本次提醒</a>
+		<a class="btn btn-sm btn-primary layui-layer-close" style="margin:0 60px 10px 0;position: initial;" wtq_up_index_alert_close="close">关闭</a>
+	</div>
+</div>
+				<div class="navbar-header pull-right" role="navigation">
+                	<!-- 王天棋2017.9.5 -->
+					<ul class="nav ace-nav">
+					{neq name="$msg_cou" value="0"}
+						<li class="purple">
+							<a data-toggle="dropdown" class="dropdown-toggle" href="javascript:void(expression)">
+								<i class="icon-bell-alt {gt name='msg_cou' value='0'}icon-animated-bell{/gt}"></i>
+								<span class="badge badge-important">{$msg_cou}</span>
+							</a>
+
+							<ul class="pull-right dropdown-navbar navbar-pink dropdown-menu dropdown-caret dropdown-close">
+								<li class="dropdown-header">
+									<i class="icon-warning-sign"></i>
+									{$msg_cou}条通知
+								</li>
+							{foreach name="$msg" item="vo" empty="<li>暂时没有数据</li>" key="ke"}
+								<li>
+									<a href="javascript:void(expression)" onclick="$('ul[wtq_msg]').css('display','none');$('ul[wtq_msg=\'{$ke}\']').css('display','');event.stopPropagation();">
+										<div class="clearfix">
+											<span class="pull-left">
+												<i class="btn btn-xs no-hover btn-pink icon-comment"></i>
+												{$ke}
+											</span>
+											<span class="pull-right badge badge-info">+<?php echo count($vo); ?></span>
+										</div>
+									</a>
+									<ul class="" wtq_msg="{$ke}" style="display: none;">
+										{foreach name="$vo" item="v" empty="暂时没有数据"}
+											{$v.name}
+										{/foreach}
+									</ul>
+								</li>
+							{/foreach}
+								<li>
+									<a href="{:url('user/UserMsg/index')}?msg_no=1" style="background-color: white;">
+										查看所有通知
+										<i class="icon-arrow-right"></i>
+									</a>
+								</li>
+							</ul>
+						</li>
+					{/neq}	
+						
+						
+						
+						
+						<li class="light-blue">
+							<span style="cursor:pointer;color:#FFFFFF;" data-toggle="dropdown" href="#" class="dropdown-toggle">
+								{if condition="isset(session('cur_user_info')['user_img_head_url'])"}
+									{if condition="session('cur_user_info')['user_img_head_url']"}
+										<img class="nav-user-photo" src="__PUBLIC__/{:config('user_img_url')}<?php echo get_user_id(); ?>/{:session('cur_user_info')['user_img_head_url']}head.jpg" alt="Jason's Photo" />
+									{else/}
+										<img class="nav-user-photo" src="__PUBLIC__/static/assets/avatars/user.jpg" alt="Jason's Photo" />
+									{/if}
+								{else/}
+									<img class="nav-user-photo" src="__PUBLIC__/static/assets/avatars/user.jpg" alt="Jason's Photo" />
+								{/if}
+								<span class="user-info">
+									<small>欢迎光临,</small>
+                                    {:session('user_auth.nickname')}
+								</span>
+
+								<i class="icon-caret-down"></i>
+							</span>
+
+							<ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                                <li>
+									<a href="javascript:void(0)" id="change_user_pwd">
+										<i class="icon-cog"></i>
+										修改密码
+									</a>
+								</li>
+
+								<li>
+									<a href="{:url('user/User_main/user_info')}">
+										<i class="icon-user"></i>
+										个人资料
+									</a>
+								</li>
+
+								<li class="divider"></li>
+
+								<li>
+									<a href="{:url('/Index/Login/logout/')}">
+										<i class="icon-off"></i>
+										退出
+									</a>
+								</li>
+							</ul>
+						</li>
+					</ul><!-- /.ace-nav -->
+				</div><!-- /.navbar-header -->
+			</div><!-- /.container -->
+			<script type="text/javascript">
+				try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+			</script></div>
+
+		<div class="main-container" id="main-container">
+			<script type="text/javascript">
+				try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+			</script>
+
+			<div class="main-container-inner">
+				<a class="menu-toggler" id="menu-toggler" href="#">
+					<span class="menu-text"></span>
+				</a>
+
+				<div class="sidebar" id="sidebar">
+					{include file="sys@index/menu" /}
+				</div>
+
+				<div class="main-content">
+                	{block name="main"}
+                    	{include file="user@index/main" /}
+                    {/block}
+				</div><!-- /.main-content -->
+
+
+			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+				<i class="icon-double-angle-up icon-only bigger-110"></i>
+			</a>
+            
+		</div><!-- /.main-container -->
+
+
+	<!-- Modal -->
+    <div class="modal fade" id="b_dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title" id="myModalLabel">数据调用错误!</h4>
+          </div>
+          <div class="modal-body">
+            <br>
+            请联系管理员!
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" name="save_dialog">保存</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+          </div>
+        </div>
+      </div>
+    </div>
+<?php if(session('wtqrbq') == '1'): ?>
+	<script>
+		$(document).ready(function(){
+			layer.open({
+				  type: 1,
+				  title: '用户信息通知',
+				  skin: 'layui-layer-rim', //加上边框
+				  area: ['80%', '500px'], //宽高
+				  content: $("div[wtq_msg_ts=year]").html()
+				});
+			$("div[del=del]").find("table[border=1]").empty();
+			$("div[del=del]").find("table[border=1]").prev('br').remove();
+		})
+		function wtq_close_msg(){
+			$.post('{:url("/user/user_main/user_msg_no")}',{},
+		            function (data) {
+						
+		           },"json").error(function(){mythisalert(0,'失败');});
+		}
+	</script>
+<?php endif; ?>
+<script>
+	//modal关闭时,清理modal数据
+	$('body').on('hidden.bs.modal', '.modal', function () {
+	  $(this).removeData('bs.modal');
+	});
+	
+	//$('#b_dialog').draggable();
+	
+	$('#b_dialog').find('button[name=save_dialog]').click(function(){
+			$('#b_dialog').find('form').submit();
+		});
+	
+	
+//修改密码	
+$('#change_user_pwd').click(function(){
+	m_dialog("{:url('user/userMain/')}change_user_pwd",'修改密码','','','index');
+});
+/*左边菜单栏*/
+ $("#nav li:first").addClass('active open');
+ $('.nav li ul li a').each(function(event){
+	 var href = window.location.protocol+'//'+window.location.hostname+window.location.pathname;
+	 if($($(this))[0].href == String(href)){
+		 var first_li =  $("#nav li:first");
+		 var this_li = $(this).parent().parent().parent();
+		 $(this).parent().addClass('active open');
+		 $(this).parent().parent().parent().addClass('active open');
+		 if(first_li.is(this_li) == true){
+			 first_li.addClass('active open');
+			 event.stopPropagation();
+		 }else{
+			 first_li.removeClass('active open');
+			 event.stopPropagation();
+		 }
+
+
+
+	    }
+ });
+ 
+var win_height = $(window).height();
+var header_height = $("#navbar").height();
+var navlist_header_height = $("#sidebar-shortcuts").height();
+var navlist_height = win_height - (header_height + navlist_header_height) + 20;
+$("#nav").css('height',navlist_height);
+
+$(".ace-nav li:first").removeClass('open');
+</script>
+
+{block name="script"}
+
+{/block}
+<script src="__PUBLIC__/static/assets/js/lds.js"></script>
+</body>
+<Script>
+$("#nav").css('height','');
+$("#nav").css('max-height','100%');
+function msg_excel(url){
+	alert(url)
+	$.post('{:url("/sys/msg_outo/index_ajax")}'+url,{},
+            function (data) {
+				mythisalert(data[0],data[1]);
+				msg_index_ajax()
+           },"json").error(function(){if(pd==1){mythisalert(0,'失败');}});
+}
+</Script>
+<script>
+	function msg_ok(id,pd,thi=''){
+		$(thi).remove();
+		$.post('{:url("user/user_msg/msg_ok")}',{id:id},
+	            function (data) {
+					if(pd==1){
+						//mythisalert(data[0],data[1]);
+						layer.msg('该条信息已标记为已读');
+						msg_index_ajax()
+					}
+	           },"json").error(function(){if(pd==1){mythisalert(0,'失败');}});
+	}
+</script>
+<style>
+body .demo-class-error .layui-layer-title{background:red; color:#fff; border: none;}
+body .demo-class-error .layui-layer-btn{border-top:1px solid red}
+body .demo-class-error .layui-layer-btn a{background:red;}
+body .demo-class-error .layui-layer-btn .layui-layer-btn1{background:red;}
+
+body .demo-class-success .layui-layer-title{background:#87B87F; color:#fff; border: none;}
+body .demo-class-success .layui-layer-btn{border-top:1px solid #87B87F}
+body .demo-class-success .layui-layer-btn a{background:#87B87F;}
+body .demo-class-success .layui-layer-btn .layui-layer-btn1{background:#87B87F;}
+</style>
+</html>
+

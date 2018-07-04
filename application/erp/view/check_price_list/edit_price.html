@@ -1,0 +1,182 @@
+<style type="text/css">
+    body{font-size: 14px;}
+    label{padding-left: 1.5em}
+    .form{margin-top: 10px;}
+    .form input{height: 15px;width: 160px;padding-left: 5px;}
+    .formdata{width: 380px;float: left}
+    .left{display:block;position:absolute;width:180px}
+    .right{display:block;margin-left:160px}
+</style>
+
+<form  name="price_list"  method="post" action="{:url('erp/check_price_list/save_price')}"  onsubmit="return validateCallback(this)">
+    <input type="hidden" name="id" value="{$price_data->id}">
+    <div>
+        <div class="formdata">
+            <div class="form">
+                <span class="left" ><label>Prd no：</label></span>
+                <span class='right'><input disabled="disabled" type="text" name="prdno" value="{$price_data->prdno}"><span style="color:red ">*</span></span>
+            </div>
+            <div class="form">
+                <span class="left" ><label>PKG：</label></span>
+                <span class='right'><input disabled="disabled" type="text" name="pkg" value="{$price_data->pkg}"><span style="color:red ">*</span></span>
+            </div>
+            <div class="form">
+                <span class="left"><label>描述：</label></span>
+                <span class='right'><input disabled="disabled" type="text" name="description" value="{$price_data->description}"><span style="color:red ">*</span></span>
+            </div>
+            <div class="form">
+                <span class="left"><label>指定PM：</label></span>
+                      <span class='right'><input type="text" disabled="disabled" name="pm" value="{$price_data->pm}"><span style="color:red ">*</span></span>
+            </div>
+            <div class="form">
+                <span class="left"><label>Masking charge：</label></span>
+                      <span class='right'><input {if condition="$user_type neq 1"}disabled="disabled"{/if} type="text" name="mk" value="{$price_data->mk}"></span>
+            </div>
+            <div class="form">
+                <span class="left"><label>L/T Days：</label></span>
+                     <span class='right'><input {if condition="$user_type neq 1"}disabled="disabled"{/if} type="text" name="lt" value="{$price_data->lt}"><span style="color:red ">*</span></span>
+            </div>
+            <div class="form">
+                <span class="left"><label>Pack(PCS)：</label></span>
+                     <span class='right'><input {if condition="$user_type neq 1"}disabled="disabled"{/if} type="text" name="pack" value="{$price_data->pack}"><span style="color:red ">*</span></span>
+            </div>
+            <div class="form">
+                <span class="left"><label>MOQ(PCS)：</label></span>
+                     <span class='right'><input {if condition="$user_type neq 1"}disabled="disabled"{/if} type="text" name="moq" value="{$price_data->moq}"><span style="color:red ">*</span></span>
+            </div>
+
+            <div class="form">
+                <span class="left"><label>Refund Qty：</label></span>
+                     <span class='right'><input {if condition="$user_type neq 1"}disabled="disabled"{/if}  type="text" name="refund_qty" value="{$price_data->refund_qty}"></span>
+            </div>
+            <div class="form">
+                <span class="left"><label>PASS β：</label></span>
+                <span class='right'>
+                    <!--<input {if condition="$user_type neq 2"}disabled="disabled"{/if}  type="text" name="imaud07" value="{$price_data->imaud07}">-->
+                    <select name="imaud07" {if condition="$user_type neq 2"}disabled="disabled"{/if}>
+                          <option value="Y" {if condition="$price_data->imaud07 eq 'Y'"}selected="selected"{/if}>Y</option>
+                          <option value="N" {if condition="$price_data->imaud07 eq 'N'"}selected="selected"{/if}>N</option>
+                    </select>
+                    <span style="color:red ">*</span></span>
+            </div>
+            <div class="form">
+                <span class="left"><label>产品归属地：</label></span>
+                <span class='right'>
+                    <input {if condition="$user_type neq 2"}disabled="disabled" {else /}{/if}   type="text" name="ima10" value="{$price_data->ima10}">
+
+                    <span style="color:red ">*</span></span>
+            </div>
+
+        </div>
+        <div class="formdata">
+            <div class="form">
+                <span class="left"> <label>标准品RMB(不含税)：</label></span>
+                <span class="right"><input {if condition="$user_type neq 2"}disabled="disabled"{/if} type="text" name="prd_rmb_price" value="{$price_data->prd_rmb_price}"><span style="color:red ">*</span></span>
+            </div>
+            <div class="form">
+                <span class="left"> <label>标准品RMB(含税)：</label></span>
+                <span class="right"><input {if condition="$user_type neq 2"}disabled="disabled"{/if} type="text" name="prd_rmb_price_vat" value="{$price_data->prd_rmb_price_vat}"><span style="color:red ">*</span></span>
+            </div>
+            <div class="form">
+                <span class="left"> <label>标准品USD：</label></span>
+                <span class="right"><input {if condition="$user_type neq 2"}disabled="disabled"{/if} type="text" name="prd_usd_price" value="{$price_data->prd_usd_price}"><span style="color:red ">*</span></span>
+            </div>
+            <div class="form">
+                <span class="left"> <label>Code RMB(不含税)：</label></span>
+                <span class="right"><input {if condition="$user_type neq 2"}disabled="disabled"{/if} type="text" name="prd_code_rmb_price" value="{$price_data->prd_code_rmb_price}"></span>
+            </div>
+            <div class="form">
+                <span class="left"> <label>Code RMB(含税)：</label></span>
+                <span class="right"><input {if condition="$user_type neq 2"}disabled="disabled"{/if} type="text" name="prd_code_rmb_price_vat" value="{$price_data->prd_code_rmb_price_vat}"></span>
+            </div>
+            <div class="form">
+                <span class="left"> <label>Code USD：</label></span>
+                <span class="right"><input {if condition="$user_type neq 2"}disabled="disabled"{/if} type="text" name="prd_code_usd_price" value="{$price_data->prd_code_usd_price}"></span>
+            </div>
+            <div class="form">
+                <span class="left"> <label>内销 agent：</label></span>
+                <span class="right"><input {if condition="$user_type neq 2"}disabled="disabled"{/if} type="text" name="d_agent_sales" value="{$price_data->d_agent_sales}"></span>
+            </div>
+            <div class="form">
+                <span class="left"> <label>外销 agent：</label></span>
+                <span class="right"><input {if condition="$user_type neq 2"}disabled="disabled"{/if} type="text" name="x_agent_sales" value="{$price_data->x_agent_sales}"></span>
+            </div>
+            <div class="form">
+                <span class="left"> <label>内销 Market：</label></span>
+                <span class="right"><input {if condition="$user_type neq 2"}disabled="disabled"{/if} type="text" name="d_market_sales" value="{$price_data->d_market_sales}"></span>
+            </div>
+            <div class="form">
+                <span class="left"> <label>外销 Market：</label></span>
+                <span class="right"><input {if condition="$user_type neq 2"}disabled="disabled"{/if} type="text" name="x_market_sales" value="{$price_data->x_market_sales}"></span>
+            </div>
+        </div>
+        <div style="clear: both;float: right;">
+            <button type="button" class="layui-btn layui-btn-small edit">{if condition="$user_type eq 3"}确认{else /}编辑{/if}</button>
+            <button type="button" class="layui-btn layui-btn-small closeLayer">取消</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    $(".edit").click(function(){
+        var user_type = '{$user_type}';
+        user_type = parseInt(user_type);
+        var data = $("form[name=price_list]").serialize();
+        if(user_type === 3){
+            layer.confirm('是否确定信息，会写到ERP?', {
+                btn: ['确认','取消'] //按钮
+            }, function(){
+                //回写到erp
+                $.post("{:url('erp/check_price_list/save_erp')}",data,function(result){
+                    showMsg(result);
+                    $('#tt').datagrid('reload');
+                },"json")
+            });
+        }else{
+            $.post("{:url('erp/check_price_list/save_price')}",data,function(result){
+                showMsg(result);
+                $('#tt').datagrid('reload');
+            },"json")
+        }
+    });
+    //不带code计算公式
+    $("input[name=prd_rmb_price]").blur(function(){
+        var prd_val = $(this).val();
+        var prd_val_vat = (prd_val*1.17).toFixed(4);
+        var prd_usd_price_val = (prd_val/6.7).toFixed(4);
+        $("input[name=prd_rmb_price_vat]").val(prd_val_vat);
+        $("input[name=prd_usd_price]").val(prd_usd_price_val);
+    });
+    //不带code计算公式
+    $("input[name=prd_rmb_price_vat]").blur(function(){
+        var prd_val_vat = $(this).val();
+        var prd_val = (prd_val_vat/1.17).toFixed(4);
+        var prd_usd_price_val = (prd_val/6.7).toFixed(4);
+        $("input[name=prd_rmb_price]").val(prd_val);
+        $("input[name=prd_usd_price]").val(prd_usd_price_val);
+    });
+
+    //带code计算公式
+    $("input[name=prd_code_rmb_price]").blur(function(){
+       var prd_code_val = $(this).val();
+       var prd_code_rmb_price_vat_val = (prd_code_val*1.17).toFixed(4);
+       var prd_code_usd_price_val = (prd_code_val/6.7).toFixed(4);
+       $("input[name=prd_code_rmb_price_vat]").val(prd_code_rmb_price_vat_val);
+       $("input[name=prd_code_usd_price]").val(prd_code_usd_price_val);
+    });
+
+    //带code计算公式
+    $("input[name=prd_code_rmb_price_vat]").blur(function(){
+        var prd_code_rmb_price_vat_val = $(this).val();
+        var prd_code_val = (prd_code_rmb_price_vat_val/1.17).toFixed(4);
+        var prd_code_usd_price_val = (prd_code_val/6.7).toFixed(4);
+        $("input[name=prd_code_rmb_price]").val(prd_code_val);
+        $("input[name=prd_code_usd_price]").val(prd_code_usd_price_val);
+    })
+
+
+
+
+
+
+</script>

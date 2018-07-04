@@ -1,0 +1,52 @@
+<div class="row">
+	<div class="col-xs-12">
+    <form class="form-horizontal" role="form" method="post" action="edit/"  onsubmit="return validateCallback(this)">
+    	<input type="hidden" value="{$page_info['dep_info']['id']}" name="id" />
+        <div class="form-group">
+            <label for="form-field-1" class="col-sm-2 control-label no-padding-right"> 部门编号 </label>
+            <div class="col-sm-9">
+                <input type="text" class="col-sm-5" placeholder="部门编号" id="form-field-1"  value="{$page_info['dep_info']['dep_code']}" name="dep_code">
+            </div>
+        </div>
+    	<div class="form-group">
+            <label for="form-field-1" class="col-sm-2 control-label no-padding-right"> 英文名 </label>
+            <div class="col-sm-9">
+                <input type="text" class="col-sm-5" placeholder="部门英文名" id="form-field-1" value="{$page_info['dep_info']['en_name']}" name="en_name">
+            </div>
+        </div>
+    	<div class="form-group">
+            <label for="form-field-2" class="col-sm-2 control-label no-padding-right"> 中文名 </label>
+            <div class="col-sm-9">
+                <input type="text" class="col-sm-5" placeholder="部门中文名" id="form-field-2" value="{$page_info['dep_info']['zh_name']}" name="zh_name">
+            </div>
+        </div>
+    	<div class="form-group">
+            <label for="form-field-3" class="col-sm-2 control-label no-padding-right"> 上级部门 </label>
+            <div class="col-sm-9">
+            	{$page_info.dep_select}
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="form-field-3" class="col-sm-2 control-label no-padding-right"> 是否显示 </label>
+            <div class="col-sm-9">
+            	<select name="is_show">
+                	<option value="1" {eq name="$page_info['dep_info']['is_show']" value="1"} selected="selected" {/eq}>显示</option>
+                    <option value="0" {eq name="$page_info['dep_info']['is_show']" value="0"} selected="selected" {/eq}>不显示</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="form-field-3" class="col-sm-2 control-label no-padding-right"> 排序 </label>
+            <div class="col-sm-9">
+            	<input type="text" class="col-sm-5" placeholder="排序" id="form-field-2" value="{$page_info['dep_info']['order_id']}" name="order_id">
+            </div>
+        </div>
+    	<div class="form-group">
+            <label for="form-field-4" class="col-sm-2 control-label no-padding-right"> 主管 </label>
+            <div class="col-sm-9">
+                <input type="text" class="col-sm-5" placeholder="部门默认主管" id="form-field-4" value="{$page_info['dep_info']['user_gh']}" name="user_gh">
+            </div>
+        </div>
+        </form>
+    </div>
+</div>

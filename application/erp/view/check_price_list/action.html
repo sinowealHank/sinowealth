@@ -1,0 +1,17 @@
+<meta charset="utf-8" />
+<script type="text/javascript" src="__PUBLIC__/static/assets/js/zrj.js"></script>
+<input type="hidden" name='id' value="{$id}"/>
+<div style="text-align: center;margin-top: 20px;">
+    <a href="{:url('CostTableCp/index',['id'=>$page_info['id']])}" target='_black' class='btn' style='cursor:pointer;'>CP表维护</a>
+    <a href="{:url('CostTableFt/index',['costToId' => $page_info['id']])}" target='_black' class='btn' style='cursor:pointer;'>ft表维护</a>
+</div>
+
+<script>
+    //修改
+    function el(){
+        layer.close(index);
+        var url = 'edit?id='+$('input[name=id]').val()+'&indexRow='+$('input[name=indexRow]').val();
+        layerIframe('修改整行',url,'','','','true');
+    }
+
+</script>

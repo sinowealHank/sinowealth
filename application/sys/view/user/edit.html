@@ -1,0 +1,659 @@
+ <form class="form-horizontal" role="form" method="post" action="{:url()}"  onsubmit="return validateCallback(this)">
+        <input type="hidden" value="{$page_info.user_info.id}" name="id" />
+        <input type="hidden" value="{$page_info.cur_page}" name="cur_page" />
+            <fieldset>
+            	<legend>基本信息</legend>
+                    <div class="form-group">
+                        <label for="form-field-nickname" class="col-sm-1 control-label no-padding-right"> 姓名</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="col-sm-11" placeholder="姓名" id="form-field-nickname" value="{$page_info['user_info']['nickname']}" name="nickname"> <span class="red"> * </span> 
+                        </div>
+                        <label for="form-field-2" class="col-sm-1 control-label no-padding-right"> 性别</label>
+                        <div class="col-sm-2">                           
+                            <label>
+                                <input type="radio" class="ace"  name="sex" value="1" {eq name="$page_info['user_info']['sex']" value="1"} checked="checked" {/eq}>
+                                <span class="lbl"> 男</span>
+                                <input type="radio" class="ace"  name="sex" value="0" {eq name="$page_info['user_info']['sex']" value="0"} checked="checked" {/eq}>
+                                <span class="lbl"> 女</span>
+                            </label>
+                        </div>
+                        <label for="form-field-identity_card" class="col-sm-2 control-label no-padding-right">证件号</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="col-sm-11" placeholder="证件号" id="form-field-identity_card" value="{$page_info['user_info']['identity_card']}" name="identity_card"> <span class="red"> * </span> 
+                        </div>
+                        
+                    </div>
+                    <div class="form-group">
+                        <label for="form-field-3" class="col-sm-1 control-label no-padding-right"> 生日</label>
+                        <div class="col-sm-3">
+                            <div class="input-group pull-left col-sm-10">
+                                <input class="form-control date-picker" id="birthday_input" type="text" name="birthday" value="{$page_info['user_info']['birthday']}"/>
+                            </div>
+                            <span class="btn btn-info btn-xs pull-left" style="margin:5px 0 0 0;" name="get_card_birthday" title="自动获取">
+								<i class="icon-wrench  bigger-110 icon-only"></i>
+							</span>
+                        </div>
+                        <label for="form-field-mobile" class="col-sm-1 control-label no-padding-right"> 手机</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="col-sm-11" placeholder="手机" id="form-field-mobile" value="{$page_info['user_info']['mobile']}" name="mobile"> <span class="red"> * </span>
+                        </div>
+                        <label for="form-field-university" class="col-sm-2 control-label no-padding-right">毕业院校</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="col-sm-10" placeholder="毕业院校" id="form-field-university" value="{$page_info['user_info']['university']}" name="university"><button type="button" onclick="rs_xlxx({$page_info['user_info']['id']})" class="btn btn-xs btn-info" style="height: 28.8px;"><i class="icon-credit-card "></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                    	<label for="form-field-address" class="col-sm-1 control-label no-padding-right">现居住地址</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="col-sm-10" placeholder="现居住地址" id="form-field-address" value="{$page_info['user_info']['address']}" name="address"> 
+                        </div>
+                        
+                        <label for="form-field-hr_edu_id" class="col-sm-1 control-label no-padding-right"> 学历</label>
+                        <div class="col-sm-3">
+                           <select class="col-sm-11" id="form-field-hr_edu_id" name="hr_edu_id">
+                            	{volist name="page_info['hr_edu_arr']" id="vo"}
+                                    <option value="{$i}" {eq name="$page_info['user_info']['hr_edu_id']" value="$i"} selected="selected" {/eq}>{$vo}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        
+                        <label for="form-field-address1" class="col-sm-1 control-label no-padding-right"> 户口所在地</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="col-sm-11" placeholder="地址2" id="form-field-address1" value="{$page_info['user_info']['address1']}" name="address1">
+                        </div>
+                    </div>
+             </fieldset>
+             <fieldset>
+             	<legend>紧急联络人信息</legend>
+             	<div class="form-group">
+             		<label for="dep_id" class="col-sm-1 control-label no-padding-right"> 关系</label>
+             		 <div class="col-sm-3">
+                         <input type="text" class="col-sm-11" placeholder="关系" id="form-field-eme_contact_relationship" value="{$page_info['user_info']['eme_contact_relationship']}" name="eme_contact_relationship">
+                     </div>
+                     <label for="dep_id" class="col-sm-1 control-label no-padding-right"> 姓名</label>
+             		 <div class="col-sm-3">
+                         <input type="text" class="col-sm-11" placeholder="姓名" id="form-field-eme_contact_name" value="{$page_info['user_info']['eme_contact_name']}" name="eme_contact_name">
+                     </div>
+                     <label for="dep_id" class="col-sm-1 control-label no-padding-right"> 电话</label>
+             		 <div class="col-sm-3">
+                         <input type="text" class="col-sm-11" placeholder="电话" id="form-field-eme_contact_info" value="{$page_info['user_info']['eme_contact_info']}" name="eme_contact_info">
+                     </div>
+             	</div>
+             	<div class="form-group">
+             		<label for="dep_id" class="col-sm-1 control-label no-padding-right"> 居住地址</label>
+             		 <div class="col-sm-7">
+                         <input type="text" class="col-sm-11" placeholder="居住地址" id="form-field-eme_contact_address" value="{$page_info['user_info']['eme_contact_address']}" name="eme_contact_address">
+                     </div>
+                     <label for="dep_id" class="col-sm-1 control-label no-padding-right"> 身份证</label>
+             		 <div class="col-sm-3">
+                         <input type="text" class="col-sm-11" placeholder="身份证" id="form-field-eme_contact_identity" value="{$page_info['user_info']['eme_contact_identity']}" name="eme_contact_identity">
+                     </div>
+             	</div>
+             </fieldset>
+            <fieldset>
+            	<legend>公司相关信息</legend>
+                    <div class="form-group">
+                    	<label for="dep_id" class="col-sm-1 control-label no-padding-right"> 部门</label>
+                        <div class="col-sm-3">
+                           {$page_info.dep_select}
+                        </div>
+                    
+                        <label for="form-field-site_id" class="col-sm-1 control-label no-padding-right">站点</label>
+                        <div class="col-sm-2">
+                            <select class="col-sm-11" id="form-field-site_id" name="site_id">
+                            	{volist name="page_info['site_arr']" id="data"}
+                                    <option value="{$data.id}" {eq name="$page_info['user_info']['site_id']" value="$data['id']"} selected="selected" {/eq}>{$data.site}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                        
+                        <label class="col-sm-2 control-label no-padding-right">权限组:</label>
+                        <div class="col-sm-3">
+                             <select name="parent_id">
+                                 <option value="0">请选择权限组</option>
+                                 {$page_info.role}
+                             </select>
+    
+                        </div>
+                    </div> 
+                    <div class="form-group">
+                        <label for="form-field-username" class="col-sm-1 control-label no-padding-right">工号</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="col-sm-11" placeholder="工号" id="form-field-username" value="{$page_info['user_info']['user_gh']}" name="user_gh"  data-toggle="tooltip" title=""> <span class="red"> * </span> 
+                        </div>
+                       <label for="form-field-password" class="col-sm-1 control-label no-padding-right"> 密码</label>
+                        <div class="col-sm-2">
+                           <input type="input" class="col-sm-11" placeholder=""  value="" name="passwordd" autocomplete="off">
+                        </div>
+                        <label for="form-field-email" class="col-sm-2 control-label no-padding-right"> 邮箱</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="col-sm-11" placeholder="邮箱" id="form-field-email" value="{$page_info['user_info']['email']}" name="email"><span class="red"> * </span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="form-field-entry_date" class="col-sm-1 control-label no-padding-right">职位名称</label>
+                        <div class="col-sm-3">
+                           <select class="col-sm-11" id="form-field-hr_technical_id" name="hr_technical_id">
+                                {volist name="$page_info.hr_technical_arr" id="vo"}
+                                	<option value="{$i}"  {eq name="$page_info['user_info']['hr_technical_id']" value="$i"} selected="selected" {/eq}>{$vo}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                        <label for="form-field-hr_work_level_id" class="col-sm-1 control-label no-padding-right"> 职等</label>
+                        <div class="col-sm-2">
+                           <select class="col-sm-11" id="form-field-hr_work_level_id" name="hr_work_level_id">
+                                {volist name="$page_info.hr_work_level_arr" id="vo"}
+                                	<option value="{$i}" {eq name="$page_info['user_info']['hr_work_level_id']" value="$i"} selected="selected" {/eq}>{$vo}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                        <label for="form-field-hr_hr_job_type_id" class="col-sm-2 control-label no-padding-right">岗位</label>
+                        <div class="col-sm-3">
+                             <select class="col-sm-11" id="form-field-hr_technical_id" name="hr_job_type_id">
+                                {volist name="$page_info.hr_job_type_arr" id="vo"}
+                                	<option value="{$i}"  {eq name="$page_info['user_info']['hr_job_type_id']" value="$i"} selected="selected" {/eq}>{$vo}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>  
+                    
+                    <div class="form-group">
+                        <label for="form-field-entry_date" class="col-sm-1 control-label no-padding-right">入职日期</label>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <input class="form-control date-picker" id="form-field-entry_date" value="{$page_info['user_info']['entry_date']}" type="text" data-date-format="yyyy-mm-dd" name="entry_date" />
+                                    <span class="input-group-addon">
+                                        <i class="icon-calendar bigger-110"></i>
+                                    </span>
+                            </div>
+                        </div>
+                        <label for="form-field-in_seniority" class="col-sm-1 control-label no-padding-right"> 年休时数</label>
+                        <div class="col-sm-2">
+                           <input type="text" class="col-sm-11" placeholder="年休时数" value="{$page_info['user_info']['annual_num']}" name="annual_num">
+                        </div>                        
+                        <label for="form-field-total_work_year" class="col-sm-2 control-label no-padding-right"> 补休时数</label>
+                        <div class="col-sm-3">
+                           <input type="text" class="col-sm-11" placeholder="补休时数" value="{$page_info['user_info']['repair_num']}" name="repair_num">
+                        </div>      
+                    </div>  
+                    <div class="form-group">
+                        <label for="form-field-out_seniority" class="col-sm-1 control-label no-padding-right"> 年资</label>
+                        <div class="col-sm-3">
+                            <table>
+                            	<tr>
+                                	<td>外</td>
+                                	<td>
+                                    	<input type="text" class="col-sm-8" placeholder="外年资" id="form-field-out_seniority" value="{$page_info.user_seniority.out_seniority}" name="out_seniority"> <span class="red"> * </span> 
+                                    </td>
+                                    <td>内</td>
+                                    <td>
+                                    	<input type="text" class="col-sm-9" disabled="disabled" placeholder="内年资" id="form-field-in_seniority" value="{$page_info.user_seniority.in_seniority}" name="in_seniority">
+                                    </td>
+                                    <td>总</td>
+                                    <td>
+                                    	<input type="text" class="col-sm-9" disabled="disabled" placeholder="总工作年资" id="form-field-total_work_yeartotal_work_year" value="{$page_info.user_seniority.total_work_year}" name="total_work_year">
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <label for="" class="col-sm-1 control-label no-padding-right"> </label>
+                        <div class="col-sm-2">
+                           
+                        </div>                        
+                        <label for="" class="col-sm-2 control-label no-padding-right"> </label>
+                        <div class="col-sm-3">
+                           
+                        </div>                        
+                    </div>                  
+                    <div class="form-group">
+                        <label for="form-field-ext_tel" class="col-sm-1 control-label no-padding-right"> 分机</label>
+                        <div class="col-sm-3">
+                           <input type="text" class="col-sm-11" placeholder="分机" id="form-field-ext_tel" value="{$page_info['user_info']['ext_tel']}" name="ext_tel">
+                        </div> 
+                        <label for="form-field-pact_num" class="col-sm-1 control-label no-padding-right">N次续约</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="col-sm-11" placeholder="N次续约" id="form-field-pact_num" value="{$page_info['user_info']['pact_num']}" name="pact_num"> <span class="red"> * </span> 
+                        </div>
+                        <label for="form-field-pact_end_date" class="col-sm-2 control-label no-padding-right">合约到期日</label>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <input class="form-control date-picker" id="id-date-picker-pact_end_date" value="{$page_info['user_info']['pact_end_date']}" type="text" data-date-format="yyyy-mm-dd" name="pact_end_date" />
+                                    <span class="input-group-addon">
+                                        <i class="icon-calendar bigger-110"></i>
+                                    </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="form-field-hr_user_id" class="col-sm-1 control-label no-padding-right">考勤主管</label>
+                        <div class="col-sm-3">
+                            <select class=" col-sm-11" id="form-field-select-hr_user_id" name="hr_user_id">
+                                <option value="0">无</option>
+                                {volist name="$page_info.hr_user_info" id="vo"}
+                                	<option value="{$vo.id}"   {eq name="$page_info['user_info']['hr_user_id']" value="$vo['id']"} selected="selected" {/eq}>{$vo.nickname}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                        <label for="form-field-hr_role_id" class="col-sm-1 control-label no-padding-right"> 考勤规则</label>
+                        <div class="col-sm-2">
+                            <select class="col-sm-11" id="form-field-select-hr_role_id" name="hr_role_id">
+                                <option value="0">&nbsp;</option>
+                                {volist name="$page_info.hr_role_info" id="vo"}
+                                	<option value="{$vo.id}"   {eq name="$page_info['user_info']['hr_role_id']" value="$vo['id']"} selected="selected" {/eq}>{$vo.role_name}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                        
+                        <label for="form-field-is_hr_user" class="col-sm-2 control-label no-padding-right"> 是否考勤</label>
+                        <div class="col-sm-2">
+                           <label class="pull-left inline">
+                                <input class="ace ace-switch ace-switch-5  is_hr_user_switch"  {eq name="$page_info['user_info']['is_hr_user']" value="1"}  checked="checked"  {/eq}  type="checkbox">
+                                <span class="lbl"></span>
+                                <input type="hidden" name="is_hr_user" value="{$page_info.user_info.is_hr_user}" />
+							</label>
+                        </div>                        
+                    </div>
+             	<div class="form-group">
+                        <label for="form-field-hr_card_id" class="col-sm-1 control-label no-padding-right">关联门禁卡号</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="col-sm-11" placeholder="卡号 115* 113*" id="form-field-hr_card_id" value="{$page_info['user_info']['card_id']}" name="card_id" />
+                        </div>
+                        <label for="form-field-hr_status" class="col-sm-1 control-label no-padding-right">状态</label>
+                        <div class="col-sm-2">
+                            <select class="col-sm-11" id="form-field-select-hr_status" name="hr_status">
+                                {volist name="$page_info.hr_status_arr" id="vo"}
+                                	<option value="{$i}" {eq name="$page_info['user_info']['hr_status']" value="$i"} selected="selected" {/eq}>{$vo}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                        <label for="form-field-pact_end_date" class="col-sm-2 control-label no-padding-right">主管</label>
+                        <div class="col-sm-3">
+                            <label class="pull-left inline">
+                                <input class="ace ace-switch ace-switch-5 hr_manage_switch" {eq name="$page_info['user_info']['is_hr_manage']" value="1"}  checked="checked"  {/eq} type="checkbox">
+                                <span class="lbl"></span>
+                                <input type="hidden" name="is_hr_manage" value="{$page_info.user_info.is_hr_manage}" />
+							</label>
+                        </div>
+                    </div>
+             	<div class="form-group">
+                        <label for="form-field-hr_card_id" class="col-sm-1 control-label no-padding-right">长期出差?</label>
+                        <div class="col-sm-3">
+                            <select class="col-sm-11" id="form-field-site_id" name="out_site_id">
+                            		<option value="0">未出差</option>
+                            	{volist name="page_info['site_arr']" id="data"}
+                                    <option value="{$data.id}" {eq name="$page_info['user_info']['out_site_id']" value="$data['id']"} selected="selected" {/eq}>{$data.site}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                        <label for="form-field-hr_status" class="col-sm-1 control-label no-padding-right">出差点卡号</label>
+                        <div class="col-sm-2">
+                           <input type="text" class="col-sm-11" placeholder="卡号 115* 113*" value="{$page_info.user_info.out_card_id}" name="out_card_id">
+                        </div>
+                        <label for="form-field-pact_end_date" class="col-sm-2 control-label no-padding-right">查看所有考勤?</label>
+                        <div class="col-sm-3">
+                            <label class="pull-left inline">
+                                <input class="ace ace-switch ace-switch-5  all_card_flag_switch" type="checkbox"  {eq name="$page_info['user_info']['all_card_flag']" value="1"}  checked="checked"  {/eq} >
+                                <span class="lbl"></span>
+                                <input type="hidden" name="all_card_flag" value="{$page_info.user_info.all_card_flag}" />
+							</label>
+                        </div>
+                    </div>
+                    
+             </fieldset>
+            <fieldset>
+            	<legend>财务相关信息</legend>
+                    <div class="form-group">
+                        <label for="form-field-bank_card" class="col-sm-2 control-label no-padding-right">银行帐号</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="col-sm-12" placeholder="银行帐号" id="form-field-bank_card" value="{$page_info['user_info']['bank_card']}" name="bank_card"> 
+                        </div>
+                        <label for="form-field-fund_account" class="col-sm-2 control-label no-padding-right"> 公积金帐号</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="col-sm-11" placeholder="公积金帐号" id="form-field-fund_account" value="{$page_info['user_info']['fund_account']}" name="fund_account">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                    	<label for="form-field-social_security_account" class="col-sm-2 control-label no-padding-right">社保账号</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="col-sm-12" placeholder="社保账号" id="form-field-social_security_account" value="{$page_info['user_info']['social_security_account']}" name="social_security_account"> 
+                        </div>
+                        <label for="form-field-pay_user_id" class="col-sm-2 control-label no-padding-right">薪资审核人</label>
+                        <div class="col-sm-4">
+                        	{gt name="$page_info.user_info.pay_user_id_1" value="1"}
+                            	{:get_user_nickname($page_info['user_info']['pay_user_id_1'])}
+                            {else/}
+                            	-
+                            {/gt}                        	
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="form-field-bank_card" class="col-sm-2 control-label no-padding-right">薪资类型</label>
+                        <div class="col-sm-4">
+                            <select name="pay_type">
+                            	<option value="0" {eq name="$page_info.user_info.pay_type" value="0"} selected="selected" {/eq}>单一薪制</option>
+                                <option value="1" {eq name="$page_info.user_info.pay_type" value="1"} selected="selected" {/eq}>红利制</option>
+                            </select>
+                        </div>
+                        <label for="form-field-is_mainland" class="col-sm-2 control-label no-padding-right"> 是否大陆籍</label>
+                        <div class="col-sm-4">
+                           <label class="pull-left inline is_mainland_switch">
+                                <input class="ace ace-switch ace-switch-5"   {eq name="$page_info['user_info']['is_mainland']" value="1"}  checked="checked"  {/eq} type="checkbox">
+                                <span class="lbl"></span>
+                                <input type="hidden" name="is_mainland" value="1" />
+							</label>
+                        </div>
+                    </div>
+             </fieldset>
+             {eq name="$_SESSION['admin_flag']" value="1"}
+             <fieldset>
+            	<legend>管理信息</legend>
+                    <div class="form-group">
+                        <label  class="col-sm-2 control-label no-padding-right">考勤管理人员? </label>
+                        <div class="col-sm-2">
+                         	<input type="radio" name="is_hr_cal_user" value="0" {eq name="$page_info['user_info']['is_hr_cal_user']" value="0"} checked="checked"  {/eq}/> 不是&nbsp;
+                            <input type="radio" name="is_hr_cal_user" value="1" {eq name="$page_info['user_info']['is_hr_cal_user']" value="1"} checked="checked"  {/eq} /> 是                             
+                        </div>
+                        <label  class="col-sm-2 control-label no-padding-right">薪资管理人员? </label>
+                        <div class="col-sm-2">
+                         	<input type="radio" name="is_pay_cal_user" value="0" {eq name="$page_info['user_info']['is_pay_cal_user']" value="0"} checked="checked"  {/eq} /> 不是&nbsp;
+                            <input type="radio" name="is_pay_cal_user" value="1" {eq name="$page_info['user_info']['is_pay_cal_user']" value="1"} checked="checked"  {/eq} /> 是                             
+                        </div>
+                        <label for="form-field-fund_account" class="col-sm-1 control-label no-padding-right"> 管理站点:</label>
+                        <div class="col-sm-3">
+                            {volist name="$page_info.site_arr" id="vo"}
+                            	<input type="checkbox" name="cal_site_id[]" value="{$vo.id}" {in name="$vo.id" value="$page_info['user_info']['cal_site_id_str']"} checked="checked"  {/in} /> {$vo.site}&nbsp; &nbsp;                                
+                            {/volist}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label  class="col-sm-2 control-label no-padding-right">是否计算公司员工? </label>
+                        <div class="col-sm-2">
+                         	<input type="radio" name="user_status" value="0" {eq name="$page_info['user_info']['user_status']" value="0"} checked="checked"  {/eq}/> 不算&nbsp;
+                            <input type="radio" name="user_status" value="1" {eq name="$page_info['user_info']['user_status']" value="1"} checked="checked"  {/eq} /> 算                             
+                        </div>
+                        <label  class="col-sm-2 control-label no-padding-right">人事人员统计? </label>
+                        <div class="col-sm-2">
+                         	<input type="radio" name="cal_hr_user" value="0" {eq name="$page_info['user_info']['cal_hr_user']" value="0"} checked="checked"  {/eq}/> 不算&nbsp;
+                            <input type="radio" name="cal_hr_user" value="1" {eq name="$page_info['user_info']['cal_hr_user']" value="1"} checked="checked"  {/eq} /> 算                             
+                        </div>
+                        <label  class="col-sm-2 control-label no-padding-right">主管标记? </label>
+                        <div class="col-sm-2">
+                         	<input type="radio" name="manage_flag" value="0" {eq name="$page_info['user_info']['manage_flag']" value="0"} checked="checked"  {/eq}/>不是&nbsp;
+                            <input type="radio" name="manage_flag" value="1" {eq name="$page_info['user_info']['manage_flag']" value="1"} checked="checked"  {/eq} />是                             
+                        </div>
+                    </div>
+             </fieldset>
+             {/eq}
+             
+              <div class="form-actions center">
+                <button type="submit" class="btn btn-sm btn-success">
+                    提交
+                </button>
+                <button type="button" class="btn btn-sm btn-info closeLayer">
+                    关闭
+                </button>
+            </div>  
+            </form>
+<script>
+$('.date-picker').datepicker({autoclose:true}).on('hide',function(event){
+		event.preventDefault();
+		event.stopPropagation();
+	}).next().on('click', function(){
+					$(this).prev().focus();
+				});
+	//初始化最大工号提示
+	$('[data-toggle="tooltip"][name="user_gh"]').tooltip({title:get_max_username(),trigger:'focus'});		
+	
+	//工号输入框失焦后隐藏提示
+	$('[data-toggle="tooltip"][name="user_gh"]').blur(function(){
+			$('[data-toggle="tooltip"][name="user_gh"]').tooltip('hide');
+		});
+		
+	$('[data-toggle="tooltip"][name="user_gh"]').on('show.zui.tooltip', function() {		
+			$('[data-toggle="tooltip"][name="user_gh"]').attr('data-original-title',get_max_username());
+	});
+	
+	//是否考勤主管
+	$('.hr_manage_switch').click(function(){
+		$obj=$(this).nextAll('input[name=is_hr_manage]');
+		if($obj.val()==0){
+				$obj.val('1');
+			}else{
+				$obj.val('0');
+				}
+	});	
+
+	//查看所有考勤
+	$('.all_card_flag_switch').click(function(){
+		$obj=$(this).nextAll('input[name=all_card_flag]');
+		if($obj.val()==0){
+				$obj.val('1');
+			}else{
+				$obj.val('0');
+				}
+	});	
+		
+	//是否考勤按钮
+	$('.is_hr_user_switch').click(function(){	
+		$obj=$(this).nextAll('input[name=is_hr_user]');
+		if($obj.val()==0){
+				$obj.val('1');
+			}else{
+				$obj.val('0');
+				}
+	});	
+	
+		//是否大陆籍
+	$('.is_mainland_switch').click(function(){
+		$obj=$(this).find('input[name=is_mainland]');
+		if($obj.val()==0){
+				$obj.val('1');
+			}else{
+				$obj.val('0');
+				}
+	});	
+		
+	
+	//自动获取身份证生日
+	$('span[name=get_card_birthday]').click(function(){
+			var idNumber = $("#form-field-identity_card").val();
+			var birthday = getBirthdatByIdNo(idNumber);
+			if(check_date(birthday)){
+				$("#birthday_input").val(birthday);
+			}else{
+				alert('生日获取失败');				
+				}	
+		});
+
+/*	
+	//判断身份证是否有效
+	$("#form-field-identity_card").blur(function () {
+                var idNumber = $("#form-field-identity_card").val();
+                if (trim(idNumber).length > 0) {
+                    if (!checkIdcard(idNumber)) {
+                        alert("输入的身份证号格式错误");
+                        return;
+                    }
+                    else {
+                        var birthday = getBirthdatByIdNo(idNumber);
+                        $("#id-date-picker-1").val(birthday);
+                        //var provinceName = getProvinceNameByIdNo(idNumber);
+                        //$("#<%=tbxNativePlace.ClientID %>").val(provinceName);
+                    }
+                }
+            })	
+*/
+	//获取最大工号数
+	function get_max_username(){
+		$.ajax({
+				async:false,
+				type:'get',
+				url:'get_max_username',
+				success:function(result){
+						str='当前系统最大工号'+result;
+					}
+			});
+		return str;		
+		}
+	
+	//入职日期变化,计算年资
+	$('#form-field-entry_date').change(function(){
+			in_date=new Date($(this).val());
+			out_seniority=$('#form-field-out_seniority').val();
+			calculate_seniority(in_date,out_seniority);
+		});
+		
+	//外年资变化,计算年资
+	$('#form-field-out_seniority').change(function(){
+			in_date=new Date($('#form-field-entry_date').val());
+			calculate_seniority(in_date,$(this).val());
+		});
+	
+	//计算年资
+	function calculate_seniority(in_date,out_seniority){
+		
+			cur_date=new Date('{$page_info.cur_date}');
+
+			if(out_seniority == null || out_seniority == undefined || out_seniority == ''){
+				out_seniority=$('#form-field-out_seniority').val();
+				}
+			
+			if(out_seniority == null || out_seniority == undefined || out_seniority == ''){
+				out_seniority=0;
+				}
+			
+			if(in_date == null || in_date == undefined || in_date == ''){
+				in_date=new Date($('#form-field-entry_date').val());
+				}
+			
+			if(in_date>cur_date){
+					alert('入职日期错误');
+					return false;
+				}else{
+					date_diff_day=diff_date(in_date,cur_date);
+					}
+			in_seniority=parseInt(date_diff_day/365);
+			if(((date_diff_day%365)/365)>0.5){
+					in_seniority=in_seniority+1;
+				}else{
+					if(((date_diff_day%365)/365)==0){
+							in_seniority=in_seniority;
+						}else{
+							in_seniority=in_seniority+0.5;
+							}
+					}
+			
+			in_seniority=parseFloat(in_seniority).toFixed(1);	
+			out_seniority=parseFloat(out_seniority).toFixed(1);
+			
+			total_work_year=parseInt(in_seniority*10)+parseInt(out_seniority*10);
+			
+			$('#form-field-in_seniority').val(in_seniority);
+			$('#form-field-total_work_yeartotal_work_year').val(total_work_year/10);
+			
+		}
+		
+</script>
+<script>
+	function rs_xlxx(id){
+		$.ajax({
+	        type: "POST",
+	        url:'{:url("user_education")}?id='+id,
+	        data:{},// 你的formid
+	        processData:false,
+	        contentType:false,
+	        dataType:'json',
+	        error: function(request) {
+	            mythisalert(0,'失败')
+	        },
+	        success: function(data) {
+	            layer.open({
+	        		  type: 1,
+	        		  skin: 'layui-layer-rim', //加上边框
+	        		  area: ['900px', '300px'], //宽高
+	          		  content: data+'<hr><div style="margin: 0 400px;"><button onclick="new_education()" class="btn btn-xs btn-success" style="margin-right: 5px;">新增</button><a wtq_up_index_alert_close="close" class="btn btn-xs  btn-success layui-layer-close">关闭</a></div>',
+	        		  title:'学历详情',
+	        		});
+	        }
+		});
+    }
+	function change_education(id,thi){
+		var len=$('tr[wtq_id='+id+']').children('td').length;
+		if(!$('tr[wtq_id='+id+']').attr('ok')){
+			for(var i=2;i<len-1;i++){
+				var div=$('tr[wtq_id='+id+']').children('td').eq(i).children('div');
+				div.html('<input name="user_gh" value="'+div.html()+'">');
+			}
+			$(thi).attr('onclick','save_education('+id+',this)');
+			$(thi).html('存');
+		}
+		$('tr[wtq_id='+id+']').attr('ok','1');
+	}
+	function new_education(){
+		var timestamp=new Date().getTime();
+		$(".wtq_o").children("tbody").append('<tr wtq_id='+timestamp+'>'+
+					'<td><div wtq_t="user_gh">'+$("input[id=form-field-username][name=user_gh]").val()+'</div></td>'+
+					'<td><div wtq_t="name">'+$("input[id=form-field-nickname][name=nickname]").val()+'</div></td><td><div wtq_t="education"><input></div></td><td><div wtq_t="degree"><input></div></td><td><div wtq_t="schooling"><input></div></td><td><div wtq_t="major"><input></div></td><td><div wtq_t="in_school"><input></div></td><td><div wtq_t="out_school"><input></div></td><td><div wtq_t="school"><input></div></td><td><div>'+
+					'<button onclick="save_education('+timestamp+',this,\'new\')" class="btn btn-xs btn-info">存</button> '+
+					'<button onclick="del_education(\'new\',this)" class="btn btn-xs btn-info">删</button></div></td></tr>');
+	}
+	function del_education(pd,thi,id){
+		var a=confirm('你确定删除么');
+		if(a==false){
+			return false;
+		}
+		if(pd=='old'){
+			$.post('{:url("del_educa")}',{id:id},
+		            function (data) {
+				$(thi).parent('div').parent('td').parent('tr').remove()
+						mythisalert(data[0],data[1]);
+		            },"json").error(
+		            		function() {mythisalert(0,'失败');}
+		           );
+		}else{
+			$(thi).parent('div').parent('td').parent('tr').remove()
+		}
+	}
+	function save_education(id,thi,pd=''){
+		var len=$('tr[wtq_id='+id+']').children('td').length;
+		var msg={};
+		msg['user_gh']=$("input[id=form-field-username][name=user_gh]").val();
+		msg['name']=$("input[id=form-field-nickname][name=nickname]").val();
+		for(var i=2;i<len-1;i++){
+			var div=$('tr[wtq_id='+id+']').children('td').eq(i).children('div');
+			msg[div.attr('wtq_t')]=div.children('input').val();
+		}
+		$.post('{:url("save_educa")}',{id:id,pd:pd,msg},
+	            function (data) {
+		            for(var i=2;i<len-1;i++){
+		    			var div=$('tr[wtq_id='+id+']').children('td').eq(i).children('div');
+		    			div.html(div.children('input').val());
+		    		}
+		    		$('tr[wtq_id='+id+']').removeAttr('ok');
+		    		$('tr[wtq_id='+id+']').attr('wtq_id',data[2]);
+		    		$(thi).attr('onclick','change_education('+data[2]+',this)');
+		    		$(thi).next('button').attr('onclick','del_education("old",this,'+data[2]+')');
+		    		$(thi).html('改');
+					mythisalert(data[0],data[1]);
+	            },"json").error(
+	            		function() {mythisalert(0,'失败');}
+	           );
+	}
+</script>
+<style>
+	.wtq_o td{
+		border:#776e6e solid 1px;
+	}
+	.wtq_o div{
+		margin:3px;
+	}
+	.wtq_o input{
+		width:100%;
+		border: 0px;
+		margin: 0px;
+		padding: 0px;
+	}
+</style>

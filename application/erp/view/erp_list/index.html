@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/demo.css">
+<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/assets/js/sw.js"></script>
+<script src="__PUBLIC__/static/assets/js/layer.js"></script> 
+<script src="__PUBLIC__/static/assets/js/zrj.js"></script>
+
+<style>
+	.datagrid-cell{ font-size:14px;}
+	.datagrid-header,.datagrid-cell span{ font-size:20px;}
+</style>
+<title>ERP 测试案例</title>
+</head>
+    <body class="easyui-layout">
+    	<div region="center" style="padding:5px; border:#000 solid 1px;" border="true">  
+            <table class="easyui-datagrid" id="tt" title="" style="width:100%;">
+                <thead data-options="frozen:true">
+                    <tr>
+                    	<th data-options="field:'id'">序号</th>
+                        <th data-options="field:'prd_id',width:80">产品</th>                        
+                        <th data-options="field:'zy',width:80">特殊正印</th>
+                        <th data-options="field:'sales',width:80">业务</th>
+                        <th data-options="field:'cust',width:80">客户</th>
+                        <th data-options="field:'qty',width:80">数量</th>
+                        <th data-options="field:'remark',width:80">备注说明</th>
+                        <th data-options="field:'fd_remark',width:80">财务相关</th>
+                    </tr>
+                </thead>
+                
+                <thead>
+                        <tr>
+                            <th data-options="field:'pe_prd_list'">料号群清单</th>
+                            <th data-options="field:'pe_bom'">BOM建立</th>
+                            <th data-options="field:'pe_sup'">合格供应商</th>
+                            <th data-options="field:'pe_field'">重要栏位维护</th>
+                            <th data-options="field:'pm_b_price'">标准底价维护</th>
+                            <th data-options="field:'pm_stock'">预建库存</th>
+                            <th data-options="field:'pm_sp_code'">特价代码维护</th>
+                            <th data-options="field:'sd_or_num'">订单单号</th>
+                            <th data-options="field:'sd_sales_check'">订单BPM签核</th>
+                            <th data-options="field:'sd_cust_over_status'">額度超限申請</th>
+                            <th data-options="field:'pp_wf_price'">WF核价单</th>
+                            <th data-options="field:'pp_wf_num'">WF采购单号(外)</th>
+                            <th data-options="field:'pp_wf_num2'">WF采购单号(内)</th>
+                            <th data-options="field:'pp_wf_lot_num'">WF收货单号/批號</th>
+                            <th data-options="field:'pp_wf_invoice'">WF入库发票</th>
+                            <th data-options="field:'pp_wf_ap'">WF AP单</th>
+                            <th data-options="field:'pp_cp_p_num'">CP核价单号</th>
+                            <th data-options="field:'pp_cp1_outnum'">CP工单(31xx)</th>
+                            <th data-options="field:'pp_cp1_innum'">CP收货单(31xx)/批號</th>
+                            <th data-options="field:'pp_cp2_outnum'">CP工单(3035)</th>
+                            <th data-options="field:'pp_cp2_innum'">CP收货(3035)/批號</th>
+                            <th data-options="field:'pp_cp_invoice'">CP入库发票</th>
+                            <th data-options="field:'pp_cp_ap'">CP AP单</th>
+                            <th data-options="field:'pp_pkg_p_num'">PKG核价单</th>
+                            <th data-options="field:'pp_pkg_outnum'">PKG工单号</th>
+                            <th data-options="field:'pp_pkg_innum'">PKG收货单号/批号</th>
+                            <th data-options="field:'pp_pkg_invoice'">PKG入库发票</th>
+                            <th data-options="field:'pp_pkg_ap'">PKG AP单</th>
+                            <th data-options="field:'pp_ft_p_num'">FT核价单</th>
+                            <th data-options="field:'pp_ft_outnum'">FT工单号</th>
+                            <th data-options="field:'pp_ft_innum'">FT收货单号/批号</th>
+                            <th data-options="field:'pp_ft_invoice'">FT入库发票</th>
+                            <th data-options="field:'pp_ft_ap'">FT AP单</th>
+                            <th data-options="field:'sd_stock_out_num'">订单出通单</th>
+                            <th data-options="field:'pp_stock_out_num'">订单出货单</th>
+                            <th data-options="field:'fd_stock_out_ar'">出货 AR</th>
+                            <th data-options="field:'pp_wf_f'">WF採購結案</th>
+                            <th data-options="field:'pp_cp_f'">前段工單結案</th>
+                            <th data-options="field:'pp_ft_f'">后段工單結案</th>
+                            <th data-options="field:'sd_order_f'">訂單結案</th>
+                            
+                        </tr>
+
+                </thead>
+            </table>
+        </div>
+    </body>
+</html>
+
+<script>
+	
+	$('#tt').datagrid({
+			iconCls: 'icon-edit',
+			singleSelect:true,
+			url: '/erp/erp_list/get_erp_data/',
+			method:'get',
+			fit:true,
+			fitcolumns:true,
+			showFooter: true,
+			toolbar:'#tb',
+			onDblClickRow:function(rowIndex,rowData){
+				editRow(rowData['id']);
+				}
+		});
+	function editRow(rowId){
+			var index=layer.open({
+					type:2,
+					title:'编辑数据',
+					maxmin: true, //开启最大化最小化按钮
+      				area: ['893px', '600px'],
+					shadeClose:true,
+					content:'/erp/erp_list/edit_row/id/'+rowId
+				});
+			layer.full(index);
+		}
+
+</script>
+

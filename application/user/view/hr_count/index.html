@@ -1,0 +1,192 @@
+{extend name="index@index/base" /}
+{block name="main"}
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<script type="text/javascript">
+		try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	</script>
+
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+				<a href="#">首页</a>
+		</li>
+			<li class="active">考勤统计表</li>
+	</ul><!-- .breadcrumb -->
+</div>
+
+<div class="page-content">
+	<div class="page-header col-xs-12">
+     <form class="form-horizontal" role="form" method="post" name="add_note_form" action="{:url()}" >
+            <h1 class="col-xs-8">
+                考勤统计表
+                <small>
+                    <i class="icon-double-angle-right"></i>
+                    	首页
+                </small>
+            </h1>
+    		<div class="col-xs-12 col-sm-12" style="margin:10px 0 0 0; padding:0 0 0 8px;">
+    			<select name="site_id">
+					<option value="all">全部</option>
+			        {volist name="page_info['site_arr']" id="vo"}
+			           <option value="{$vo.id}" {eq name="$page_info.site_id" value="$vo.id"} selected="selected" {/eq}>{$vo.site}</option>
+			        {/volist}
+			    </select>
+				{$page_info.dep_select}
+				<select name="user_id">
+			   		<option value="all">全部</option>
+			        {volist name='page_info.user_arr' id="vo"}
+			       	<option value="{$vo.id}" dep_id="{$vo.dep_id}" site_id="{$vo.site_id}"  {eq name="$page_info.user_id" value="$vo.id"} selected="selected" {/eq}>{$vo.nickname}</option>
+			        {/volist}
+				</select>
+				<input class="" min="{$page_info.date_min}" max="{$page_info.end_date}" star="end_date" format="YYYY-MM-DD" type="text"  readonly="readonly" name="begin_date" id="begin_date" value="{$page_info.begin_date}" />
+				<input class="" min="{$page_info.begin_date}" max="{$page_info.date_max}" end="begin_date" format="YYYY-MM-DD" type="text"  readonly="readonly" name="end_date" id="end_date" value="{$page_info.end_date}" />
+				<button class="btn btn-info btn-sm" onclick="return from_ver(this.form)">查询</button>
+				<button onclick="excel()" type="button" style="float:right;" class="btn btn-info btn-sm" type="button">导出报表</button>
+			</div>
+        <div class="pull-right  clearfix" style="margin:30px 0 0 0;">        	
+            <!--<a href="/user/Note_check/index/show_flag/show_all" class="btn btn-info btn-sm"><span class="icon-book"></span>导出</a>-->
+        </div>  
+         </form>     
+	</div><!-- /.page-header -->
+
+	<div class="row"><!-- /.col -->
+    	<div class="col-xs-12" style="overflow:auto; width:100%; height:500px;">
+        	
+                <table id="sample-table-2" class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                        	<th onclick="paixu(this,'dep_name')" style="cursor:pointer;"><nobr>部门编号</nobr><i wtq_up_index_i="i" {eq name="$page_info.ii[0]" value="dep_name"}class='icon-level-{eq name="$page_info.ii[1]" value="1"}up{else/}down{/eq}'{/eq} style="color:#9F9696;"></i></th>
+                            <th onclick="paixu(this,'nickname')" style="cursor:pointer;"><nobr>员工姓名</nobr><i wtq_up_index_i="i" {eq name="$page_info.ii[0]" value="nickname"}class='icon-level-{eq name="$page_info.ii[1]" value="1"}up{else/}down{/eq}'{/eq} style="color:#9F9696;"></i></th>
+                            <th onclick="paixu(this,'out_work_time')" style="cursor:pointer;"><nobr>高标</nobr><i wtq_up_index_i="i" {eq name="$page_info.ii[0]" value="out_work_time"}class='icon-level-{eq name="$page_info.ii[1]" value="1"}up{else/}down{/eq}'{/eq} style="color:#9F9696;"></i></th>
+                        	<th onclick="paixu(this,'vacation_hour')" style="cursor:pointer;"><nobr>休假时数</nobr><i wtq_up_index_i="i" {eq name="$page_info.ii[0]" value="vacation_hour"}class='icon-level-{eq name="$page_info.ii[1]" value="1"}up{else/}down{/eq}'{/eq} style="color:#9F9696;"></i></th>
+                            <th onclick="paixu(this,'work_vacation_hour')" style="cursor:pointer;"><nobr>公假时数</nobr><i wtq_up_index_i="i" {eq name="$page_info.ii[0]" value="work_vacation_hour"}class='icon-level-{eq name="$page_info.ii[1]" value="1"}up{else/}down{/eq}'{/eq} style="color:#9F9696;"></i></th>
+                            <th onclick="paixu(this,'sick_leave')" style="cursor:pointer;"><nobr>病假时数</nobr><i wtq_up_index_i="i" {eq name="$page_info.ii[0]" value="sick_leave"}class='icon-level-{eq name="$page_info.ii[1]" value="1"}up{else/}down{/eq}'{/eq} style="color:#9F9696;"></i></th>
+                            <th onclick="paixu(this,'marry_leave')" style="cursor:pointer;"><nobr>婚假时数</nobr><i wtq_up_index_i="i" {eq name="$page_info.ii[0]" value="marry_leave"}class='icon-level-{eq name="$page_info.ii[1]" value="1"}up{else/}down{/eq}'{/eq} style="color:#9F9696;"></i></th>
+                            <th onclick="paixu(this,'baby_leave')" style="cursor:pointer;"><nobr>产假时数</nobr><i wtq_up_index_i="i" {eq name="$page_info.ii[0]" value="baby_leave"}class='icon-level-{eq name="$page_info.ii[1]" value="1"}up{else/}down{/eq}'{/eq} style="color:#9F9696;"></i></th>
+                            <th onclick="paixu(this,'over_leave')" style="cursor:pointer;"><nobr>丧假时数</nobr><i wtq_up_index_i="i" {eq name="$page_info.ii[0]" value="over_leave"}class='icon-level-{eq name="$page_info.ii[1]" value="1"}up{else/}down{/eq}'{/eq} style="color:#9F9696;"></i></th>
+                            <th onclick="paixu(this,'work_err_leave')" style="cursor:pointer;"><nobr>工伤假时数</nobr><i wtq_up_index_i="i" {eq name="$page_info.ii[0]" value="work_err_leave"}class='icon-level-{eq name="$page_info.ii[1]" value="1"}up{else/}down{/eq}'{/eq} style="color:#9F9696;"></i></th>
+                            <th onclick="paixu(this,'f_baby_leave')" style="cursor:pointer;"><nobr>陪产假时数</nobr><i wtq_up_index_i="i" {eq name="$page_info.ii[0]" value="f_baby_leave"}class='icon-level-{eq name="$page_info.ii[1]" value="1"}up{else/}down{/eq}'{/eq} style="color:#9F9696;"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    	{volist name="page_info.list" id="vo"}
+                            <tr>
+                           		<td><nobr>{$vo.dep_name}</nobr></td>
+                                <td><nobr>{$vo.nickname}</nobr></td>
+                                <td style="text-align:center;">{:clear_zero($vo['out_work_time'])}</td>
+                                <td style="text-align:center;">{:clear_zero($vo['vacation_hour'])}</td>
+                                <td style="text-align:center;">{:clear_zero($vo['work_vacation_hour'])}</td>
+                                <td style="text-align:center;">{:clear_zero($vo['sick_leave'])}</td>
+                                <td style="text-align:center;">{:clear_zero($vo['marry_leave'])}</td>
+                                <td style="text-align:center;">{:clear_zero($vo['baby_leave'])}</td>
+                                <td style="text-align:center;">{:clear_zero($vo['over_leave'])}</td>
+                                <td style="text-align:center;">{:clear_zero($vo['work_err_leave'])}</td>
+                                <td style="text-align:center;">{:clear_zero($vo['f_baby_leave'])}</td>
+                            </tr>
+                    	{/volist}
+                    </tbody>                    
+                </table>
+            
+        </div>
+	</div><!-- /.row -->
+</div>
+{/block}
+
+{block name="script"}
+<script>
+function from_ver(form) {
+	if(form.begin_date.value>form.end_date.value){
+		mythisalert(0,'时间范围有误')
+		return false;
+	}
+   return true;
+}
+</script>
+<script>
+	function excel(){
+		$("form[name=add_note_form]").attr("action","{:url("")}?excel=excel")
+		$("form[name=add_note_form]").submit();
+		$("form[name=add_note_form]").attr("action","{:url("")}")
+	}
+	function paixu(thi,ii){
+		if($(thi).children('i').attr('class')=='icon-level-down'){var a='&a=1';var clas='icon-level-up';}else{var a='&a=';var clas='icon-level-down';}
+		var this_i="?ii="+ii+a;
+		$("form[name=add_note_form]").attr("action","{:url()}"+this_i)
+		$("form[name=add_note_form]").submit();
+	}
+</script>
+<script>
+//搜索条件合集，站点，部门，人员js
+$('select[name=dep_id]').val('{$page_info.dep_id}');
+
+$('select[name=dep_id]').change(function(){
+	user_select=$('select[name=user_id]');
+	site_id=$('select[name=site_id]').val();
+	dep_id=$(this).val();
+		if(dep_id=='all'){
+				user_select.find('option[site_id='+site_id+']').show();
+				user_select.val('all');
+			}else{
+				user_select.find('option').hide();
+				user_select.find('option[dep_id='+dep_id+'][site_id='+site_id+']').show();
+				}
+	});
+	
+$('select[name=site_id]').change(function(){
+	site_id=$(this).val();
+	dep_id=$('select[name=dep_id]').val();
+		user_select.find('option').hide()
+		if(dep_id != 'all'){
+				user_select.find('option[site_id='+site_id+'][dep_id='+dep_id+']').show();
+			}else{
+				user_select.find('option[site_id='+site_id+']').show();
+				}
+	});
+//页面提交后有站点&部门数据提交过来,过滤部门&站点人员
+site_id=$('select[name=site_id]').val();
+dep_id=$('select[name=dep_id]').val();
+user_select=$('select[name=user_id]');
+
+if(dep_id != 'all'){
+		user_select.find('option[site_id='+site_id+'][dep_id='+dep_id+']').show();
+	}else{
+		user_select.find('option[site_id='+site_id+']').show();
+		}
+
+if(dep_id=='all'){
+		user_select.find('option[site_id='+site_id+']').show();
+		//user_select.val('all');
+	}else{
+		user_select.find('option').hide();
+		user_select.find('option[dep_id='+dep_id+'][site_id='+site_id+']').show();
+		}
+
+$('input[name=key]').click(function(){
+	layer.tips('姓名,英文名,工号,卡号', $(this),{tips:1});
+});
+</script>
+<script type="text/javascript">
+
+/*//点击开始日期
+laydate({
+		elem:'#begin_date',
+		format:'YYYY-MM-DD',
+		festival:true,
+		isclear: false,
+		min:'{$page_info.date_min}',
+		max:'{$page_info.date_max}'
+	});
+
+//点击结束日期
+laydate({
+		elem:'#end_date',
+		format:'YYYY-MM-DD',
+		festival:true,
+		isclear: false,
+		min:'{$page_info.date_min}',
+		max:'{$page_info.date_max}'
+	});*/
+
+</script>
+{/block}

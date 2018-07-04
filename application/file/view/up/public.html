@@ -1,0 +1,151 @@
+	<div class="breadcrumbs" id="breadcrumbs">
+	    <script type="text/javascript">
+	        try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	    </script>
+	    <ul class="breadcrumb">
+	        <li>
+	            <i class="icon-home home-icon"></i>
+	            <a href="#">{$meta_title} > </a>
+	            <span wtq_zs_id="zs"></span>
+	            <span wtq_mem_id="mem"></span>
+	        </li>
+	    </ul><!-- .breadcrumb -->
+	</div>
+	<div class="col-md-12">
+	    <div class="box">
+	        <div class="box-header">
+	        	<div>
+	        		<!--span id='s1'></span><span id='s2'></span><span id='s3'></span><span id='s4'></span-->
+		            <button style="opacity:0;cursor:auto" class="btn btn-purple">全部</button>
+	        		<div class="" style="float: left;"><button style="display:none" class="btn btn-xs" wtq_mulu_btn="btn" onclick="mulu('y')">隐藏</button></h4></div>
+	        		<div style="float:right;padding-right:30px;">
+		        		<!--button onclick="menu_ajax('i')"><i class="icon-undo" style="font-size: 20px;color: #E128EF"></i></button-->
+		        		{if condition="isset($up_sour)"}
+		        		<span>过期文件：</span>
+	        			<!--label class="inline">
+							<input onclick="ajax_index()" wtq_up_index_name='die_file' value="yes" class="ace ace-switch ace-switch-5" type="checkbox">
+							<span class="lbl"></span>
+						</label>
+						<span>状态：</span-->
+		        			<select  wtq_up_index_name='die_file'>
+		        				<option value="0">未过期</option>
+					            <option value="1">已过期</option>
+					            <option value="2">全部</option>
+				            </select>
+						<span>状态：</span>
+		        			<select  wtq_up_index_name='zt'>
+		        				<option value="0,1,2">全部</option>
+					            <option value="1">通过</option>
+					            <option value="0">未通过</option>
+				            	<option value="2">待审核</option>
+				            </select>
+				         {/if} 
+	        			<span>是否精确查找：</span>
+	        			<label class="inline">
+							<input wtq_up_index_name='sql_jq' value="yes" class="" type="checkbox">
+							<span class="lbl"></span>
+						</label>
+		            	<span>关键字：</span><input wtq_up_index_name='name'><button onclick="return sour(this)" class="btn btn-sm btn-primary">搜索</button>
+	        		</div>
+	        		
+	        	</div>
+	        	<div style="width:100%;height:17px;">
+	        		<div style="position:absolute;width:100%;height:2px;margin:7.5px 0;background-color:#e4e6e9;">
+					
+					</div>
+					<div style="position:absolute;">
+						<i onclick="return more(this)" class="icon-level-up" style="cursor:pointer;"></i>
+						更多筛选项
+					</div>
+	        	</div>
+	        	<div style="padding-top:5px;height:0px;overflow:hidden;display:none" wtq_up_index_id='sour'>
+	        		<span>时间范围：</span>
+		            <!--div class="inline layinput"><input wtq_up_index_name='time' style="width:145px;" placeholder="" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"></div>-
+		            <div class="inline layinput"><input wtq_up_index_name='time' style="width:145px;" placeholder="" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"></div-->
+		            <input class="laydate-icon" star='end' min='' max='' format='YYYY-MM-DD hh:mm:ss' id='star' wtq_up_index_name='time' style="width:145px;">-
+		            <input class="laydate-icon" end='star' min='' max='' format='YYYY-MM-DD hh:mm:ss' id='end' wtq_up_index_name='time' style="width:145px;">
+		            <span>文件大小范围：</span>
+		            <input wtq_up_index_name='big1' style="width:30px;">
+		            <select  wtq_up_index_name='big0'>
+			            <option value="MB">MB</option>
+			            <option value="KB">KB</option>
+		            	<option value="GB">GB</option>
+		            	<option value="B">B</option>
+		            	<option value="TB">TB</option>
+		            </select>
+		            -<input wtq_up_index_name='big2' style="width:30px;">
+		            <select  wtq_up_index_name='big'>
+			            <option value="MB">MB</option>
+			            <option value="KB">KB</option>
+		            	<option value="GB">GB</option>
+		            	<option value="B">B</option>
+		            	<option value="TB">TB</option>
+		            </select>
+		            <span>文件类型：</span>
+		            <select  wtq_up_index_name='hou'>
+		            	<option value="">全部</option>
+		            	{$hou}
+		            </select>
+	        	</div>
+    		</div>
+		    <div class="box-body">
+				<div wtq_mulu_id="mulu" style="width:25%;direction:rtl;">
+					<div class="" style="width:100%;float:left;display:block;height:700px;overflow-y:scroll;">
+					    <div class="widget-body" style="min-width:100%;direction:ltr;display: inline-block;">
+							<div class="widget-main padding-8">
+								<div id="tree2" class="tree tree-unselectable">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div onclick="$('button[wtq_mulu_btn=btn]').trigger('click');return false;" style="position:absolute;width:17px;height:38px;float:right;background-color:#BAE7E7;text-align: center;line-height: 2.8;">
+						<i wtq_id="mulu_i" class="icon-double-angle-left"></i>
+					</div>
+				</div>
+		    	<div wtq_mulu_id="mulux" class="" style="width:75%;float:right;">
+		    		<!-- div style="padding-top:220px;width:2px;float:left;background-color:yellow;height:500px;">
+						<i class="icon-double-angle-left"></i>
+					</div-->
+				    <table wtq_tacle="table" class="table table-hover">
+				        <thead>
+				            <tr>
+				            	<th style="cursor:pointer;" onclick="paixu(this,'id')">编号<i wtq_up_index_i="i" class="icon-level-up" style="padding-left:5px;color:red;"></i></th>
+				                <th style="cursor:pointer;" onclick="paixu(this,'file_name')">
+				                	<div onclick="event.stopPropagation();" onmousedown="name_th_width_down('left')" style="width:2px;height:19px;float:left;cursor:e-resize;background-color:#a08d8d;"></div>
+				                	名字
+				                	<div onclick="event.stopPropagation();" onmousedown="name_th_width_down('right')" style="width:2px;height:19px;float:right;cursor:e-resize;background-color:#a08d8d;"></div>
+				                	<i wtq_up_index_i="i" style="padding-left:30px;color:red;"></i>
+				                </th>
+				            	{if condition="isset($up_sour)"}
+				                <th style="cursor:pointer;" onclick="paixu(this,'file_size')">大小<i wtq_up_index_i="i" style="padding-left:30px;color:red;"></i></th>
+				                <th style="cursor:pointer;" onclick="paixu(this,'file_time')">时间<i wtq_up_index_i="i" style="padding-left:30px;color:red;"></i></th>
+				                <th>版本</th>
+				                <th style="cursor:pointer;" onclick="paixu(this,'file_time')">状态<i wtq_up_index_i="i" style="padding-left:30px;color:red;"></i></th>
+				            	{else}
+				                <!--th>分类</th-->
+				                <th style="cursor:pointer;" onclick="paixu(this,'file_size')">文件大小<i wtq_up_index_i="i" style="padding-left:30px;color:red;"></i></th>
+				                <th style="cursor:pointer;" onclick="paixu(this,'file_time')">时间<i wtq_up_index_i="i" style="padding-left:30px;color:red;"></i></th>
+				                <th>版本</th>
+				            	{/if}
+				                <th>操作</th>
+				            </tr>
+				        </thead>
+				        <tbody>
+				        
+				        </tbody>
+				    </table>
+			    </div>
+			    
+		    </div>
+		    <div class="box-footer">
+		    	<div class="text-right">
+					
+		    	</div>
+		    </div>
+		</div>
+	</div>
+
+<input style="display:none" wtq_up_index_id='url'>
+<input style="display:none" wtq_up_index_name='xin' value="{//$xing}">
+
+{include file="../application/file/view/up/js.html" /}

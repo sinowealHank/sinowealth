@@ -1,0 +1,65 @@
+{extend name="index@index/base" /}
+{block name="main"}
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<script type="text/javascript">
+		try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	</script>
+
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+				<a href="#">首页</a>
+		</li>
+
+		<li>
+			<a href="#">后台管理</a>
+		</li>
+			<li class="active">组织架构</li>
+	</ul><!-- .breadcrumb -->
+
+</div>
+
+<div class="page-content">
+	<div class="page-header col-xs-12">
+            <h1 class="col-xs-8">
+                组织架构
+                <small>
+                    <i class="icon-double-angle-right"></i>
+                    首页
+                </small>
+            </h1>
+        <div class="pull-right  clearfix">
+        	
+            <a href="javascript:void(0)" class="btn btn-info btn-sm" id="add_dep"><span class="icon expand-icon glyphicon glyphicon-plus"></span>添加部门</a>
+        </div>        
+	</div><!-- /.page-header -->
+
+	<div class="row"><!-- /.col -->
+    	<div class="col-xs-12">
+          <div id="dep_tree" class=""></div>
+        </div>
+	</div><!-- /.row -->
+</div>
+
+
+<script>
+
+	//$.messager.show('fff',{type:'success',placement:'center',time:8000});
+	
+    $('#dep_tree').treeview({
+       data: '{$page_info.dep_json}'
+    });
+		
+	$('#add_dep').click(function(){
+		m_dialog('add','新增部门','','','index');
+	});
+
+	function edit_dep(obj){
+		id=$(obj).attr('dep_id');
+		m_dialog('edit/id/'+id,'编辑部门','','','index');
+		}
+
+</script>
+
+{/block}

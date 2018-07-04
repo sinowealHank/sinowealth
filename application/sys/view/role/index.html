@@ -1,0 +1,58 @@
+{extend name="index@index/base" /}
+{block name="main"}
+<div class="breadcrumbs" id="breadcrumbs">
+    <script type="text/javascript">
+        try{ace.settings.check('breadcrumbs','fixed')}catch(e){}
+    </script>
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">首页</a>
+        </li>
+
+        <li>
+            <a href="#">后台管理</a>
+        </li>
+        <li class="active">角色管理</li>
+    </ul><!-- .breadcrumb -->
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <button RBAC_flag="add" class="btn btn-info layerIframe" title ="添加角色" hig="400px;"  url ="{:url('sys/role/add',0,false)}"><i class="icon-plus"></i>添加角色</button>
+    </div><!-- /.page-header -->
+    <div style="overflow: auto;">
+        <ul id="roleTree"></ul>
+    </div>
+</div>
+{/block}
+
+{block name="script"}
+<script>
+    showStatus_a_button('{$page_info.pri_data}','{$page_info.module_controller}');
+    /*layui树形菜单*/
+    var json = '{$page_info.data}';
+    json = JSON.parse(json);
+    layui.use('tree', function(){
+        var tree = layui.tree({
+            elem: '#roleTree' //传入元素选择器
+            ,skin: 'shihuang'
+            ,nodes: json
+            ,click: function(node){
+                var id = node.id;
+                layerIframe('修改角色',"{:url('/sys/role/edit/id/')}"+id,wid='500px',hig='300px');
+            }
+        });
+    });
+        /*判断部门名是否重复*/
+    $("#group_name").blur(function(){
+        var group_name = $("#group_name").val();
+        $.post("{:url('sys/Role/checkRoleName',0,false)}",{data:group_name},function(result){
+            layer.alert(result, {
+                icon: 2,
+                skin: 'layer-ext-moon'
+            });
+            $("#group_name").val("");
+        },"JSON");
+    });
+</script>
+{/block}

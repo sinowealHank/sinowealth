@@ -1,0 +1,103 @@
+<meta charset="utf-8" />
+<script type="text/javascript" src="__PUBLIC__/static/assets/js/zrj.js"></script>
+<input type="hidden" name='id' value="{$page_info.id}"/>
+<input type="hidden" name="indexRow" value="{$page_info.indexRow}"/>
+
+<div style="text-align: center;margin-top: 20px;">
+	{if condition="($page_info['edit_show'] == '1')"}
+	<button rbac_flag="edit" onclick='el()' style='cursor:pointer;'>修改本行</button>
+	{/if}
+
+	{if condition="($page_info['delete_show'] == '1')"}
+	<button rbac_flag="deleterow" onclick='dl()' style='cursor:pointer;'>删除本行</button>
+		{if condition="$page_info.apply_check.cost_id  neq '' "}
+	          <button url="showDeleteRea?id={$page_info.id}" class="btn btn-primary btn-xs layerLog"  title='查看删除理由'>删除理由</button>
+		{/if}
+	{else /}
+		{if condition="$page_info['author'] eq 8"}
+			{if condition="$page_info.apply_check.cost_id  neq '' "}
+			<button rbac_flag="deleterow" onclick='dl()' style='cursor:pointer;'>删除本行</button>
+			<button url="showDeleteRea?id={$page_info.id}" class="btn btn-primary btn-xs layerLog"  title='查看删除理由'>删除理由</button>
+			{/if}
+	    {/if}
+	{/if}
+
+	{if condition="($page_info['copy_show'] == '1')"}
+	<button rbac_flag="copy" onclick='cl()' style='cursor:pointer;'>复制本行</button>
+	{/if}
+	{if condition="($page_info['return'] == '1')"}
+	<button onclick='back()' style='cursor:pointer;'>退回上个部门</button>
+	{/if}
+
+	<button url="showLog?id={$page_info.id}" class='layerLog' title='日志' style='cursor:pointer;'>查看日志</button>
+	{if condition="($page_info['ftCp'] == '1')"}
+		<a href="{:url('CostTableCp/index',['id'=>$page_info['id']])}" target='_black' class='btn' style='cursor:pointer;'>CP表维护</a>
+		<a href="{:url('CostTableFt/index',['costToId' => $page_info['id']])}" target='_black' class='btn' style='cursor:pointer;'>ft表维护</a>
+	{/if}
+
+	{if condition="$page_info.apply_check.cost_id eq ''"}
+
+		{switch name="$page_info['author']"}
+			{case value="4"}
+				{if condition="$page_info['process_flow'] eq 0"}
+				<button hig="200px;" url="subDelApply?id={$page_info.id}" class="layerIframe" title="提交删除申请">提交QA删除</button>
+				{elseif condition="$page_info['process_flow'] eq 4"/}
+				<button hig="200px;" url="subDelApply?id={$page_info.id}" class="layerIframe" title="提交删除申请">提交QA删除</button>
+				{/if}
+			{/case}
+			{case value="6"}
+				{if condition="$page_info['process_flow'] eq 1"}
+				<button hig="200px;" url="subDelApply?id={$page_info.id}" class="layerIframe" title="提交删除申请">提交QA删除</button>
+				{elseif condition="$page_info['process_flow'] eq 4"/}
+				<button hig="200px;" url="subDelApply?id={$page_info.id}" class="layerIframe" title="提交删除申请">提交QA删除</button>
+				{/if}
+			{/case}
+			{case value="2"}
+				{if condition="$page_info['process_flow'] eq 3"}
+				<button hig="200px;" url="subDelApply?id={$page_info.id}" class="layerIframe" title="提交删除申请">提交QA删除</button>
+				{elseif condition="$page_info['process_flow'] eq 4"/}
+				<button hig="200px;" url="subDelApply?id={$page_info.id}" class="layerIframe" title="提交删除申请">提交QA删除</button>
+				{/if}
+			{/case}
+		{/switch}
+	{/if}
+
+</div>
+
+<script>
+	//修改
+	function el(){
+		layer.close(index);
+		var url = 'edit?id='+$('input[name=id]').val()+'&indexRow='+$('input[name=indexRow]').val();
+		layerIframe('修改整行',url,'','','','true');
+	};
+
+	//复制
+	function cl(){
+		layer.close(index);
+		var url = 'copy?id='+$('input[name=id]').val();
+		layerIframe('复制添加',url,'','','','true');
+	};
+	//返回上个部门
+	function back(){
+		layer.close(index);
+		var url = 'back?id='+$('input[name=id]').val();
+		layerIframe('返回上个部门',url,'420px','300px');
+	};
+	//删除
+	function dl(){
+		layer.close(index);
+		 indexRow = $('input[name=indexRow]').val();
+		 var url = 'deleteRow?id='+$('input[name=id]').val();
+		 var confirm = layer.confirm('确定删除本条数据吗？', {
+			skin: 'danger-class', //样式类名
+			btn: ['确定','关闭'] //按钮
+		 }, function(){	//点击确定
+			$.get(url, function(result){showMsg(JSON.parse(result));});
+		 	dlBack(indexRow);
+		}, function(){ //点击关闭
+			layer.close(confirm);
+		});
+	};
+	showStatus_a_button('{$Think.PRI_ARR}','{$Think.RBAC_FLAG}');
+</script>

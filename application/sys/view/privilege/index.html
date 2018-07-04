@@ -1,0 +1,53 @@
+{extend name="index@index/base" /}
+{block name="main"}
+<div class="breadcrumbs" id="breadcrumbs">
+    <script type="text/javascript">
+        try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+    </script>
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">首页</a>
+        </li>
+        <li>
+            <a href="#">后台管理</a>
+        </li>
+        <li class="active">权限管理</li>
+    </ul><!-- .breadcrumb -->
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <!-- 按钮触发模态框 -->
+        <!--<button  class="btn btn-info" id="ADD"><i class="icon-plus"></i>添加权限</button>-->
+        <button RBAC_flag="add" hig="600px;" class="btn btn-info layerIframe" url="{:url('sys/privilege/add')}"  title="添加权限"><i class="icon-plus"></i>添加权限</button>
+
+    </div><!-- /.page-header -->
+    <div style="overflow: auto;">
+        <ul id="privilege"></ul>
+    </div>
+</div><!-- /.page-content -->
+
+{/block}
+{block name="script"}
+<script>
+
+        showStatus_a_button('{$Think.PRI_ARR}','{$Think.RBAC_FLAG}');
+        var json = '{$page_info.result}';
+        json = JSON.parse(json);
+        layui.use('tree', function(){
+            layui.tree({
+                elem: '#privilege' //传入元素选择器
+                ,skin: 'shihuang'
+                ,nodes: json
+                ,click: function(node){
+                    var id = node.id;
+                    var parent_id = node.parent_id;
+                    var level = node.level;
+
+                    layerIframe('修改权限',"{:url('/sys/privilege/edit/id/')}"+id+'/level/'+level,wid='550px',hig='600');
+                }
+            });
+        });
+</script>
+{/block}
+

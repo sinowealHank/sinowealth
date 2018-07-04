@@ -1,0 +1,76 @@
+{extend name="index@index/base" /}
+{block name="main"}
+<style>
+    .search_form input{margin-left: 10px;height: 30px;}
+    .search_form span{margin-left: 10px;}
+    .page-header a {margin-left:10px;width: 100px; }
+</style>
+<div class="breadcrumbs" id="breadcrumbs">
+    <script type="text/javascript">
+        try{ace.settings.check('breadcrumbs','fixed')}catch(e){}
+    </script>
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">首页</a>
+        </li>
+
+        <li>
+            <a href="#">资产管理</a>
+        </li>
+        <li class="active">IT主管审核采购单</li>
+    </ul><!-- .breadcrumb -->
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <a href="{:url('prop/dep/index')}" class="btn btn-primary">返回</a>
+    </div><!-- /.page-header -->
+    <div>
+        <form class="search_form" method="get">
+            <span>采购物品:</span><input type="text" name="pur_name" value="{$page_info.pur_name?$page_info.pur_name:'';}">
+            <span>申请部门:</span><select name="manage_id"><option value="">请选择部门</option> {$page_info.dep_info}</select>
+            <span>使用人：</span> <input type="text" name="user_name" value="{$page_info.user_name?$page_info.user_name:'';}">
+            <span><button type="submit" class="btn btn-primary btn-xs">查询</button></span>
+        </form>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>ID:</th>
+                <th>采购物品：</th>
+                <th>申请部门：</th>
+                <th>验收人：</th>
+                <th>使用者名字：</th>
+                <!--<th>审核结果：</th>-->
+                <th>主管审核：</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="$page_info.data" id="vo"}
+            <tr >
+                <td>{$vo.id} </td>
+                <td>{$vo.pur_name} </td>
+                <td>{$vo.manage_id |get_dep_name} </td>
+                <td>{$vo.nickname}</td>
+                <td>{$vo.user_name}</td>
+                <td>
+                    <button class="btn btn-primary btn-xs layerIframe" max="true" title="审核资产" url="purcheck?id={$vo.id}"><i class="icon-edit"></i></button>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+            {$page_info.page}
+    </div>
+</div>
+{/block}
+{block name="script"}
+
+<script>
+    $('.accept_list').dblclick(function(){
+        var id = $(this).attr('accept_id');
+
+//        layerIframe('验收资产',"{:url('/prop/accept/check/id/')}"+id,wid="650;", hig="600px;");
+    })
+
+</script>
+{/block}

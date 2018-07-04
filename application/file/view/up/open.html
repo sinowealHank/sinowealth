@@ -1,0 +1,40 @@
+{if condition="$hou=='mp3'"}
+<audio controls>
+    <source src="{$url}" />
+    <!--source src=”http://xx.com/html5/cc.mp3″ />
+    <source src=”http://xx.com/html5/cc.wav” /-->
+</audio>
+{/if}
+{if condition="$hou=='mp4' || $hou=='flv'"}
+	<video width="320" height="240" controls autoplay>
+	  <source src="{$url}" type="video/ogg">
+	  <source src="{$url}" type="video/mp4">
+	  <source src="{$url}" type="video/webm">
+	  <object data="{$url}" width="320" height="240">
+	    <embed width="320" height="240" src="{$url}">
+	  </object>
+	</video>
+{/if}
+
+{if condition="$hou=='flv'"}
+<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" width="500" height="400">
+  <param name="movie" value="{$url}" />
+  <param name="quality" value="high" />
+  <param name="allowFullScreen" value="true" />
+  <embed src="http://localhost/new/public/open/flv/flvplayer.swf?file=movies/company.flv&showfsbutton=true&autostart=true" allowfullscreen="true" flashvars="vcastr_file=http://yourname.com/flv/ctdemo.flv&IsAutoPlay=1&LogoUrl=images/logo.jpg" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="960" height="540"></embed>
+</object>
+{/if}
+
+{if condition="$hou=='flv'"}
+<script type="text/javascript">
+var swf_width=240
+var swf_height=240
+var texts='wtq'
+var files='{$url}'
+document.write('<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" width="'+ swf_width +'" height="'+ swf_height +'">');
+document.write('<param name="movie" value="http://localhost/new/public/open/flv/flvplayer.swf"><param name="quality" value="high">');
+document.write('<param name="menu" value="false"><param name="allowFullScreen" value="true" />');
+document.write('<param name="FlashVars" value="vcastr_file='+files+'&vcastr_title='+texts+'">');
+document.write('<embed src="http://localhost/new/public/open/flv/flvplayer.swf" allowFullScreen="true" FlashVars="vcastr_file='+files+'&vcastr_title='+texts+'" menu="false" quality="high" width="'+ swf_width +'" height="'+ swf_height +'" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />'); document.write('</object>');
+</script> 
+{/if} 

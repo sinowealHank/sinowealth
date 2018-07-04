@@ -1,0 +1,173 @@
+<div style="width:100%">
+	<div style="width:100%;text-align: center;">
+		<select onchange="eci_con_site_ajax($(this).val());$(this).children('option[value=\'\']').remove();" style="width:150px">
+			<option value="">选择站点</option>
+			{volist name="\think\Config::get('site_code')" id="vo"}
+            	<option value="{$vo}">{$vo}</option>
+            {/volist}
+		</select>
+		<button onclick="$('[wtq_eci_sour]').val('');" class="btn btn-success">清空</button>
+		<select onchange="eci_con_ajax()" wtq_eci_sour="ECI02" style="width:150px">
+			<option value="">全部阶段</option>
+			<option value="1">Cp</option>
+			<option value="2">Ft</option>
+			<option value="3">Cp&Ft</option>
+		</select>
+		<input placeholder="机台" wtq_eci_sour="ECI01" style="width:80px">
+		<button onclick="eci_con_ajax()"  class="btn btn-success">搜索</button>
+		<button onclick="add_eci_con()"  class="btn btn-success">新增</button>
+	</div>
+	<br>
+	<table wtq_eci_con_table class="old_free">
+		
+	</table>
+	<a style="display:none" wtq_up_index_alert_close="close" class="btn btn-success layui-layer-close">取消</a>
+</div>
+<div style="display:none" wtq_show="eci_con">
+	<table class="old_free_config">
+		<tr>
+			<td><div style="float:right">机器编号<span style="color:red">*</span>：</div></td>
+			<td><input wtq_config="ECI01" style="width:150px"></td>
+		</tr>
+		<tr>
+			<td><div style="float:right">所属阶段<span style="color:red">*</span>：</div></td>
+			<td>
+				<select wtq_config="ECI02" style="width:150px">
+					<option value="">选择阶段</option>
+					<option value="1">Cp</option>
+					<option value="2">Ft</option>
+					<option value="3">Cp&Ft</option>
+				</select>
+			</td>
+		</tr>
+		<tr wtq="del">
+			<td><div style="float:right">工作站<span style="color:red">*</span>：</div></td>
+			<td>
+				<select wtq_config="ECI03" style="width:150px">
+					<option value="">选择站点</option>
+					{volist name="\think\Config::get('site_code')" id="vo"}
+		            	<option value="{$vo}">{$vo}</option>
+		            {/volist}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td><div style="float:right">机器成本率($/时)：</div></td>
+			<td><input wtq_config="ECI04" style="width:150px"></td>
+		</tr>
+		<tr>
+			<td><div style="float:right">机器产能(时/日)：</div></td>
+			<td><input wtq_config="ECI05" style="width:150px"></td>
+		</tr>
+		<tr>
+			<td><div style="float:right">排序：</div></td>
+			<td><input wtq_config="ECI08" style="width:150px"></td>
+		</tr>
+	</table>
+	<hr>
+	<button wtq_click="ok" onclick="save_new_eci_con()" style="margin-left:20px;" class="btn btn-success">保存</button>&nbsp&nbsp&nbsp
+	<a style="display:none" wtq_up_index_alert_close="close" class="btn btn-success layui-layer-close">取消</a>
+</div>
+<br><br><br><br>
+<script>
+	function del_eci_con(del){
+		var eci03=$("[wtq_config=ECI03]:last").val();
+		$.post('{:url("del_eci_con")}?',{del:del,eci03:eci03},
+				function (data) {
+					mythisalert(data[0],data[1]);
+					eci_con_ajax();					
+				}
+		,"json").error(
+        		function() {mythisalert(0,'删除失败');}
+        );
+	}
+</script>
+<script>
+	function save_new_eci_con(eci=''){
+		var save={};
+		if(eci==''){
+			save['ECI01']=$("[wtq_config=ECI01]:last").val();
+		}
+ 		save['ECI02']=$("[wtq_config=ECI02]:last").val();
+		save['ECI03']=$("[wtq_config=ECI03]:last").val();
+		for(index in save){   //variable  为 index
+			var item=save[index];
+			if(!item){
+					mythisalert(0,'必填项为空','',1000);
+					$("[wtq_config="+index+"]:last").focus();
+					return false;
+				}
+		}
+		save['ECI04']=$("[wtq_config=ECI04]:last").val();
+		save['ECI05']=$("[wtq_config=ECI05]:last").val();
+		save['ECI08']=$("[wtq_config=ECI08]:last").val();
+		
+		save['eci']=eci;
+		$.post('{:url("save_eci_con")}?',save,
+				function (data) {
+					mythisalert(data[0],data[1]);
+					eci_con_ajax();					
+				}
+		,"json").error(
+        		function() {mythisalert(0,'失败');}
+        );
+	}
+	function add_eci_con(eci=''){
+		$("button[wtq_click=ok]:last").attr("onclick",'save_new_eci_con(\''+eci+'\')');
+		if(eci){
+			var tit='修改';
+		}else{
+			var tit='新增';
+		}
+		layer.open({
+			  type: 1,
+			  skin: 'layui-layer-rim', //加上边框
+			  area: ['450px', '350px'], //宽高
+			  content: $("div[wtq_show=eci_con]").html(),
+			  title:tit,
+			});
+		if(eci){
+			$("tr[wtq=del]:last").css("display","none");
+			$("[wtq_config=ECI01]:last").attr('disabled','disabled');
+			for(var i=0;i<=$("tr[wtq_id="+eci+"]").find("td").length;i++){
+				var html=$("tr[wtq_id="+eci+"]").find("td").eq(i).attr("realy");
+				var type=$("tr[wtq_id="+eci+"]").find("td").eq(i).attr("eci_con_wtq_type");
+				$("[wtq_config="+type+"]").val(html);
+			}
+		}else{
+			
+		}
+	}
+</script>
+<script>
+var eci_con_sour={};
+eci_con_ajax();
+	//确定站点
+	function eci_con_site_ajax(site){
+		if(site==''){
+			return false;
+		}
+		eci_con_sour['eci03']=site;
+		eci_con_ajax();
+	}
+	function eci_con_ajax(){
+		var ECI02=$("select[wtq_eci_sour=ECI02]:last").val();
+		eci_con_sour['eci02']=ECI02;
+		var ECI01=$("input[wtq_eci_sour=ECI01]:last").val();
+		eci_con_sour['eci01']=ECI01;
+		$.post('{:url("eci_con_ajax")}',eci_con_sour,
+				function (data) {
+					$("table[wtq_eci_con_table]").html(data);
+				}
+		,"json").error(
+        		function() {mythisalert(0,'失败');}
+        );
+	}
+	//排序
+	function eci_con_paixu(ii,a){
+		eci_con_sour['ii']=ii;
+		if(a==1){a=0;}else{a=1;}
+		eci_con_sour['a']=a;
+		eci_con_ajax();
+	}
+</script>

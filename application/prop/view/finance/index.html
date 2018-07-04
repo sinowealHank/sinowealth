@@ -1,0 +1,94 @@
+{extend name="index@index/base" /}
+{block name="main"}
+<style>
+    .search_form span{ margin-left: 10px;}
+    .search_form input{width: 120px;}
+
+</style>
+<div class="breadcrumbs" id="breadcrumbs">
+    <script type="text/javascript">
+        try{ace.settings.check('breadcrumbs','fixed')}catch(e){}
+    </script>
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">首页</a>
+        </li>
+
+        <li>
+            <a href="#">资产管理</a>
+        </li>
+        <li class="active">财务审核资产列表</li>
+    </ul><!-- .breadcrumb -->
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <h1>财务审核资产列表</h1>
+
+    </div><!-- /.page-header -->
+    <div>
+        <form method="get" role="form" class="search_form">
+            <span>资产编号:<input type="text" name="reg_prop_num" value="{$page_info.reg_prop_num ? $page_info.reg_prop_num : '';}"></span>
+            <span>使用人:<input type="text" name="prop_user" value="{$page_info.prop_user ? $page_info.prop_user: '';}"></span>
+            <span>申请人:<input type="text" name="propuser" value="{$page_info.propuser ? $page_info.propuser: '';}"></span>
+            <span><button class="btn btn-primary" type="submit">查询</button></span>
+            <span><a href="{:url('prop/finance/checked')}"   class="btn btn-primary pull-right">查看已审核</a></span>
+        </form>
+
+    </div>
+    <div>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>ID:</th>
+                <th>资产编号：</th>
+                <th>资产名称：</th>
+                <th>规格型号：</th>
+                <th>所在部门：</th>
+                <th>使用部门：</th>
+                <th>负责部门：</th>
+                <th>使用人：</th>
+                <th>申请人：</th>
+                <th>审核状态：</th>
+                <th>操作：</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="$page_info.finance" id="vo"}
+            <tr>
+                <td>{$vo.id}</td>
+                <td>{$vo.reg_prop_num}</td>
+                <td>{$vo.reg_prop_name}</td>
+                <td>{$vo.product_model}</td>
+                <td>{$vo.dep}</td>
+                <td>{$vo.use_dep}</td>
+                <td>{$vo.respon_dep}</td>
+                <td>{$vo.prop_user}</td>
+                <td>{$vo.propuser}</td>
+                <td style="text-align: center;">
+                    {switch name="$vo.finan_check"}
+                       {case value="1"}<button class="btn btn-info btn-xs">已审核</button>{/case}
+                       {case value="0"}<button class="btn btn-xs btn-info">未审核</button>{/case}
+                    {/switch}
+                </td>
+                <td>
+                    <button class="btn btn-minier btn-primary prop-edit" prop_id="{$vo.id}"><i class="icon-edit"></i></button>
+                    <!--<button class="btn btn-minier btn-purple"><i class="icon-trash"></i></button>-->
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+        {$page_info.page}
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+    $(".prop-edit").click(function(){
+        var id = $(this).attr('prop_id');
+        layerIframe('审核资产',"{:url('/prop/finance/edit/id/')}"+id,wid="1000px;",hig="500px;");
+    })
+
+</script>
+{/block}

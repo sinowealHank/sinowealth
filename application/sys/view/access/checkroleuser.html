@@ -1,0 +1,132 @@
+{extend name="index@index/base" /}
+{block name="main"}
+<style>
+    .user button{margin-left: 5px;}
+</style>
+<div class="breadcrumbs" id="breadcrumbs">
+    <script type="text/javascript">
+        try{ace.settings.check('breadcrumbs','fixed')}catch(e){}
+    </script>
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">首页</a>
+        </li>
+
+        <li>
+            <a href="#">后台管理</a>
+        </li>
+        <li class="active">权限设定</li>
+
+    </ul><!-- .breadcrumb -->
+</div>
+<div class="page-content">
+    <form id="priFrom">
+        <div class="page-header">
+            <a class="btn btn-primary pull-right is_edit_all_y" >开启全部</a>
+            <a class="btn btn-info pull-right is_edit_all_n" style="margin:0 15px 0 0;">关闭全部</a>
+            <a class="btn btn-primary pull-right" href="index" style="margin:0 15px 0 0;">返回</a>
+            <span><label>权限组别：</label>
+            <select id="roleId" name="roleId">
+                <option value="0">请选择角色</option>
+                {$role}
+            </select>
+            </span>
+        </div>
+
+
+    </form>
+</div>
+
+
+<div class="user">
+
+
+</div>
+<div style="margin-top:200px;position: absolute;display: none" id="user_edit" >
+    <button class="btn btn-primary part_open_edit">开启个人资料修改功能</button>
+    <button class="btn btn-info part_close_edit" style="margin-left: 10px;">关闭个人资料修改功能</button>
+</div>
+{/block}
+
+
+{block name="script"}
+<script src="__PUBLIC__/static/assets/js/checktree/checktree.js"></script>
+<script>
+       $("select[name=roleId]").change(function(){
+            var id = $(this).find('option:selected').val();
+           $.post("{:url('sys/access/get_user')}",{id:id},function(result){
+               $(".user").html(result);
+               $('button[name=sys_user_edit]').click(function(){
+                   m_dialog("{:url('/sys/User/edit/id/')}"+$(this).attr('user_id'),'编辑员工','max','max');
+               });
+               if(result){
+                   $("#user_edit").css('display','block');
+               }else{
+                   $("#user_edit").css('display','none');
+               }
+
+
+
+           })
+       });
+
+       //关闭修改功能
+       $(".is_edit_all_n").click(function(){
+           layer.confirm('关闭所有用户修改个人资料功能？', {
+               btn: ['确认','取消'] //按钮
+           }, function(){
+               $.post("{:url('sys/access/closeEdit')}",{},function(result){
+                   showMsg(result);
+               },"JSON")
+           });
+       });
+
+       //开发修改功能
+       $(".is_edit_all_y").click(function(){
+           layer.confirm('开启所有用户修改个人资料功能？', {
+               btn: ['确认','取消'] //按钮
+           }, function(){
+               $.post("{:url('sys/access/openEdit')}",{},function(result){
+                   showMsg(result);
+               },"JSON")
+           });
+       });
+
+       //部分开放修改功能
+       $(".part_open_edit").click(function(){
+           layer.confirm('全部开放修改个人资料功能？', {
+               btn: ['确认','取消'] //按钮
+           }, function(){
+               var user_id_array = new Array();
+               $(".user button").map(function(){
+                   var  user_id  = $(this).attr('user_id');
+                   user_id_array.push(user_id);
+               });
+               $.post("{:url('sys/access/editPart')}",{id:user_id_array},function(result){
+                   showMsg(result);
+               },"JSON")
+           });
+       });
+
+       //关闭部分人员修改功能
+       $(".part_close_edit").click(function(){
+           layer.confirm('全部开放修改个人资料功能？', {
+               btn: ['确认','取消'] //按钮
+           }, function(){
+               var user_id_array = new Array();
+               $(".user button").map(function(){
+                   var  user_id  = $(this).attr('user_id');
+                   user_id_array.push(user_id);
+               });
+               $.post("{:url('sys/access/closePartEdit')}",{id:user_id_array},function(result){
+                   showMsg(result);
+               },"JSON")
+           });
+       });
+
+
+
+
+</script>
+{/block}

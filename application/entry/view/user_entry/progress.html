@@ -1,0 +1,202 @@
+<div align="center">
+	<button class="btn btn-sm btn-primary" onclick="Excel_out()" style="margin-right: 200px;">导出</button>
+	进度状况：
+	<select style="margin-bottom:5px;">
+		<option onclick="progress_index_ajax()">all</option>
+		<option onclick="progress_index_ajax(0)">未完成</option>
+		<option onclick="progress_index_ajax(1)">已完成</option>
+		<option onclick="progress_index_ajax(2)">待完成</option>
+	</select>
+	<table class="this_progress">
+		<thead>
+			<tr>
+				<td colspan="2">姓名：{$user[0]['nickname']}</td>
+				<td>部门：{$user[0]['dep_name']}</td>
+				<td colspan="3">邮件用户名： {$user[0]['email']}</td>
+			</tr>
+			<tr>
+				<?php $technical_ng=isset($user[0]['technical_ng'])?$user[0]['technical_ng']:''; ?>
+				<td colspan="2">职能：{foreach name="$page_info['hr_technical_arr']" item="vo"}{eq name="technical_ng" value="$key"}{$vo}{/eq}{/foreach}</td>
+				<?php $hr_work_level_id=isset($user[0]['hr_work_level_id'])?$user[0]['hr_work_level_id']:''; ?>			
+				<td>职等：{foreach name="$page_info['hr_work_level_arr']" item="vo"}{eq name="hr_work_level_id" value="$key"}{$vo}{/eq}{/foreach}</td>
+				<td colspan="3">入职日期： {$user[0]['entry_date']}</td>
+			</tr>
+			<tr>
+				<td style="width:30px;"></td>
+				<td style="width:150px;">应办事項</td>
+				<td style="width:65px;">完成进度</td>
+				<td style="width:135px;">操作日期</td>
+				<td style="width:68px;">经办人</td>
+				<td style="width:68px;">操作</td>
+			</tr>
+		</thead>
+		<tbody twq_id="progress_table">
+			<tr>
+				<td colspan="6">没有数据</td>
+			</tr>
+			<!--tr>
+				<td>1</td>
+				<td>系统排定工号</td>
+				<td><span class="btn btn-minier btn-danger" onclick="alert('未知')">未完成</span></td>
+				<td>2017-8-14 09:14:30</td>
+				<td>所昨天</td>
+				<td>
+					<button class="btn btn-xs" onclick="">完成</button>
+				</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>门禁卡制作</td>
+				<td><span class="btn btn-minier btn-success">已完成</span></td>
+				<td></td>
+				<td></td>
+				<td>
+					<button class="btn btn-xs" onclick="">备注</button>
+				</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>发放办公用品</td>
+				<td><span class="btn btn-minier btn-primary">待完成</span></td>
+				<td></td>
+				<td></td>
+				<td>
+					<button class="btn btn-xs" onclick="">完成</button>
+					<button class="btn btn-xs" onclick='prompt("请输入原因","");'>跳过</button>
+				</td>
+			</tr-->
+		</tbody>
+	
+	
+	</table>
+</div>
+<div style="float:right;padding-top:10px;">
+	<a class="btn btn-sm btn-primary layui-layer-close" style="margin:0 60px 10px 0;position: initial;" wtq_up_index_alert_close="close">关闭</a>
+</div>
+{neq name="$request->action()" value="progress_s"}
+<script>
+	//完成
+	function progress_ok(i){
+		$.post('{:url("progress_change")}',{user_id:progress_data[i]['user_id'],process_id:progress_data[i]['process_id'],is_ok:1},
+	            function (data) {
+					progress_data=data[2];
+					mythisalert(data[0],data[1]);
+	            	progress_index_ajax();
+	           },"json").error(function(){mythisalert(0,'失败');});
+	}
+	//跳过
+	function progress_skip(i){
+		var statu=prompt("请输入原因",progress_data[i]['statu']);
+		if(statu==='' || statu){
+			$.post('{:url("progress_change")}',{user_id:progress_data[i]['user_id'],process_id:progress_data[i]['process_id'],is_ok:0,statu:statu},
+		            function (data) {
+						progress_data=data[2];
+						mythisalert(data[0],data[1]);
+		            	progress_index_ajax();
+		           },"json").error(function(){mythisalert(0,'失败');});
+		}else{
+			
+		}
+		
+	}
+	//备注
+	function progress_sta(i){
+		var statu=prompt("备注",progress_data[i]['statu']);
+		if(statu==='' || statu){
+			$.post('{:url("progress_change")}',{user_id:progress_data[i]['user_id'],process_id:progress_data[i]['process_id'],is_ok:progress_data[i]['is_ok'],statu:statu},
+		            function (data) {
+						progress_data=data[2];
+						mythisalert(data[0],data[1]);
+						progress_index_ajax();
+		           },"json").error(function(){mythisalert(0,'失败');});
+		}else{
+			
+		}
+	}
+</script>
+{/neq}
+<!-- 内容拼接 -->
+<script>
+	//开局布局
+	progress_index_bt()
+	function progress_index_bt(){
+		progress_data={$p_and_u};
+		progress_index_ajax()
+	}
+	//拼接内容
+	function progress_index_ajax(this_pd){
+		var len=progress_data.length-1;
+		var progress_table;
+		for(i=0;i<=len;i++){
+			if(this_pd==0){
+				if(progress_data[i]['is_ok']==this_pd){
+					var progress_table=progress_Mosaic(i,progress_table)
+				}
+			}else if(this_pd==1){
+				if(progress_data[i]['is_ok']==this_pd){
+					var progress_table=progress_Mosaic(i,progress_table)
+				}
+			}else if(this_pd==2){
+				if(progress_data[i]['is_ok']==this_pd || progress_data[i]['is_ok']!=0 && progress_data[i]['is_ok']!=1){
+					var progress_table=progress_Mosaic(i,progress_table)
+				}
+			}else{
+				var progress_table=progress_Mosaic(i,progress_table)
+			}
+		}
+		if(!progress_table){
+			mythisalert(2,'没有该类型数据');
+		}
+		$("tbody[twq_id=progress_table]").html(progress_table);
+	}
+	//拼接内容的按钮
+	function progress_Mosaic_button(){
+		if(progress_data[i]['is_ok']==1){
+			var progress_table_button='<button class="btn btn-xs" onclick="progress_sta('+i+')">备注</button>';
+		}else{
+			var progress_table_button='<button class="btn btn-xs" onclick="progress_ok('+i+')">完成</button>';
+		}
+		if(progress_data[i]['process_skip']==1){
+			if(progress_data[i]['is_ok']==2 || progress_data[i]['is_ok']!=0 && progress_data[i]['is_ok']!=1){
+				var progress_table_button=progress_table_button+' <button onclick="progress_skip('+i+')" class="btn btn-xs" onclick="prompt(\'请输入原因\',\'\')">跳过</button>';
+			}
+		}
+		return progress_table_button;
+	}
+	//拼接摘出
+	function progress_Mosaic(i,progress_table){
+		if('{$request->action()}'==progress_data[i]['process_step_name']){
+			progress_table_button=progress_Mosaic_button(progress_data)
+		}else{
+			progress_table_button='';
+		}
+		
+		
+		if(progress_data[i]['statu']){
+			var progress_table_statu_click='onclick="alert(\''+progress_data[i]['statu']+'\')"';
+		}else{var progress_table_statu_click='';}
+		ii=i*1+1*1;
+		var progress_table=progress_table+'<tr>'+
+							'<td>'+ii+'</td>'+
+							'<td>'+progress_data[i]['process_name']+'</td>'+
+							'<td><span '+progress_table_statu_click+progress_data[i]['is_ok_name']+'</span></td>'+
+							'<td>'+progress_data[i]['creat_time']+'</td>'+
+							'<td>'+progress_data[i]['ok_user_name']+'</td>'+
+							'<td style="width:95px">'+progress_table_button+'</td>'+
+					   '</tr>';
+		return progress_table;
+	}
+</script>
+<script>
+	//表格导出
+	function Excel_out(){
+		self.location='{:url("Entry_excel_out.php")}?id='+progress_data[0]['user_id'];
+	}
+</script>
+<style>
+	.this_progress td {
+		padding:0 5px;
+		height:30px;
+		border: 1px solid #afcdb0;
+	}
+</style>

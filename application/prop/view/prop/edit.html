@@ -1,0 +1,213 @@
+<style type="text/css">
+    body{font-size: 14px;}
+    label{padding-left: 1.5em}
+    .form{margin-top: 10px;}
+    .form input{height: 25px;width: 240px;padding-left: 5px;}
+    .formdata{width: 380px;float: left}
+    .left{display:block;position:absolute;width:120px}
+    .right{display:block;margin-left:120px}
+    .select_edit{width:247px;height: 27px;}
+</style>
+
+<form  name="prop"  method="post" action="{:url('prop/prop/editprop')}" enctype="multipart/form-data">
+    <input type="hidden" name="id" value="{$page_info.prop_data.id}">
+    <div>
+        <div class="formdata">
+            <div class="form">
+                <span class="left" ><label>资产编号：</label></span>
+                <span class='right'><input type="text" name="reg_prop_num" value="{$page_info.prop_data.reg_prop_num}"><span style="color:red ">*</span></span>
+            </div>
+            <div class="form">
+                <span class="left" ><label>规格型号：</label></span>
+                <span class='right'><input type="text" name="product_model" value="{$page_info.prop_data.product_model}"><span style="color:red ">*</span></span>
+            </div>
+            <div class="form">
+                <span class="left"><label>购买日期：</label></span>
+                 <span class='right'>
+                     <!--<input  value="{$page_info.prop_data.buy_time}" class="laydate-icon-molv dateControl" id="buy" format='YYYY-MM-DD ' festival="" skin="molv" name="buy_time">-->
+                         <input  style="width: 220px;" class="laydate-icon" id='buy'   {if condition="$page_info.prop_data.logoff_time eq '0000-00-00'"} value=""{else /}value="{$page_info.prop_data.buy_time}"{/if}    name="buy_time"/>
+                 </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>使用部门：</label></span>
+                <span class='right'>
+                     <input   type="text" value="{$page_info.prop_data.use_dep}">
+                </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>备注：</label></span>
+                <span class='right'><input type="text" name="prop_remark" value="{$page_info.prop_data.prop_remark}"></span>
+            </div>
+
+            <div class="form">
+                <span class="left"><label>注销时间：</label></span>
+                 <span class="right">
+                          <input  style="width: 220px;" class="laydate-icon laydate-icon-molv" id='logoff_time' {if condition="$page_info.prop_data.logoff_time eq '0000-00-00'"} value=""{else /} value="{$page_info.prop_data.logoff_time}"{/if}  name="logoff_time"/>
+                     <!--<input  value="{$page_info.prop_data.logoff_time}" class="laydate-icon-molv dateControl" id="logoff_time" format='YYYY-MM-DD ' festival="" skin="molv" name="logoff_time">-->
+                 </span>
+            </div>
+
+            <div class="form">
+                <span class="left"><label>开始使用日期：</label></span>
+                 <span class="right">
+                       <input  style="width: 220px;"  class="laydate-icon" id='start_use_time' value="{$page_info.prop_data.start_use_time?$page_info.prop_data.start_use_time:'';}"  name="start_use_time" />
+                     <!--<input  value="{$page_info.prop_data.start_use_time}" class="laydate-icon-molv dateControl" id="start_use_time" format='YYYY-MM-DD ' festival="" skin="molv" name="start_use_time">-->
+                 </span>
+            </div>
+        </div>
+        <div class="formdata">
+            <div class="form">
+                <span class="left"> <label>资产名称：</label></span>
+                <span class="right"><input type="text" name="reg_prop_name" value="{$page_info.prop_data.reg_prop_name}"><span style="color:red ">*</span></span>
+            </div>
+            <div class="form">
+                <span class="left"><label>是否新人：</label></span>
+                 <span class="right">
+                     <input  style="margin-left: -110px;" type="checkbox" name="is_newbie"  {if condition="$page_info.prop_data.is_newbie eq 1"} checked="checked" {/if} >
+                 </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>是否公共：</label></span>
+                 <span class="right">
+                     <input style="margin-left: -110px;" type="checkbox" name="is_common"  {if condition="$page_info.prop_data.is_common eq 1"} checked="checked" {/if} >
+                 </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>所在部门：</label></span>
+                <span class="right" name="dep">
+                     <select class="select_edit" name="local_dep_id"  >
+                         <option value="0">选择部门</option>
+                         {$page_info.dep_str}
+                     </select><span style="color:red ">*</span>
+                </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>使用人：</label></span>
+                <span class="right" id="prop_user">
+                    <!--<input type="text" name="prop_user" value="{$page_info.prop_data.prop_user}">-->
+                    {$page_info.user_str}<span style="color:red ">*</span>
+                </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>申请人：</label></span>
+                <span class="right" id="apply_user">
+                   <select class="select_edit" name="apply_id"  >
+                          <option>请选择人员</option>
+                          {$page_info.user_data_str}
+                   </select>
+                </span>
+            </div>
+
+
+            <div class="form">
+                <span class="left"><label>负责部门：</label></span>
+                 <span class="right"  >
+                        <select class="select_edit" name="respon_dep_id"  >
+                          {$page_info.respon_dep_str}
+                        </select><span style="color:red ">*</span>
+                 </span>
+            </div>
+
+        </div>
+        <div style="clear: both;float: right;">
+            <button type="button" class="layui-btn layui-btn-small edit">编辑</button>
+            <button type="button" class="layui-btn layui-btn-small closeLayer">取消</button>
+        </div>
+    </div>
+</form>
+
+<script>
+
+    laydate.skin('molv');	//设定皮肤，值有molv和dahong两种
+    var start = {
+        elem: '#buy',
+        format: 'YYYY-MM-DD',
+        min:'2000-00-00', //设定最小日期为当前日期
+        max: '2099-06-16 23:59:59', //最大日期
+        istime: true,
+        istoday: false,
+        choose: function(datas){
+            end.min = datas; //开始日选好后，重置结束日的最小日期
+            end.start = datas //将结束日的初始值设定为开始日
+        }
+    };
+    var end = {
+        elem: '#logoff_time',
+        format: 'YYYY-MM-DD',
+        min: '2000-00-00',
+        max: '2099-06-16 23:59:59',
+        istime: true,
+        istoday: true,
+        choose: function(datas){
+            start.max = datas; //结束日选好后，重置开始日的最大日期
+        }
+    };
+    var final= {
+        elem: '#start_use_time',
+        format: 'YYYY-MM-DD',
+        min: '2000-00-00',
+        max: '2099-06-16 23:59:59',
+        istime: true,
+        istoday: false,
+        choose: function(datas){
+            start.max = datas; //结束日选好后，重置开始日的最大日期
+        }
+    };
+    laydate(start);
+    laydate(end);
+    laydate(final);
+
+    //
+       $(".edit").click(function(){
+           var data = $("form[name=prop]").serializeArray();
+           $.post("{:url('prop/prop/editprop')}",data,function(result){
+               showMsg(result);
+               //编辑后刷新detagrid页面
+               $("#tt").datagrid('reload');
+           },"JSON");
+       });
+
+
+    //加载资产的状态
+//
+    $('select[name=local_dep_id]').change(function(){
+        var id = $(this).find("option:selected").val();
+        $.post("{:url('prop/prop/getedituser',0,false)}",{id:id},function(result){
+            $("#prop_user").empty();
+            $("#prop_user").html(result['prop_user']);
+            $("#apply_user").empty();
+            $("#apply_user").html(result['prop_apply']);
+        });
+    });
+
+    $("input[name=is_common]").click(function(){
+        if($(this).is(":checked")){
+            $("#prop_user").empty();
+            var input = '<input  type="text" name="prop_user"><span style="color: red">*</span>';
+            $("#prop_user").html(input);
+        }else{
+            $("#prop_user").empty();
+            var input = '<select class="select_edit" name="user_id" style="width: 240px;"><option>请选择所在部门</option></select>';
+            $("#prop_user").html(input);
+        }
+    });
+
+    //是否为新人
+    $("input[name=is_newbie]").click(function(){
+        if($(this).is(":checked")){
+            $("#prop_user").empty();
+            var input = '<input type="text" name="prop_user"><span style="color: red">*</span>';
+            $("#prop_user").html(input);
+        }else{
+            $("#prop_user").empty();
+            var input = '<select class="select_edit" name="user_id" style="width: 240px;"><option>请选择所在部门</option></select>';
+            $("#prop_user").html(input);
+        }
+    });
+
+
+
+
+
+
+</script>

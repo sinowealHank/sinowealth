@@ -1,0 +1,158 @@
+{extend name="index@index/base" /}
+{block name="main"}
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<script type="text/javascript">
+		try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	</script>
+
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+				<a href="#">首页</a>
+		</li>
+
+		<li>
+			<a href="#">用户首页</a>
+		</li>
+	</ul><!-- .breadcrumb -->
+</div>
+
+<div class="page-content">
+	<div class="page-header col-xs-12">
+            <h1 class="col-xs-4">
+                用户首页
+                <small>
+                    <i class="icon-double-angle-right"></i>
+                    {:session('cur_user_info')['nickname']}
+                </small>
+            </h1>
+        <div class="pull-right  clearfix">
+        	{neq name="page_info.boss_id" value="$page_info.user_info.id"}
+                <input type="button" class="btn btn-info btn-sm" id="add_note" rbac_flag="add_note" value="新增申请单" />
+                <a href="{:url('UserMain/note_list')}" class="btn btn-info btn-sm" rbac_flag="note_list">申请单列表</a>
+            {/neq}
+            {eq name="page_info.hr_manage" value="1"}
+            	<a href="{:url('UserMain/sub_user_list')}" class="btn btn-info btn-sm" rbac_flag="sub_user_list">下属人员考勤查看</a>
+            {/eq}
+            <!--<button type="button" class="btn btn-info btn-sm" id="refresh_hr">刷新本月考勤</button>-->
+        </div>        
+	</div><!-- /.page-header -->
+
+	<div class="row"><!-- /.col -->
+    	<div class="col-xs-12"  id="pageContent">
+            <div id="calendar" class="calendar"></div>
+        </div>
+	</div><!-- /.row -->
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+var data = eval('('+'{$page_info.hr_json}'+')');
+var time={:json_encode($page_info['show_time'])};
+
+$('#calendar').calendar({dragThenDrop:false,data:data,
+	clickNextBtn:function(e){
+		events_reset();
+		},
+	clickPrevBtn:function(e){
+		events_reset();
+		},
+	clickTodayBtn:function(e){
+		events_reset();
+		},
+	clickEvent:function(e){
+
+		hr_date=new Date($(e.element).parents('div[data-date]').attr('data-date')).format('yyyy-MM-dd');
+		
+		current_month=get_cur_date();	
+		
+		div_obj=$(e.element);
+		//判断本日考勤是否正常
+		if(div_obj.is('.color-red')){
+				//m_dialog('add_note/from/index/hr_date/'+hr_date,'新增申请单('+hr_date+")",'max','max','index');
+				if(hr_date=='{$page_info.cur_date}'){
+						layer.msg('{$page_info.first_card}');
+					}else{
+						layerIframe('新增申请单('+hr_date+")","{:url('/user/user_main/add_note/from/index')}/hr_date/"+hr_date,'','','','true');
+						}				
+			}else{
+				//$.messager.show(div_obj.attr('title'),{type:'primary',placement:'top',time:12000});
+				layerIframe(hr_date+'日考勤信息',"{:url('get_day_hr_cal')}/hr_date/"+hr_date);
+				}
+		/*
+		 is(‘.classname’)
+		  hasClass(‘classname’)
+		$.post('/sys/Site/del_event/current_month/'+current_month+'/holiday_date/'+holiday_date.format('YYYY-MM-d'),function(result){
+				var calendar = $('#calendar').data('zui.calendar');
+				calendar.removeEvents($(e.element).attr('data-id'));
+			});
+		*/
+		}
+
+});
+		
+//清理当前日期范围内的所有事件
+function clear_events(){
+	var calendar = $('#calendar').data('zui.calendar');
+	
+	events1=$('#calendar').find('td div[data-id]');
+	events1.each(function(index, element) {
+        calendar.removeEvents($(element).attr('data-id'));
+    });
+
+	}
+
+//当前月份事件重置
+function events_reset(){
+	clear_events()
+	$.post('get_user_month_hr/date/'+get_cur_date(),function(result){
+			if(result.length>0){
+				var calendar = $('#calendar').data('zui.calendar');
+				var newEvents = eval('('+result+')');
+				calendar.addEvents(newEvents);
+				}
+		});
+	}
+
+//获取当前日期
+function get_cur_date(){
+	return $('#calendar').find('.btn-toolbar').find('.calendar-caption').text();
+	}
+	
+//新增申请单	
+$('#add_note').click(function(){
+	/*
+	$.get('add_note/from/index','',function(data){
+		layer.open({
+		  type: 1,
+		  skin: 'layui-layer-rim', //加上边框
+		  area: ['1024px', '440px'], //宽高
+		  content: data
+		});   					
+	});
+	*/
+	//m_dialog('add_note/from/index','新增申请单','max','','index');
+	layerIframe('新增申请单',"{:url('/user/user_main/add_note/from/index')}",'','','','true');
+});
+
+//刷新本月考勤数据
+$('#refresh_hr').click(function(){
+		if(confirm('确认重新计算本月考勤?')){
+			 $.post('calculate_user_hr',function(result){
+				 result_json=eval('('+result+')');
+				 				 
+				 if(result_json.status==1){
+					 	$.messager.show(result_json.msg,{type:'primary',placement:'center',time:6000});
+						location.reload();
+					 }else{
+						$.messager.show(result_json.msg,{type:'danger',placement:'center',time:6000});
+						 }
+				 })
+			}
+	});
+	
+	showStatus_a_button('{$Think.PRI_ARR}','{$Think.RBAC_FLAG}');
+</script>
+{/block}

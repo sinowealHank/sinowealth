@@ -1,0 +1,96 @@
+{extend name="index@index/base" /}
+{block name="main"}
+{include file="../application/file/view/up/public.html" /}
+{/block}
+{block name="script"}
+    <script>
+  		//左侧菜单拼接调用
+    	menu_ajax('i')
+    	//文件下载
+		function xz(id){
+	    	xz_all(id,'Files')
+	    }
+    	//文件预览
+		function yl(url,houzhui,id){
+			yl_all(url,houzhui,id,'Files')
+	    }
+		//左侧菜单拼接
+		function menu_ajax(i=''){
+			menu_ajax_all(i,'Files')
+		}
+		//异步加载页面内容
+		function ajax_index(url='',thi,s){
+			ajax_index_all(url,thi,s,'Files')
+		}
+		//对文件进行踩赞
+		function lick(a,b,name,id){
+    		lick_all(a,b,name,id,'Files')
+    	}
+		//文件留言发表
+    	function fb(a){
+    		fb_all(a,'Files')
+    	}
+    </script>
+   	<script>
+  		//页面内容组合
+    	function indexx(data,foot,url,shumu,bt){
+    		var text;
+    		if(data==''){text='<tr><td colspan="7"><h2><p style="color:red;">没有数据</p></h2></td></tr>'}
+               
+    		$.each(data, function (index, item) {
+               	if(item.down==1){var down='<button onclick="return xz(\''+item.id+'\');" class="btn btn-xs">下载</button> ';}else{var down='<button class="btn btn-xs" style="opacity:0;cursor:auto">去去</button> '};
+               	var size_K;var size_M;var size_G;
+               	size_B=item.file_size;size=size_B.toFixed(2)+'B';
+               	if(size_B>100){
+               		size_K=size_B/1024;size=size_K.toFixed(2)+'KB';
+               	}
+				if(size_K>100){
+               		size_M=size_K/1024;size=size_M.toFixed(2)+'MB';
+               	}
+				if(size_M>100){
+               		size_G=size_M/1024;size=size_G.toFixed(2)+'GB';
+               	}
+				if(size_G>100){
+               		size_T=size_G/1024;size=size_T.toFixed(2)+'TB';
+               	}
+				var arr2='{$ok_open}';
+				var arr2=JSON.parse(arr2);
+				if($.inArray(item.file_houzhui, arr2)=='-1'){
+					var yl='<!--button class="btn btn-xs" style="opacity:0;cursor:auto">下载</button--> ';
+				}else{
+    				var yl='<!--button onclick="return yl(\''+item.url+item.file_sc_name+'.'+item.file_houzhui+'\',\''+item.file_houzhui+'\',\''+item.id+'\');" class="btn btn-xs">预览</button--> ';
+    			}
+				var change_time=item.file_time;
+				change_time = change_time.split(' ');
+                   text=text+'<tr>'+
+                   	'<td>'+item.id+'</td>'+
+                   	'<td wtq_this_id="name'+item.id+'"><div wtq_this_wid="name" title="'+item.file_name+'" style="display:block;white-space:nowrap; overflow:hidden;text-overflow:ellipsis;width:300px;">'+item.file_name+'</div></td>'+
+                   	'<!--td>'+item.fenlei_name+'</td-->'+
+                   	'<td>'+size+'</td>'+
+                   	'<td>'+change_time[0]+'</td>'+
+                   	'<td>'+item.bb+'</td>'+
+                   	'<td>'+yl+down+
+                   	'<button hig="90%" wid="70%" title="'+item.file_name+'" url="{:url(\'files/file_xx\')}?id='+item.id+'" class="btn btn-xs layerIframe">详情</button> '+
+                   	'</td>'
+                   //输出0...aaa,bbb,ccc  1...ddd,eee,fff  2...ggg,hhh,iii   这时的index为数组下标,item相当于取这二维数组中的每一个数组
+                  
+                   text=text+'</tr>';
+               });
+               $("div[class=box-body]").find('tbody').html(text);
+               var inn=$("div[class=box-footer]").find("div[class=text-right]");
+             	if(foot==1){
+             		inn.html('')
+             	}else{
+             		inn.html(foot)
+             	}
+               $("input[wtq_up_index_id=url]").val(url);
+               $("span[wtq_mem_id=mem]").html(shumu);
+               if(bt){
+               	$("span[wtq_zs_id=zs]").html(bt);
+               }
+               $('.loading').parent().css('display','none');
+    	}
+    	//function xx_l(){return 'file_xx_up';}
+    	//function xx_add(){return 'add1';}
+   	</script>
+{/block}

@@ -1,0 +1,256 @@
+<div align="center">
+	<table class="this_progress">
+		<thead>
+			<tr>
+				<td onclick="this_paixu()"></td>
+				<td style="width:30px;">排序</td>
+				<td style="width:150px;">事項</td>
+				<td style="width:150px;">步骤</td>
+				<td style="width:65px;">允许跳过</td>
+				<td style="width:65px;">屏蔽</td>
+			</tr>
+		</thead>
+		<tbody twq_id="process_tbody">
+			
+		</tbody>
+	</table>
+</div>
+<div style="float:right;padding-top:10px;">
+	<button onclick="" class="btn btn-sm btn-primary" style="margin:0 5px 10px 0;">保存</button>
+	<a onclick="" class="btn btn-sm btn-primary layui-layer-close" style="margin:0 60px 10px 0;position: initial;" wtq_up_index_alert_close="close">关闭</a>
+</div>
+<!-- 点击排序 -->
+<script>
+	function this_paixu(){
+		 var len=$("input[wtq_process_id=paixu]").length-1;
+		 for(i=len;i>=1;i--){
+			 if($("input[wtq_process_id=neirong]").eq(i-1).val()){
+				 if($("input[wtq_process_id=paixu]").eq(i-1).val()!=i){
+					 $("input[wtq_process_id=paixu]").eq(i-1).val(i)
+					 $("input[wtq_process_id=paixu]").eq(i-1).trigger("change");
+				 }
+			 }else{
+				 $("input[wtq_process_id=neirong]").eq(i-1).parents('td').parents('tr').remove()
+			 }
+		 }
+	}
+</script>
+<!-- 拖拽 -->
+<script>
+	var fx;
+    var lastY = 0;
+    $("body").mousemove(function(e) {
+        if (lastY > e.pageY) {
+        	fx='l';
+        } else if (lastY < e.pageY) {
+        	fx='r';
+        } else {
+           $("#dirSpan").text("—");
+        }
+        lastY = e.pageY;
+    });
+    
+	var one;var star=0;
+	function yd(swi){
+		one=$(swi);
+		one.css("background-color","yellow")
+		star=1;
+	}
+	var i=0;
+	function yd_2(swii){
+		two=$(swii);
+		if(star==1 && fx=='l'){
+			one.parents('tr').insertBefore(two);
+		}else if(star==1 && fx=='r'){
+			one.parents('tr').insertAfter(two);
+		}
+	}
+	function yd_stop(){
+		one.css("background-color","")
+		star=0
+	}
+	$(document).mouseup(function(){
+		one.css("background-color","")
+		star=0
+	})
+</script>
+<!-- 页面内容 -->
+<script>
+	//表格拼接
+	process_index_ajax()
+	//background-image: -webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec));background: #f2f2f2;
+	function process_index_ajax(){
+		var data={$process};
+		
+		var len=data.length-1;
+		var process_table;
+		for(var i=0;i<=len;i++){
+			if(data[i]['process_skip']==1){
+				process_checked="checked=checked";
+			}else{
+				process_checked='';
+			}
+			var process_input='<label class="inline">'+
+						'<input '+process_checked+' onchange="process_skip('+data[i]['id']+',this)" class="ace ace-switch ace-switch-5" type="checkbox" value="1">'+
+						'<span class="lbl"></span>'+
+					'</label>';
+					
+					
+			var process_select='';
+			var process_select_checked='';
+			var process_select_checked_pd='';
+			for(var ii=1;ii<=2;ii++){
+				if(ii==1){
+					var process_select_name='基本信息';
+				}
+				if(ii==2){
+					var process_select_name='IT部门';
+				}
+				if(data[i]['process_step']==ii){
+					var process_select_checked='selected="selected"';
+					var process_select_checked_pd='1';
+				}else{
+					var process_select_checked='';
+				}
+				process_select=process_select+'<option '+process_select_checked+' value="'+ii+'">'+process_select_name+'</option>';
+			}
+			if(process_select_checked_pd==1){
+				process_select='<select onchange="process_step('+data[i]['id']+',this)">'+process_select+'</select>'
+			}else{
+				process_select='<select onchange="process_step('+data[i]['id']+',this)"><option></option>'+process_select+'</select>'
+			}
+			
+			
+			if(data[i]['process_shield']==1){
+				var process_Shield_pd="checked=checked";
+			}else{
+				var process_Shield_pd='';
+			}
+			var process_Shield='<label class="inline">'+
+									'<input '+process_Shield_pd+' onchange="process_Shield('+data[i]['id']+',this)" class="ace ace-switch ace-switch-5" type="checkbox" value="1">'+
+									'<span class="lbl"></span>'+
+								'</label>';
+			
+			var process_table=process_table+'<tr onmouseover="yd_2(this)"><td onmouseup="yd_stop(this)" onmousedown="yd(this)" style="cursor:pointer;"></td>'+
+						'<td><input onchange="process_sort('+data[i]['id']+',this)" wtq_process_id="paixu" value="'+data[i]['process_sort']+'"></td>'+
+						'<td><input onchange="process_name('+data[i]['id']+',this)" value="'+data[i]['process_name']+'" wtq_process_id="neirong" style="font-size:14px;"></td>'+
+						'<td>'+process_select+'</td>'+
+						'<td>'+process_input+'</td>'+
+						'<td>'+process_Shield+'</td>'+
+						'</tr>';
+		}
+		process_table=process_table+'<tr onclick="add_a_line(this)">'+
+				'<td colspan="6" class="btn-sm btn-primary" style="height:35px;padding-left: 38%;cursor:pointer;">'+
+					'再加一列'+
+				'</td>'+
+			'</tr>'+
+			'<tr style="display:none">'+
+				'<td onmouseup="yd_stop(this)" onmousedown="yd(this)" style="cursor:pointer;"></td>'+
+				'<td><input wtq_process_id="paixu"></td>'+
+				'<td><input value="" wtq_process_id="neirong" style="font-size:14px;"></td>'+
+				'<td>'+
+					'<select>'+
+						'<option></option>'+
+						'<option value="1">基本信息录入</option>'+
+						'<option value="2">分机号 邮箱</option>'+
+						'<option value="3">管理信息录入</option>'+
+						'<!--option></option-->'+
+					'</select>'+
+				'</td>'+
+				'<td>'+
+					'<label class="inline">'+
+						'<input class="ace ace-switch ace-switch-5" type="checkbox" value="1">'+
+						'<span class="lbl"></span>'+
+					'</label>'+
+				'</td><td><button class="btn btn-xs" onclick="process_add(this)">保存</button></td>'+
+			'</tr>';
+		$("tbody[twq_id=process_tbody]").html(process_table);
+	}
+	//加一行
+	function add_a_line(thi){
+		$(thi).before('<tr  onmouseover="yd_2(this)">'+$(thi).next().html()+'</tr>');
+	}
+</script>
+<!-- 内容添加 -->
+<script>
+	function process_add(thi){
+		var process_sort=$(thi).parents('tr').find('input[wtq_process_id=paixu]').val();
+		var process_name=$(thi).parents('tr').find('input[wtq_process_id=neirong]').val();
+		var process_skip=$(thi).parents('tr').find('input[type=checkbox]:checked').val();
+		$.post('{:url("process_add")}',{process_sort:process_sort,process_name:process_name,process_skip:process_skip},
+	            function (data) {
+					mythisalert(data[0],data[1]);
+					if(data[0]==1){
+						$(thi).parents('tr').find('input[wtq_process_id=paixu]').attr('onchange','process_sort('+data[2]+',this)')
+						$(thi).parents('tr').find('input[wtq_process_id=paixu]').val(data[3])
+						$(thi).parents('tr').find('input[wtq_process_id=neirong]').attr('onchange','process_name('+data[2]+',this)')
+						$(thi).parents('tr').find('input[type=checkbox]').attr('onchange','process_skip('+data[2]+',this)')
+						$(thi).parents('tr').find('select').attr('onchange','process_step('+data[2]+',this)')
+						$(thi).parents('td').remove()
+					}
+	           },"json").error(function(){mythisalert(0,'');});
+	}
+</script>
+<!-- 内容修改 -->
+<script>
+	//排序
+	function process_sort(id,thi){
+		$.post('{:url("process_change")}',{id:id,process_sort:$(thi).val()},
+	            function (data) {
+					mythisalert(data[0],data[1]);
+	           },"json").error(function(){mythisalert(0,'失败');});
+	}
+	//事项名称
+	function process_name(id,thi){
+		$.post('{:url("process_change")}',{id:id,process_name:$(thi).val()},
+	            function (data) {
+					mythisalert(data[0],data[1]);
+	           },"json").error(function(){mythisalert(0,'失败');});
+	}
+	//是否允许跳过
+	function process_skip(id,thi){
+		if($(thi).is(':checked')){
+			skip=1;
+		}else{
+			skip=0;
+		}
+		$.post('{:url("process_change")}',{id:id,process_skip:skip},
+	            function (data) {
+					mythisalert(data[0],data[1]);
+	           },"json").error(function(){mythisalert(0,'');});
+	}
+	//属于哪一步
+	function process_step(id,thi){
+		if($(thi).val()){}else{}
+		$.post('{:url("process_change")}',{id:id,process_step:$(thi).val()},
+	            function (data) {
+					mythisalert(data[0],data[1]);
+	           },"json").error(function(){mythisalert(0,'');});
+	}
+	//是否屏蔽
+	function process_Shield(id,thi){
+		if($(thi).is(':checked')){
+			shield=1;
+		}else{
+			shield=0;
+		}
+		$.post('{:url("process_change")}',{id:id,process_shield:shield},
+	            function (data) {
+					mythisalert(data[0],data[1]);
+	           },"json").error(function(){mythisalert(0,'');});
+	}
+</script>
+
+<style>
+	.this_progress input{
+		width:100%;
+		height: 100%;
+		border: 0px solid;
+		font-size: 20px;
+	}
+	.this_progress td {
+		padding:0 5px;
+		height:30px;
+		border: 1px solid #8b84ac;
+	}
+</style>

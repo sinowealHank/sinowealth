@@ -1,0 +1,274 @@
+{extend name="index@index/base" /}
+{block name="main"}
+	<div class="breadcrumbs" id="breadcrumbs">
+	    <script type="text/javascript">
+	        try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	    </script>
+	    <ul class="breadcrumb">
+	        <li>
+	            <i class="icon-home home-icon"></i>
+	            <a href="#">设置快速上传></a>
+	        </li>
+	    </ul><!-- .breadcrumb -->
+	</div>
+	<div class="col-md-12">
+	    <div class="box">
+	        <div class="box-header">
+	        	<div>
+		        	<button onclick="add()" class="btn btn-sm btn-primary">添加</button>
+	        		<div style="float:right;padding-right:30px;">
+		        		<span>状态</span>
+		        			<select  wtq_up_index_name='zt'>
+		        				<option value="0,1">全部</option>
+					            <option value="1">开启</option>
+					            <option value="0">关闭</option>
+				            </select>
+	        			<span>精确查找：</span>
+	        			<label class="inline">
+							<input wtq_up_index_name='sql_jq' value="yes" class="" type="checkbox">
+							<span class="lbl"></span>
+						</label>
+		            	<span>关键字：</span><input wtq_up_index_name='name'><button onclick="return sour(this)" class="btn btn-sm btn-primary">搜索</button>
+	        		</div>
+	        	</div>
+    		</div>
+		    <div class="box-body">
+			    <table class="table table-hover">
+			        <thead>
+			            <tr>
+			            	 <tr>
+				                <th style="cursor:pointer;" onclick="paixu(this,'id')">编号<i wtq_up_index_i="i" class="icon-level-up" style="padding-left:5px;color:red;"></i></th>
+				                <th style="cursor:pointer;" onclick="paixu(this,'name')">名字<i wtq_up_index_i="i" style="padding-left:30px;color:red;"></i></th>
+				                <th style="cursor:pointer;" onclick="paixu(this,'creat_time')" >设置时间<i wtq_up_index_i="i" style="padding-left:30px;color:red;"></i></th>
+				                <th style="cursor:pointer;" onclick="paixu(this,'use_ok')">状态<i wtq_up_index_i="i" style="padding-left:30px;color:red;"></i></th>
+				                <th>操作</th>
+				            </tr>
+			            </tr>
+			        </thead>
+			        <tbody>
+			        
+			        </tbody>
+			    </table>
+			    
+		    </div>
+		    <div class="box-footer">
+		    	<div class="text-right">
+					
+		    	</div>
+		    </div>
+		</div>
+	</div>
+{/block}
+{block name="script"}
+{include file="../application/file/view/up/time.html" /}
+<link rel="stylesheet" href="__PUBLIC__/static/assets/css/dropzone.css" />
+<link rel="stylesheet" href="__PUBLIC__/static/assets/css/ace.min.css" />
+<script src="__PUBLIC__/static/assets/js/dropzone.min.js"></script>
+	<script>
+		//修改文件权限
+		function change(id,name){
+			qx_go(id,name+'修改')
+		}
+		//添加新文件
+		function add(){
+			qx_go()
+		}
+		//拉取文件弹框
+		function qx_go(id='',name='添加'){
+			$('.loading').parent().css('display','');
+			$.post('{:url("Vip_file/vip_gr_qx")}',{id:id},
+	                function (data) {
+					if(id==''){file_name='<span>名称：</span><input style="margin-left:20px;" wtq_name="name">'}else{file_name='<input wtq_name="id" value="'+id+'" style="display:none">';}
+					var th='<div style="padding:10px 0 0 20px;">'+
+					'<div wtq_up_index_name="div">'+file_name+
+					'<br>检索：<input style="margin-left:20px;" wtq_this="gr_so"> <button type="button" onclick="ggr()" class="btn btn-sm btn-primary">搜索</button><form wtq_id="from"><div wtq_up_up_id="sour"></div>'+data+
+					'</form></div></div>';
+					var th=th+'<hr><div><button wtq_add_close="close" class="btn btn-primary btn-small layui-layer-close" style="float:right;margin-right:20px;">关闭</button> '+
+		    		'<button onclick="add_ok(\'x\')" class="btn btn-primary btn-small" style="float:right;margin-right:5px;">保存并关闭</button> '+
+		    		'<button onclick="add_ok()" class="btn btn-primary btn-small" style="float:right;margin-right:5px;">保存</button></div> '
+					layer.open({
+						  type: 1,
+						  title: name,
+						  skin: 'layui-layer-rim', //加上边框
+						  area: ['700px', '500px'], //宽高
+						  content: th
+						});
+						$('.loading').parent().css('display','none');
+	                },"json").erroe(function(){mythisalert(0,'失败');$('.loading').parent().css('display','none');});
+		}
+		//搜索个人
+		function ggr(){
+			var sour=$("input[wtq_this=gr_so]").val();
+			$('.loading').parent().css('display','');
+			var d = {};
+		    var t = $('form[wtq_id=from]').serializeArray();
+		    var geren_id='';
+		    $.each(t, function() {
+		    	if(this.name=='geren[]'){
+		    		geren_id=geren_id+'('+this.value+')'
+		    	}
+			 });
+			$.post('{:url("Up/up_sour")}?sour='+sour+'&id='+geren_id,{},
+		            function (data) {
+						$('div[wtq_sour_del="yes"]').remove();
+						$('div[wtq_up_up_id=sour]').prepend('<div wtq_sour_del="yes">'+data+'</div>');
+						$('.loading').parent().css('display','none');
+		            },"json").erroe(function(){mythisalert(0,'失败');$('.loading').parent().css('display','none');});
+		}
+		//同步选中的个人出现在已选择
+		function user_change(thi){
+			if($(thi).is(':checked')){
+				if($('#user_all').find('input[value='+$(thi).val()+']').val()){return false;}
+				var div='<div del="del" style="cursor:pointer;float:left;padding-left:10px;">'+
+							'<input onchange="user_change(this)" onclick="var a=$(\'input[biaoshi=qx_geren][type=checkbox][value='+$(thi).val()+']\');if($(this).is(\':checked\')){a.prop(\'checked\',true)}else{a.prop(\'checked\',false)};" checked="checked" type="checkbox" value="'+$(thi).val()+'" /><span onclick="var a=$(\'input[biaoshi=qx_geren][type=checkbox][value='+$(thi).val()+']\');if($(this).prev(\'input\').is(\':checked\')){$(this).prev(\'input\').prop(\'checked\',false)}else{$(this).prev(\'input\').prop(\'checked\',true)};if($(this).is(\':checked\')){a.prop(\'checked\',true)}else{a.prop(\'checked\',false)}; user_change($(this).prev(\'input\'))">'+$(thi).next('span').html()+'</span>'+
+						'</div>'
+				$('#user_all').prepend(div);
+			}else{
+				var del=$('#user_all').find('input[value='+$(thi).val()+']').parents('div[ del="del"]').remove();
+			}
+		}
+	</script>
+	<script>
+		//添加完成
+		function add_ok(a){
+			var name=$("input[wtq_name=name]").val();
+			var id=$("input[wtq_name=id]").val();
+			if(id==''){
+				if(name==''){
+					mythisalert(0,'请输入名称');
+					return false;
+				}
+			}
+			var d = {};
+		    var t = $('form[wtq_id=from]').serializeArray();
+		    var geren_id='';
+		    $.each(t, function() {
+		    	if(this.name=='geren[]'){
+		    		geren_id=geren_id+'('+this.value+')'
+		    	}
+	    	    });
+			$('.loading').parent().css('display','');
+			$.post('{:url("Vip_file/add_vip_files")}',{name:name,user_id:geren_id,id:id},
+	                function (data) {
+						if(a=='x'){$('button[wtq_add_close=close]').trigger('click')}
+						mythisalert(data[0],data[1]);
+						ajax()
+						$('.loading').parent().css('display','none');
+	                },"json").erroe(function(){mythisalert(0,'失败');$('.loading').parent().css('display','none');});
+		}
+	</script>
+	<script>
+		//查看文件上传信息
+		function log(id,name){
+			$('.loading').parent().css('display','');
+			$.post('{:url("Vip_file/vip_file_log_ajax")}',{id:id},
+	                function (data) {
+						layer.open({
+					  		  type: 1,
+					  		  title: name+'上传记录',
+					  		  skin: 'layui-layer-rim', //加上边框
+					  		  area: ['420px', '220px'], //宽高
+					  		  content: '<div style="padding-left:10px;">'+data[0]+'<button wtq_add_close="close" class="btn btn-primary btn-small layui-layer-close" style="display:none">关闭</button></div>'
+					  		});
+						$('.loading').parent().css('display','none');
+	                },"json").erroe(function(){mythisalert(0,'失败');$('.loading').parent().css('display','none');});
+		}
+		//开关
+		function open_close(id,a){
+			if(a==1){b='开启';}else if(a==0){b='关闭';}
+			if(confirm("确定要"+b+"吗")==false){
+				return false;
+			}
+			$('.loading').parent().css('display','');
+			$.post('{:url("Vip_file/vip_file_open_close")}',{id:id,use_ok:a},
+	                function (data) {
+						mythisalert(data[0],data[1]);
+						if(data[2]==1){
+							var a=1;var clas='btn btn-minier btn-inverse';var ht='关闭';
+						}else if(data[2]==0){
+							var a=0;var clas='btn btn-minier btn-primary';var ht='开启';
+						}
+						$('span[wtq_id='+id+']').attr('onclick','open_close('+id+',\''+a+'\')');
+						$('span[wtq_id='+id+']').attr('class',clas);
+						$('span[wtq_id='+id+']').html(ht);
+						$('.loading').parent().css('display','none');
+	                },"json").erroe(function(){mythisalert(0,'失败');$('.loading').parent().css('display','none');});
+		}
+	</script>
+	<script>
+		//点击esc关闭弹框
+		$(window).keyup(function(e){
+	   		if(e.keyCode==27){
+	   			$('button[wtq_add_close=close]').trigger('click')
+	   		}
+	   	})
+	   	ajax()
+	   	//搜索内容
+	   	function sour_text(){
+			var zt=$("select[ wtq_up_index_name=zt]").val();
+			var sql_jq=$("input[ wtq_up_index_name=sql_jq]:checked").val();
+			var name=$("input[ wtq_up_index_name=name]").val();
+			var url='?name='+name+'&sql_jq='+sql_jq+'&zt='+zt;
+			return url;
+		}
+		//搜索
+		function sour(){
+			ajax(sour_text())
+		}
+		//翻页
+		function page(url){
+			ajax(url)
+    	}
+		//排序
+		function paixu(thi,ii){
+    		if($(thi).children('i').attr('class')=='icon-level-down'){var a='&a=1';}else{var a='';}
+    		url=sour_text()+'&ii='+ii+a
+    		ajax(url,thi)
+    	}
+		//异步拉取页面数据
+		function ajax(url='',thi){
+			$('.loading').parent().css('display','');
+			$.post('{:url("Vip_file/vip_file_ajax")}'+url,{},
+	                function (data) {
+						index(data[1],data[0])
+						if(thi){
+    						$('i[wtq_up_index_i=i]').attr('class','')
+        					$(thi).children('i').attr('class',data[2])
+    					}
+	                },"json").erroe(function(){mythisalert(0,'失败');$('.loading').parent().css('display','none');});
+		}
+		//拼接页面
+		function index(data,foot){
+			var text;
+    		if(data==''){text='<tr><td colspan="7"><h2><p style="color:red;">没有数据</p></h2></td></tr>'}
+    		$.each(data, function (index, item) {
+    			if(item.use_ok==1){
+    				var a='0';
+               		var zt='<span wtq_id="'+item.id+'" onclick="open_close('+item.id+',\''+a+'\')" class="btn btn-minier btn-primary">开启</span>'
+    			}else if(item.use_ok==0){
+    				var a='1';
+    				var zt='<span wtq_id="'+item.id+'" onclick="open_close('+item.id+',\''+a+'\')" class="btn btn-minier btn-inverse">关闭</span>'
+    			}
+    			
+                text=text+'<tr>'+
+                	'<td>'+item.id+'</td>'+
+                	'<td>'+item.name+'</td>'+
+                	'<td>'+item.creat_time+'</td>'+
+                	'<td>'+zt+'</td>'+
+                	'<td>'+'<button onclick="return log(\''+item.id+'\',\''+item.name+'\');" class="btn btn-xs">log</button> '+
+                	'<button style="" onclick="change('+item.id+',\''+item.name+'\')" class="btn btn-xs">配置</button> '+
+                	'</td>'
+                //输出0...aaa,bbb,ccc  1...ddd,eee,fff  2...ggg,hhh,iii   这时的index为数组下标,item相当于取这二维数组中的每一个数组
+                text=text+'</tr>';
+            });
+            $("div[class=box-body]").find('tbody').html(text);
+            var inn=$("div[class=box-footer]").find("div[class=text-right]");
+            if(foot==1){
+     	 		inn.html('')
+            }else{
+            	inn.html(foot)
+            }
+            $('.loading').parent().css('display','none');
+		}
+   	</script>
+{/block}

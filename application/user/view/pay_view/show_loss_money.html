@@ -1,0 +1,56 @@
+<div style="margin:5px;">
+	<div style="margin-bottom: 5px;">
+		<table class='old_free'><tr><td style="border:0px">项目：<select onchange="this_f5($(this).val())" class="pagination-page-list">
+			<option value="">全部</option>
+			{foreach $user_free as $u}
+				<option selected="selected" value="{$u['id']}">{$u['name']}</option>
+			{/foreach}
+		</select></td></tr></table>
+	</div>
+	<div>
+		<table class='old_free' style="width:85%">
+			<thead>
+				<tr>
+					<td><div>还款时间</div></td>
+					<td><div>工号</div></td>
+					<td><div>姓名</div></td>
+					<td><div>还款金额</div></td>
+					<td><div>贷款余额</div></td>
+				</tr>
+			</thead>
+			<tbody new_money="add">
+				<?php $yue=isset($user_money_arr[0]['free_all'])?$user_money_arr[0]['free_all']:''; ?>
+				{foreach $user_loss as $k=>$key}
+					<tr show="{$key['free_user_id']}" style="{if condition="$max_id[0]['id']!=$key['free_user_id']"}display:none;{/if} {if condition="$key['statu']==1"}background-color:#b6b66280;{/if}">
+						<td><div>{$key['give_data']}</div></td>
+						<td><div>{$key['user_gh']}</div></td>
+						<td><div>{$key['nickname']}</div></td>
+						<td><div>{$key['give_money']}</div></td>
+						<?php $yue=$yue-$key['give_money']; ?>
+						<td><div>{$yue}</div></td>
+					</tr>
+				{/foreach}
+			</tbody>
+	</table>
+	</div>
+	<a style="display:none" onclick="indexd_ajax()" close="close" wtq_up_index_alert_close="close" class="btn btn-success layui-layer-close">取消</a>
+</div>
+<script>
+	function this_f5(id){
+		$("tr[show]").css("display","none");
+		$("tr[show="+id+"]").css("display","");
+	}
+</script>
+<style>
+	.old_free{
+		border-collapse: collapse;
+		border-spacing: 0;
+		margin: 0 auto; 
+	}
+	.old_free td{
+		border: 1px solid black;
+	}
+	.old_free div{
+		margin: 2px 5px;
+	}
+</style>

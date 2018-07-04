@@ -1,0 +1,170 @@
+<style type="text/css">
+    body{font-size: 14px;}
+    label{padding-left: 1.5em}
+    .form{margin-top: 10px;}
+    .form input{height: 25px;width: 240px;}
+    .formdata{width: 380px;float: left}
+    .left{display:block;position:absolute;width:120px}
+    .right{display:block;margin-left:120px}
+    .select_add{width: 247px;height: 27px;}
+</style>
+<form method="post" action="{:url('prop/prop/addprop')}" onsubmit="return validateCallback(this);">
+    <div>
+        <div class="formdata">
+            <div class="form">
+                 <span class="left" ><label>资产编号：</label></span>
+                 <span class='right'><input class="form-input" type="text" name="reg_prop_num"><span style="color:red ">*</span></span>
+            </div>
+            <div class="form">
+                 <span class="left" ><label>规格型号：</label></span>
+                 <span class='right'><input class="form-input" type="text" name="product_model"><span style="color:red ">*</span></span>
+            </div>
+            <div class="form">
+                 <span class="left"><label>购买日期：</label></span>
+                 <span class='right'>
+                     <!--<input type="datetime" name="start_use_time">-->
+                     <input style="width: 220px;" class="laydate-icon-molv dateControl" id="buytime" format='YYYY-MM-DD ' festival="" skin="molv" name="buy_time">
+                 </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>使用部门：</label></span>
+                <span class='right'>
+                      <input  type="text" name="use_dep">
+                </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>备注：</label></span>
+                <span class='right'><input class="form-input" type="text" name="prop_remark"></span>
+            </div>
+
+            <div class="form">
+                <span class="left"><label>注销时间：</label></span>
+                 <span class="right">
+                      <input style="width: 220px;"   class="laydate-icon-molv dateControl" id="logoff_time" format='YYYY-MM-DD ' festival="" skin="molv" name="logoff_time">
+                 </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>开始使用日期：</label></span>
+                 <span class="right">
+                      <input  style="width: 220px;"  class="laydate-icon-molv dateControl" id="start_use_time" format='YYYY-MM-DD ' festival="" skin="molv" name="start_use_time">
+                 </span>
+            </div>
+        </div>
+        <div class="formdata">
+            <div class="form">
+                 <span class="left"> <label>资产名称：</label></span>
+                 <span class="right"><input type="text" class="form-input" name="reg_prop_name"><span style="color:red ">*</span></span>
+            </div>
+            <div class="form">
+                 <span class="left"><label>是否新人：</label></span>
+                 <span class="right">
+                     <input type="checkbox" name="is_newbie" style="margin-left: -110px;height: 25px;" >
+                 </span>
+            </div>
+            <div class="form">
+                  <span class="left"><label>是否公用:</label></span>
+                  <span class="right">
+                      <input type="checkbox" name="is_common" style="margin-left: -110px;height: 25px;">
+                  </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>所在部门：</label></span>
+                <span class="right" name="dep">
+                     <select class="select_add" name="local_dep_id"  >
+                         <option value="0">选择部门</option>
+                         {$page_info.str}
+                     </select><span style="color:red ">*</span>
+                </span>
+            </div>
+            <div class="form">
+                 <span class="left"><label>使用人：</label></span>
+                 <span class="right" id="prop_user">
+                     <!--<input type="text" name="prop_user"><span style="color:red ">*</span>-->
+                     <select class="select_add" name="prop_user" >
+                         <option>请选择所在部门</option>
+                     </select><span style="color:red ">*</span>
+                 </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>申请人：</label></span>
+                <span class="right">
+                    <select name="propuser" class="select_add" >
+                        <option>请选择所在部门</option>
+                    </select><span style="color:red ">*</span>
+                </span>
+            </div>
+            <div class="form">
+                 <span class="left"><label>负责部门：</label></span>
+                 <span class="right">
+                        <select class="select_add" name="respon_dep_id"  >
+                            {$page_info.str}
+                        </select><span style="color:red ">*</span>
+                 </span>
+            </div>
+        </div>
+        <div style="clear: both;float: right;">
+            <button class="layui-btn layui-btn-small">添加</button>
+            <button type="button" class="layui-btn layui-btn-small closeLayer">取消</button>
+        </div>
+
+    </div>
+</form>
+<script>
+    $('input[name=reg_prop_num]').blur(function(){
+        var name = $(this).val();
+        $.post("{:url('prop/prop/checkPropName')}",{data:name},function(result){
+            showMsg(result);
+        },"JSON");
+    });
+
+    $("select[name=local_dep_id]").change(function(){
+         var id = $(this).find("option:selected").val();
+        $.post("{:url('prop/prop/getapplyuser',0,false)}",{id:id},function(result){
+              if(id == '1'){
+                  $("#prop_user").empty();
+                  var input = '<input type="text" name="prop_user" style="width: 240px;height: 25px"><span style="color:red ">*</span>';
+                  $("#prop_user").html(input);
+                  $("select[name=propuser]").html(result);
+              }else{
+                  $("#prop_user").empty();
+                  var select = '<select name="prop_user" style="width: 247px;height: 27px;"></select><span style="color:red ">*</span>';
+                  $("#prop_user").html(select);
+                  $("select[name=prop_user]").html(result);
+                  $("select[name=propuser]").html(result);
+              }
+
+
+        })
+    });
+
+    //新人资产添加
+    $("input[name=is_newbie]").change(function(){
+        if($(this).is(":checked")){
+            $("#prop_user").empty();
+            var input = '<input type="text" name="prop_user" style="width: 240px;height: 25px;"><span style="color: red">*</span>';
+            $("#prop_user").html(input);
+        }else{
+            $("#prop_user").empty();
+            var input = '<select name="prop_user" style="width: 247px;height: 27px;"><option>请选择所在部门</option></select><span style="color:red ">*</span>';
+            $("#prop_user").html(input);
+        }
+    });
+
+    //是否为公共使用
+    $("input[name=is_common]").click(function(){
+        if($(this).is(":checked")){
+            $("#prop_user").empty();
+            var input = '<input type="text" name="prop_user" style="width: 240px;height: 25px;"><span style="color: red">*</span>';
+            $("#prop_user").html(input);
+        }else{
+            $("#prop_user").empty();
+            var input = '<select name="prop_user" style="width: 247px;height: 27px;"><option>请选择所在部门</option></select><span style="color:red ">*</span>';
+            $("#prop_user").html(input);
+        }
+    })
+
+
+
+
+
+</script>

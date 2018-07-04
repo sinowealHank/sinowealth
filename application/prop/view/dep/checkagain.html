@@ -1,0 +1,128 @@
+<style>
+    table{width:600px; }
+    tr td input{width: 100px;}
+    .pur_info input{width: 200px;}
+</style>
+<form class="form-horizontal"  role="form" autocomplete="off" action="{:url('prop/dep/check',0,false)}"
+      method="post" onsubmit="return validateCallback(this);" xmlns="http://www.w3.org/1999/html">
+    <input type="hidden" name="id" value="{$page_info.common.id}">
+    <div class="form-group">
+        <label>一、采购物品的相关信息</label>
+        <div>
+            <label>采购物品：</label>
+            <input type="text" name="pur_name" value="{$page_info.common.pur_name}" disabled="disabled">
+        </div>
+    </div>
+    <div class="form-group">
+        <label>二、型号推荐及选择:</label>
+        <div>
+            <table class="type_table">
+                <thead>
+                <tr>
+                    <td>编号：</td>
+                    <td>品牌型号：</td>
+                    <td>基本配置信息：</td>
+                    <td>参考价格：</td>
+                    <td>备注：</td>
+                </tr>
+                <tr>
+                    {$page_info.brand}
+                </tr>
+            </table>
+            <button type="button" class="btn btn-primary btn-xs add_more">复制</button>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>三、供应商选择</label>
+        <div>
+            <table class="table table-border select_form">
+                <tr>
+                    <td rowspan="2" style="vertical-align:middle"  >型号：</td>
+                    <td colspan="2"  >供应商:<input disabled="disabled" type="text" name="supplier_1" value="{$page_info.common.supplier_1}"></td>
+                    <td colspan="2"  >供应商:<input disabled="disabled" type="text" name="supplier_2" value="{$page_info.common.supplier_2}"></td>
+                    <td colspan="2"  >供应商:<input disabled="disabled" type="text" name="supplier_3" value="{$page_info.common.supplier_3}"></td>
+                </tr>
+                <tr>
+                    <td>报价：</td>
+                    <td style="text-align: center">议价清单报价：</td>
+                    <td>报价：</td>
+                    <td style="text-align: center">议价清单报价：</td>
+                    <td>报价：</td>
+                    <td style="text-align: center">议价清单报价：</td>
+                </tr>
+                <tr>
+                    {$page_info.model}
+                </tr>
+            </table>
+
+        </div>
+    </div>
+    <div class="form-group">
+        <label>四、采购相关信息</label>
+        <div>
+            <table class="table table-border pur_info">
+                <tr>
+                    <td>采购建议：</td>
+                    <td><input disabled="disabled" type="text" name="pur_advice" value="{$page_info.common.pur_advice}"></td>
+                    <td>型号选择：</td>
+                    <td>
+                        <!--<input  type="text" name="select_model">-->
+                        <select name="select_model_id">
+
+                            {$page_info.select}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>IT主管：</td>
+                    <td><input disabled="disabled" type="checkbox" {if condition="$page_info.common.it_agree eq 1"}checked="checked"{/if}></td>
+                    <td>申请部门主管：</td>
+                    <td><input disabled="disabled"  type="checkbox" {if condition="$page_info.common.dep_agree eq 1"} checked="checked"{/if}></td>
+                </tr>
+                <tr>
+                    <td>验收人：</td>
+                    <td>
+                        <select name="accept_use_id" disabled="disabled">
+                            {$page_info.it}
+                        </select>
+                    </td>
+                    <td>统购长是否同意：</td>
+                    <td><input disabled="disabled" type="checkbox" {if condition="$page_info.common.purchase_agree eq 1"}checked="checked" {/if} ></td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>五、签呈</label>
+        <div>
+            <table class="table table-border pur_info">
+                <tr>
+                    <td>主旨：</td>
+                    <td><textarea name="purport" disabled="disabled">
+                        {$page_info.common.purport}
+                    </textarea></td>
+                    <td>总金额：</td>
+                    <td>
+                        <input disabled="disabled" value="{$page_info.common.amount}"  type="text" name="amount">
+                    </td>
+                </tr>
+                <tr>
+                    <td>申请主管<strong>(呈)</strong>：</td>
+                    <td></td>
+                    <td>批示：</td>
+                    <td><textarea name="mange_instruct"></textarea></td>
+                </tr>
+                <tr>
+                    <td>会签：</td>
+                    <td><input type="checkbox" name="is_mett"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="pull-right">
+        <button  class="btn btn-info">确认</button>
+        <a class="btn btn-default closeLayer">取消</a>
+    </div>
+</form >

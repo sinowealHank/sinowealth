@@ -1,0 +1,176 @@
+{extend name="index@index/base" /}
+{block name="main"}
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<script type="text/javascript">
+		try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	</script>
+
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+				<a href="#">首页</a>
+		</li>
+
+		<li>
+			<a href="#">后台管理</a>
+		</li>
+			<li class="active">站点设置</li>
+	</ul><!-- .breadcrumb -->
+    
+    
+    <div class="nav-search" id="nav-search">
+        <form class="form-search">
+            <span class="input-icon">
+                <input placeholder="搜索 ..." class="nav-search-input" id="nav-search-input" autocomplete="off" type="text">
+                <i class="icon-search nav-search-icon"></i>
+            </span>
+        </form>
+    </div>
+
+</div>
+
+<div class="page-content">
+	<div class="page-header col-xs-12">
+            <h1 class="col-xs-4">
+                假日设定
+                <small>
+                    <i class="icon-double-angle-right"></i>
+                    {:CONFIG('site_info')[$page_info['site_id']]['site']}
+                </small>
+            </h1>
+        <div class="pull-right  clearfix">
+        	<input id="holiday_name" placeholder="假日名称" class="col-xs-3" type="text" value="">&nbsp;&nbsp;
+        	<label>
+				<input name="holiday_type_switch" class="ace ace-checkbox-2" type="checkbox">
+				<span class="lbl"> 法定假日</span>
+                <input name="holiday_type" value="0" type="hidden">
+			</label>
+            <button type="button" class="btn btn-info btn-sm" name="set_weekend" flag="local_year" year_val="{$page_info.local_year}">{$page_info.local_year}周末设为假日</button>
+            <button type="button" class="btn btn-info btn-sm" name="set_weekend" flag="next_year" year_val="{$page_info.next_year}">{$page_info.next_year}周末设为假日</button>
+        </div>        
+	</div><!-- /.page-header -->
+
+	<div class="row"><!-- /.col -->
+    	<div class="col-xs-12"  id="pageContent">
+            <div id="calendar" class="calendar"></div>
+        </div>
+	</div><!-- /.row -->
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+//法定假日开关
+$('input[name=holiday_type_switch]').click(function(){
+		if($(this).is(':checked')){
+				$(this).nextAll('input[name=holiday_type]').val('1');
+			}else{
+				$(this).nextAll('input[name=holiday_type]').val('0');
+				}
+	});
+
+//初始日历
+var data = eval('('+'{$page_info.holiday_json}'+')');
+var site_id='{$page_info.site_id}';
+
+$('#calendar').calendar({dragThenDrop:false,data:data,
+	clickCell:function(e){
+		//获取假日名称
+		holiday_name=$('#holiday_name').val();
+		holiday_type=$('input[name=holiday_type]').val();
+		current_month=get_cur_date();
+		
+		$.post('/sys/Site/switch_holiday/site_id/{$page_info.site_id}/current_month/'+current_month+'/holiday_date/'+e.date.format('YYYY-MM-d')+'/holiday_type/'+holiday_type+'/holiday_name/'+holiday_name+'/',function(result){
+				//alert($(this).find('div[data-id]').attr('data-id'));
+				var calendar = $('#calendar').data('zui.calendar');
+				json_obj=eval('('+result+')');
+				
+				if(json_obj.is_current_month==1){
+						if(json_obj.is_holiday==1){						
+						//删除假日事件
+						id=$(e.element).find('div[data-id]').attr('data-id');
+						calendar.removeEvents(id);						
+					}else{
+						//添加假日事件
+						if(holiday_name.length==0){
+							holiday_name='假日';
+							}
+						if(holiday_type=='1'){								
+								cole='danger';
+							}else{
+								cole='primary';
+								}
+						var newEvent = {title: holiday_name, desc: '',allDay:true,calendar:cole, start: e.date.format('YYYY-MM-d'), end: e.date.format('YYYY-MM-d')};
+						calendar.addEvents(newEvent);
+						}					
+					}else{
+						alert(json_obj.msg);
+						}
+			});
+		
+		},
+	clickNextBtn:function(e){
+		events_reset();
+		},
+	clickPrevBtn:function(e){
+		events_reset();
+		},
+	clickTodayBtn:function(e){
+		events_reset();
+		},
+	clickEvent:function(e){
+		//id=$(e.element).find('div[data-id]').attr('data-id');
+		//console.log(JSON.stringify(e));
+		holiday_date=new Date($(e.element).parents('div[data-date]').attr('data-date'));
+		current_month=get_cur_date();	
+
+		$.post('/sys/Site/del_event/current_month/'+current_month+'/holiday_date/'+holiday_date.format('YYYY-MM-d'),function(result){
+				var calendar = $('#calendar').data('zui.calendar');
+				calendar.removeEvents($(e.element).attr('data-id'));
+			});
+		}
+});
+
+$('button[name=set_weekend]').click(function(){
+		flag=$(this).attr('flag');
+		year_val=$(this).attr('year_val');
+		if(confirm(year_val+'周六,日将覆盖原有设定,全部设定为假日,确定?')){
+			flag=$(this).attr('flag');
+			$.post('/sys/Site/set_weekend/flag/'+flag+"/site_id/{$page_info.site_id}",function(result){
+					$.messager.show(result);					
+				});
+			setTimeout(function(){window.location.reload();}, 4000);
+			}		
+	});
+
+//清理当前日期范围内的所有事件
+function clear_events(){
+	var calendar = $('#calendar').data('zui.calendar');
+	
+	events1=$('#calendar').find('td div[data-id]');
+	events1.each(function(index, element) {
+        calendar.removeEvents($(element).attr('data-id'));
+    });
+
+	}
+
+//当前月份事件重置
+function events_reset(){
+	clear_events()
+	$.post('/sys/Site/get_month_holiday/site_id/'+site_id+'/month/'+get_cur_date(),function(result){
+			if(result.length>0){
+				var calendar = $('#calendar').data('zui.calendar');
+				var newEvents = eval('('+result+')');
+				calendar.addEvents(newEvents);
+				}
+		});
+	}
+
+//获取当前日期
+function get_cur_date(){
+	return $('#calendar').find('.btn-toolbar').find('.calendar-caption').text();
+	}
+
+</script>
+{/block}

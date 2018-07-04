@@ -1,0 +1,123 @@
+
+<div class="box-body">
+	<div style="height:370px;padding-left: 15px;">
+		<div style="float:left;width:40%;">
+			
+			<div style="width:100px;float:left;padding-left:20px;">
+				<img alt="id_name" src="/new/public/public/image.png" width="80px">
+			</div>
+			<div style="float:left;padding-left:5px;">
+				<table>
+					<tr><td>文件名：</td><td colspan="3" style=""><span style="display:block;white-space:nowrap; overflow:hidden;text-overflow:ellipsis;width:125px;" title="{$file['file_name']}">{$file['file_name']}</span></td></tr>
+					<tr><td>版本：</td><td>{$file['bb']}</td></tr>
+					<tr><td>大小：</td><td>{$file['file_size']}</td></tr>
+					<tr><td>下载次数：</td><td>{$file['down_c']}</td><td>访问次数:</td><td>{$file['look']}</td></tr>
+					<tr><td>关键字：</td><td colspan="3">{$file['import_text']}</td></tr>
+					<tr><td>文件上传时间：</td><td colspan="3">{$file['file_time']}</td></tr>
+					<tr><td>文件失效时间：</td><td colspan="3">{$file['die_time']}</td></tr>
+					<tr><td>所在目录：</td><td colspan="3"><div style="width:152px;word-wrap:break-word;">{$this_menu}</td></tr>
+					<tr>
+						<!--td>
+							<button onclick="lick('s','x','good','{$file['id']}')" class="btn btn-xs" style="float:left;">
+								<i wtq="i" wtq_i='is' class="icon-thumbs-up"></i><span wtq_span="span_s">{$file['good']}</span>
+							</button>
+							<div style="width:1px;height:26px;float:left;background-color:black;"></div>
+							<button onclick="lick('x','s','bad','{$file['id']}')" class="btn btn-xs">
+								<i wtq="i" wtq_i='ix' class="icon-thumbs-down"></i><span wtq_span="span_x">{$file['bad']}</span>
+							</button>
+						</td-->
+						<td colspan="4">
+							{if condition="$file['down'] eq '1'"}
+								<button onclick="return parent.xz('{$file['id']}');" class="btn btn-primary">下载</button>
+							{/if}
+							<!--button onclick="return parent.yl('{$file['url']}{$file['file_sc_name']}.{$file['file_houzhui']}','{$file['file_houzhui']}','{$file['id']}');" class="btn btn-primary">预览</button-->
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div style="white-space:normal;padding-left:10px;width:90%;">
+				说明：{$file['file_sta']}
+			</div>
+		</div>
+		{if condition="$old"}
+		<div style="padding-left:20px;height:360px;width:50%;overflow-y: scroll; /*min-height:300px;max-height:500px;*/">
+			{$old}
+		</div>
+		{/if}
+	</div>
+	<div class="col-md-11">
+		<div wtq_this_div="div">{$div}</div>
+		<div class="col-md-12" style="padding-top:10px;">
+			<p>发表评论:</p>
+			<textarea wtq_this_name="plun" style="width:100%"></textarea>
+			<input wtq_this_ud="id" style="display:none" value="0">
+			<br>
+			<button onclick="fb('plun')" class="btn btn-primary" style="margin-top:10px">发布</button>
+		</div>
+	</div>
+</div>
+<p wtq_id='id' style="display:none">{$file['id']}</p>
+
+<script>
+	//异步拉取留言
+	function div(id){
+		$('.loading').parent().css('display','');
+		$.post('{:url("Up/file_liu")}?id='+id,{},
+                function (data) {
+					$("div[wtq_this_div=div]").html(data)
+					$('.loading').parent().css('display','none');
+                },"json").error(function(){mythisalert(0,'失败');$('.loading').parent().css('display','none');});
+	
+	}
+	//踩赞
+	function lick_all(a,b,name,id,vie){
+		//var c=$('i[wtq_i=i'+b+']').attr('wtq_bj')
+		//var d=$('i[wtq_i=i'+a+']').attr('wtq_bj')
+		//if(c || d){
+		//	return false;
+		//}else{
+			if(a=='s'){
+				$('i[wtq_i=i'+a+']').attr('class','icon-thumbs-up red')
+			}else{
+				$('i[wtq_i=i'+a+']').attr('class','icon-thumbs-down red')
+			}
+			$('i[wtq_i=i'+a+']').attr('wtq_bj','have')
+		//}
+		var sp=$("span[wtq_span=span_"+a+"]").html()
+		$("span[wtq_span=span_"+a+"]").html(sp*1+1*1)
+		$.post("{:url('"+vie+"/add')}?name="+name+"&id="+id,{},
+                function (data) {
+					if(data){
+						mythisalert(1,data);
+					}
+                },"json").error(function(){mythisalert(0,'失败');$('.loading').parent().css('display','none');});
+	
+	}
+	//回复留言		
+	var i=0;
+	function huifu(id,zid,name){
+		i=id;
+		$('input[wtq_this_ud=id]').val(zid);
+		$('div[wtq_this_id2=yc]').css('display','none');
+		$('div[wtq_this_id2=yc]').html(' ');
+		$('div[wtq_this_id='+zid+']').css('display','');
+		var textarea='<textarea wtq_this_name="huifu" style="width:100%"></textarea><button onclick="fb(\'huifu\')" class="btn btn-xs btn-primary" style="float:right;">发表</button>';
+		$('div[wtq_this_id='+zid+']').html(textarea);
+		$('div[wtq_this_id='+zid+']').find('textarea').val('回复 '+name+'：')
+	}
+	//留言发表
+	function fb_all(a,vie){
+		if(a=='plun'){var id=0;}else if(a=='huifu'){var id=$("input[wtq_this_ud=id]").val();}
+		if(!id){id=i;}
+		var text=$("textarea[wtq_this_name="+a+"]").val();
+		if(text==''){mythisalert(0,'请输入内容');return false;}
+		$('.loading').parent().css('display','');
+		$.post('{:url("'+vie+'/file_xx_up")}',{id:id,text:text,file_id:$("p[wtq_id=id]").html()},
+                function (data) {
+					mythisalert(data[0],data[1]);
+					div($("p[wtq_id=id]").html())
+					$('div[wtq_this_id2=yc]').css('display','none');
+					$('.loading').parent().css('display','none');
+                },"json").error(function(){mythisalert(0,'失败');$('.loading').parent().css('display','none');});
+	}
+</script>

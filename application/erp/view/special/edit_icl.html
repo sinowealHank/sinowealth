@@ -1,0 +1,62 @@
+<style>
+    .icl{margin-top: 20px;}
+</style>
+<form method="post" name="icl" action="{:url('erp/special/update_icl')}"  onsubmit="return validateCallback(this)">
+    <input type="hidden" name="id" value="{$id}">
+    <input type="hidden" name="key" value="{$key}">
+    <div style="text-align: center" class="icl">
+        <label style="font-size: 14px;margin-left: -50px;">产品名称:</label>
+        <input type="text" name="icl_01" style="width: 200px;" disabled="disabled" value="{$icl01}"/>
+    </div>
+    <div style="text-align: center" class="icl">
+        <label style="font-size: 14px;margin-left: -50px;">客户简称：</label>
+        <!--<select name="ta_icl01">-->
+            <!--<option value=" ">选择客户编号</option>-->
+                    <!--{$agent}-->
+        <!--</select>-->
+        <input type="text" name="ta_icl02" value="{$occ01}" style="width: 200px;">
+    </div>
+    <div style="text-align: center" class="icl agent">
+        <span><input checked="checked" value="{$occ01}" type="radio" name="ta_icl01">{$occ01}</span>
+    </div>
+
+    <div style="text-align: center;clear: both" class="icl">
+        <label style="font-size: 14px;margin-left: -50px;">特殊正印：</label>
+        <input type="text" name="icl05" value="{$icl05}" style="width: 200px;">
+    </div>
+    <div style="float: right;" class="icl">
+        <button type="button" class='btn btn-info btn-sm edit_icl'>提交</button>
+        <button class='btn btn-info btn-sm closeLayer' type='button'>关闭</button>
+    </div>
+</form>
+<script>
+    $(".edit_icl").click(function(){
+        var data = $("form[name=icl]").serialize();
+        layer.confirm('是否确定信息，会写到ERP?', {
+            btn: ['确认','取消'] //按钮
+        }, function(){
+            //回写到erp
+            $.post("{:url('erp/special/update_icl')}",data,function(result){
+                showMsg(result);
+                $('#tt').datagrid('reload');
+            },"json")
+        });
+    });
+
+    //查找对应的客户简称
+    $("input[name=ta_icl02]").keyup(function(){
+        var ta_icl01 = $("input[name=ta_icl02]").val();
+        $.post("{:url('erp/special/search_agent')}",{param:ta_icl01},function(result){
+            $(".agent").empty();
+            $(".agent").html(result);
+            //回写选择的值
+            $("input[name=ta_icl01]").click(function(){
+                var tc_icl01 = $(this).val();
+                $("input[name=ta_icl02]").val(tc_icl01);
+            });
+
+        })
+    });
+
+
+</script>

@@ -1,0 +1,326 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/demo.css">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/js/ajaxselect/css/jquery.bigautocomplete.css">
+    <script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/assets/js/sw.js"></script>
+    <script src="__PUBLIC__/static/assets/js/layer.js"></script>
+    <script src="__PUBLIC__/static/assets/js/zrj.js"></script>
+    <script src="__PUBLIC__/static/assets/js/ajaxselect/js/jquery.bigautocomplete.js"></script>
+    <style>
+        .datagrid-cell{ font-size:14px;}
+        .datagrid-header,.datagrid-cell span{ font-size:20px;}
+    </style>
+    <title>维护数据</title>
+</head>
+<body class="easyui-layout">
+<div region="center" style="padding:5px; border:#000 solid 1px;" border="true">
+    <table class="easyui-datagrid" id="tt" title="" style="width:100%;">
+        <thead data-options="frozen:true">
+        <tr>
+            <th data-options="field:'imaicd01',width:100,sortable:true">母体料号</th>
+            <th data-options="field:'ima01',width:150">料件编号</th>
+            <th data-options="field:'ima02',width:150,sortable:true">品名</th>
+            <th data-options="field:'ima06',width:100,sortable:true">主分群码</th>
+        </tr>
+        </thead>
+        <thead>
+        <tr>
+            <th data-options="field:'imaicd14',width:100,sortable:true,editor:'text'">Gross Die</th>
+
+            <th data-options="field:'imaicd18',width:100,sortable:true,editor: {
+                type: 'combobox',
+                options: {
+                    required: false,
+                    editable:false,
+                    missingMessage: '请选择',
+                    data:pkgtype,
+                    valueField: 'value',
+                    textField: 'name',
+                    panelHeight: 100
+                }
+            }">Pkg Type</th>
+            <th data-options="field:'ima09',width:100,sortable:true,editor: {
+                type: 'combobox',
+                options: {
+                    required: true,
+                    editable:false,
+                    missingMessage: '请选择',
+                    data:BusinessGroup,
+                    valueField: 'value',
+                    textField: 'name',
+                    panelHeight: 100
+                }
+            }">事业群</th>
+            <th data-options="field:'ima10',width:100,sortable:true,editor: {
+                type: 'combobox',
+                options: {
+                    required: false,
+                    editable:false,
+                    missingMessage: '请选择',
+                    data:pm,
+                    valueField: 'value',
+                    textField: 'name',
+                    panelHeight: 100
+                }
+            }">事业部</th>
+            <th data-options="field:'ima13',width:100,sortable:true,editor: {
+                type: 'combobox',
+                options: {
+                    required: false,
+                    editable:false,
+                    missingMessage: '请选择',
+                    data:line,
+                    valueField: 'value',
+                    textField: 'name',
+                    panelHeight: 100
+                }
+            }">产品线</th>
+            <th data-options="field:'imaud07',width:100,sortable:true,editor: {
+                type: 'combobox',
+                options: {
+                    required: false,
+                    editable:false,
+                    missingMessage: '请选择',
+                    data:pass,
+                    valueField: 'value',
+                    textField: 'name',
+                    panelHeight: 100
+                }
+            }">Pass B</th>
+            <th data-options="field:'ima133',width:180,sortable:true,editor:'text'">群组料号</th>
+            <th data-options="field:'ima906',width:180,sortable:true,editor: {
+                type: 'combobox',
+                options: {
+                    required: false,
+                    editable:false,
+                    missingMessage: '请选择',
+                    data:control,
+                    valueField: 'value',
+                    textField: 'name',
+                    panelHeight: 100
+                }
+            }">单位控制方式</th>
+
+            <th data-options="field:'ima908',width:100,sortable:true,editor: {
+                type: 'combobox',
+                options: {
+                    required: false,
+                    editable:false,
+                    missingMessage: '请选择',
+                    data:Valuation,
+                    valueField: 'value',
+                    textField: 'name',
+                    panelHeight: 100
+                }
+            }">计价单位</th>
+            <th data-options="field:'ima907',width:100,sortable:true,editor: {
+                type: 'combobox',
+                options: {
+                    required: false,
+                    editable:false,
+                    missingMessage: '请选择',
+                    data:Reference,
+                    valueField: 'value',
+                    textField: 'name',
+                    panelHeight: 100
+                }
+            }">参考单位</th>
+            <th data-options="field:'ima25',width:100,sortable:true,editor: {
+                type: 'combobox',
+                options: {
+                    required: false,
+                    editable:false,
+                    missingMessage: '请选择',
+                    data:Stock,
+                    valueField: 'value',
+                    textField: 'name',
+                    panelHeight: 100
+                }
+            }">库存单位</th>
+        </tr>
+        </thead>
+    </table>
+    <div id='tb'>
+        &nbsp;&nbsp;PrdNo：<input type="text" name="prdno"  value="" style="width:200px;" />
+        &nbsp;&nbsp;主分群码：<input type="text" name="ima06"  value="" style="width:200px;" />
+        &nbsp;&nbsp;产品线：<input type="text" name="ima13"  value="" style="width:100px;" />
+        &nbsp;&nbsp;群组料号：<input type="text" name="ima133"  value="" style="width:200px;" />
+        &nbsp;&nbsp;<a href="#" class="easyui-linkbutton" iconCls="icon-search"  onclick="reload()">查询</a>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    //参考单位
+    var Reference = [
+        {value:'EA',name:'EA'},
+        {value:'PCS',name:'PCS'},
+        {value:'NULL',name:'NULL'}
+    ];
+    //库存单位
+    var Stock = [
+        {value:'EA',name:'EA'},
+        {value:'PCS',name:'PCS'},
+        {value:'NULL',name:'NULL'}
+    ];
+    //计价单位
+    var Valuation =  [
+        {value:'EA',name:'EA'},
+        {value:'PCS',name:'PCS'},
+        {value:'NULL',name:'NULL'}
+    ];
+    //pass
+    var pass = [
+        {value:'Y',name:'Y'},
+        {value:'N',name:'N'}
+    ];
+    //产品线
+    var line = '{$line}';
+    line = JSON.parse(line);
+    //PM
+    var pm = '{$pm}';
+    pm = JSON.parse(pm);
+    //事业群
+    var BusinessGroup = '{$BusinessGroup}';
+    BusinessGroup = JSON.parse(BusinessGroup);
+    //pkg type
+    var pkgtype = '{$pkgtype}';
+    pkgtype = JSON.parse(pkgtype);
+    //单位控制
+     var control = [
+         {value:'1',name:'单一单位'},
+         {value:'2',name:'母子单位'},
+         {value:'3',name:'控制单位'},
+         {value:'null',name:'无单位'}
+     ];
+
+    $('#tt').datagrid({
+        iconCls: 'icon-edit',
+        singleSelect:true,
+        url: "{:url('erp/defend_ima/getData')}",
+        method:'post',
+//        pagination:true,//显示分页
+        pageSize:20,//分页大小
+        pageList:[10,20,30],
+        fit:true,
+        fitcolumns:true,
+        showFooter: true,
+        toolbar:'#tb',
+        onClickCell:onClickCell,
+        onAfterEdit:function (rowIndex, rowData, changes) {
+            var ima06_val = rowData.ima06;
+            if(field == 'imaicd14')
+            {
+               if(ima06_val != '1_WF' && ima06_val != '2_CP')
+               {
+                   $('#tt').datagrid('reload');
+                   return false;
+               }
+
+            }else if(field == 'imaicd18')
+            {
+                if(ima06_val != '3_PKG' && ima06_val != '4_FT')
+                {
+                    $('#tt').datagrid('reload');
+                    return false;
+                }
+            }
+
+            var i = getJsonLength(changes);
+            if(i == 0)
+            {
+                return false;
+            }
+            changes.key = rowData.ima01;
+           //endEdit该方法触发此事件
+            $.post("edit_data",changes,function(result){
+                $('#tt').datagrid('refreshRow',rowIndex);
+                if(result.statusCode == 1){
+                    $('#tt').datagrid('reload');
+                }else{
+                    showMsg(result);
+                }
+            },"json")
+        }
+    });
+
+
+
+
+    function reload(){
+        var prdno = $("input[name=prdno]").val();
+        var ima06 = $("input[name=ima06]").val();
+        var ima13 = $("input[name=ima13]").val();
+        var ima133 = $("input[name=ima133]").val();
+        $('#tt').datagrid('reload',{prdno:prdno,ima06:ima06,ima13:ima13,ima133:ima133});//重新加载datagrid
+    }
+
+    //绑定回车事件
+    $(document).keydown(function(event){
+        if(event.keyCode==13){
+            reload();
+        }
+    });
+
+    var field = '';
+    $.extend($.fn.datagrid.methods, {
+        editCell: function (jq, param) {
+            //获得修改的字段
+            field = param.field;
+            return jq.each(function () {
+                var opts = $(this).datagrid('options');
+                var fields = $(this).datagrid('getColumnFields', true).concat($(this).datagrid('getColumnFields'));
+                for (var i = 0; i < fields.length; i++) {
+                    var col = $(this).datagrid('getColumnOption', fields[i]);
+                    col.editor1 = col.editor;
+                    if (fields[i] != param.field) {
+                        col.editor = null;
+                    }
+                }
+                $(this).datagrid('beginEdit', param.index);
+                for (var i = 0; i < fields.length; i++) {
+                    var col = $(this).datagrid('getColumnOption', fields[i]);
+                    col.editor = col.editor1;
+                }
+            });
+        }
+    });
+    var editIndex = undefined;
+    function endEditing() {
+        if (editIndex == undefined) { return true }
+        if ($('#tt').datagrid('validateRow', editIndex)) {
+            $('#tt').datagrid('endEdit', editIndex);
+            editIndex = undefined;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function onClickCell(index, field) {
+        if (endEditing()) {
+            $('#tt').datagrid('selectRow', index)
+                    .datagrid('editCell', { index: index, field: field });
+            editIndex = index;
+        }
+    }
+
+    //查看自建长度
+    function getJsonLength(jsonData){
+        var jsonLength = 0;
+        for(var item in jsonData){
+            jsonLength++;
+        }
+        return jsonLength;
+    }
+
+
+</script>
+<script src="__PUBLIC__/static/assets/js/lds.js"></script>

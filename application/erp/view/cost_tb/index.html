@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <link href="__PUBLIC__/static/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="__PUBLIC__/static/assets/css/font-awesome.min.css" />
+
+<!--<script src="__PUBLIC__/static/assets/js/layer.js"></script> -->
+<!--<script src="__PUBLIC__/static/assets/js/zrj.js"></script>-->
+<!--<script type="text/javascript" src="__PUBLIC__/static/assets/js/sw_ajax.js"></script>-->
+    <link rel="stylesheet" href="__PUBLIC__/static/assets/css/ace.min.css" />
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/demo.css">
+    <script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/easyui-lang-zh_CN.js"></script>    
+    <script src="__PUBLIC__/static/assets/js/layer.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/assets/layer/use.js"></script>
+<style>
+	.datagrid-cell{ font-size:14px;}
+	.datagrid-header,.datagrid-cell span{ font-size:20px;}
+</style>
+
+<title>CostTb</title>
+</head>
+    <body class="easyui-layout">
+    	<div region="center" style="padding:5px; border:#000 solid 1px;" border="true">  
+            <table class="easyui-datagrid" id="tt" title="Cost Tb" style="width:100%;" 
+            	data-options="
+                	iconCls: 'icon-man',
+                	singleSelect:true,
+                    fit:true,
+                    fitcolumns:true,
+                    showFooter: true,
+                    toolbar:'#tb'                
+                    ">
+                <thead data-options="frozen:true">
+                    <tr>
+                        <th data-options="field:'line_name',width:80">产品线</th>
+                        <th data-options="field:'type_no',sortable:true,width:80">Type no</th>
+                        <th data-options="field:'prd_no',sortable:true,width:80">Prd no</th>
+                    </tr>
+                </thead>
+                <thead>
+                    <tr>
+                        <th data-options="field:'fab_name'" >FAB</th>
+                        <th data-options="field:'fab_release'">FAB Release</th>
+                        <th data-options="field:'gross_die'">Gross Die</th>
+                        <th data-options="field:'cp_name'">CP</th>
+                        <th data-options="field:'cp_release'">CP Release</th>
+                        <th data-options="field:'cp_tester'">Cp Tester</th>
+                        <th data-options="field:'cp_flow'">CP Flow</th>
+                        <th data-options="field:'cp_code'">Cp 测试程序</th>
+                        <th data-options="field:'pkg_name'" >Assya/b</th>
+                        <th data-options="field:'pkg_line'" >线材</th>
+                        <th data-options="field:'pkg_pin_type'" >Pin/Type</th>
+                        <th data-options="field:'pkg_pic'" >打线图号</th>
+                        <th data-options="field:'ft_name'" >FT</th>
+                        <th data-options="field:'ft_release'" >FT Release</th>
+                        <th data-options="field:'ft_tester'" >FT Tester</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div id="tb">
+            <form id="form1" name="search_form" >
+            	&nbsp;
+            	Type No:<input type="text"  value="" style="width:100px;" name="type_name">
+                
+                Prd No:<input type="text"  value="" style="width:100px;" name="type_name">
+                <button type="button" onclick="search_info()">提交</button>              
+        </form>
+        </div>
+    </body>
+</html>
+
+<script>
+
+	var data_url = "{:url('erp/cost_tb/get_note_data')}";
+    $(function (){
+        $('#tt').datagrid({
+                iconCls: 'icon-edit',
+                singleSelect:true,
+                url: 'get_cost_data',
+                pagination:true,//显示分页
+                pageSize:30,//分页大小
+                pageList:[30,40,50],
+                fit:true,
+                fitcolumns:true,
+                showFooter: true,
+                toolbar:'#tb',
+                onDblClickRow :function(rowIndex,rowData){
+                    layerIframe('申请单详情',"{:url('user/Note_check/check_note')}/flag/note_view/id/"+rowData.id,wid='550px',hig='550px',shade='0.3',max='true');
+              }
+            });
+    });
+
+    function search_info(){
+        var formdata = $("form[name=search_form]").serializeArray();
+        $('#tt').datagrid('reload',{data:formdata});
+    }
+
+</script>

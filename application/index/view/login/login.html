@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>{:config('system_name_zh')}登录</title>
+
+		<!-- basic styles -->
+
+		<link href="__PUBLIC__/static/assets/css/bootstrap.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="__PUBLIC__/static/assets/css/font-awesome.min.css" />
+
+		<!--[if IE 7]>
+		  <link rel="stylesheet" href="__PUBLIC__/static/assets/css/font-awesome-ie7.min.css" />
+		<![endif]-->
+
+		<!-- page specific plugin styles -->
+
+		<!-- fonts -->
+
+		<link rel="stylesheet" href="__PUBLIC__/static/assets/css/css.css" />
+
+		<!-- ace styles -->
+
+		<link rel="stylesheet" href="__PUBLIC__/static/assets/css/ace.min.css" />
+		<link rel="stylesheet" href="__PUBLIC__/static/assets/css/ace-rtl.min.css" />
+
+		<!--[if lte IE 8]>
+		  <link rel="stylesheet" href="__PUBLIC__/static/assets/css/ace-ie.min.css" />
+		<![endif]-->
+
+		<!-- inline styles related to this page -->
+
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+		<!--[if lt IE 9]>
+		<script src="__PUBLIC__/static/assets/js/html5shiv.js"></script>
+		<script src="__PUBLIC__/static/assets/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+
+	<body class="login-layout">
+		<div class="main-container">
+			<div class="main-content">
+				<div class="row">
+					<div class="col-sm-10 col-sm-offset-1">
+						<div class="login-container">
+							<div class="center">
+								<h1>
+									<span style="margin:0px -10px 0 0;"><img src="__PUBLIC__/static/img/logo.jpg" width="85"></span>
+									<span class="red">{:config('company_name_en_short')}</span>
+									<span class="white">{:config('system_name_zh')}</span>
+								</h1>
+								<h4 class="blue">&copy; {:config('company_name_en')}</h4>
+							</div>
+
+							<div class="space-6"></div>
+
+							<div class="position-relative">
+                            
+								<div id="login-box" class="login-box visible widget-box no-border">
+									<div class="widget-body">
+										<div class="widget-main">
+											<h4 class="header blue lighter bigger">
+												<i class="icon-coffee green"></i>
+												请输入工号登录系统
+											</h4>
+
+											<div class="space-6"></div>
+
+											<form action="login" method="post">
+												<fieldset>
+													<label class="block clearfix">
+														<span class="block input-icon input-icon-right">
+															<input type="text" class="form-control" placeholder="工号"  name="user_gh"/>
+															<i class="icon-user"></i>
+														</span>
+													</label>
+
+													<label class="block clearfix">
+														<span class="block input-icon input-icon-right">
+															<input type="password" class="form-control" placeholder="密码" name="password" />
+															<i class="icon-lock"></i>
+														</span>
+													</label>
+                                                    <!--
+                                                    <label class="block clearfix">
+                                                    	<span class="block input-icon input-icon-right">
+															<input type="text" class="form-control" name="code" placeholder="请填写验证码" autocomplete="off">
+															<i class="icon-eye-open"></i>
+														</span>
+                                                    </label>
+
+                                                    <label class="block clearfix">
+                                                    	<span class="block input-icon input-icon-right">
+                                                        <img id="captcha_img" onClick="this.src='{:captcha_src()}?d='+Math.random();" alt="点击切换" title="点击切换" src="{:captcha_src()}">
+                                                    </span>
+                                                    </label>
+                                                    -->
+
+													<div class="space"></div>
+													{if condition="$ip_flag eq 0"}
+													<div style="margin-top: -10px;">
+														<input style="width: 100px;height: 35px; float: left;" class="form-control" id="inputVerify" name="verify" placeholder="验证码" type="text"
+															   data-error="验证码错误" required>
+														<!--<img style="float: left;height: 35px;" class="verifyimg reloadverify" src="{:captcha_src('index/login/verify')}" alt="">-->
+														<!--<img style="float: left;height: 35px;" class="verifyimg reloadverify" src="{:url('index/login/verify')}" alt="">-->
+
+														<img id="verify_img" src="{:captcha_src()}" alt="验证码" onclick="refreshVerify()">
+													 
+													</div>
+													{/if}
+
+													<div class="clearfix  center">
+                                                         <button type="submit" class="width-35 center-block btn btn-sm btn-primary">
+                                                          	<i class="icon-key"></i>
+                                                            登录
+                                                         </button>
+													</div>
+
+													<div class="space-4"></div>
+												</fieldset>
+											</form>
+
+											
+										</div><!-- /widget-main -->
+
+										<div class="toolbar clearfix">
+                                        <!--
+											<div>
+												<a href="#" onclick="show_box('forgot-box'); return false;" class="forgot-password-link">
+													<i class="icon-arrow-left"></i>
+													忘记密码
+												</a>
+											</div>
+                                            -->
+
+											
+										</div>
+									</div><!-- /widget-body -->
+								</div><!-- /login-box -->
+
+								<div id="forgot-box" class="forgot-box widget-box no-border" style="border:none; padding:0px;">
+									<div class="widget-body">
+										<div class="widget-main">
+											<h4 class="header red lighter bigger">
+												<i class="icon-key"></i>
+												找回密码
+											</h4>
+
+											<div class="space-6"></div>
+											<p>
+                                                输入你公司的邮箱找回密码
+											</p>
+
+											<form>
+												<fieldset>
+													<label class="block clearfix">
+														<span class="block input-icon input-icon-right">
+															<input type="email" class="form-control" placeholder="邮箱地址" />
+															<i class="icon-envelope"></i>
+														</span>
+													</label>
+
+													<div class="clearfix">
+														<button type="button" onclick="find_pwd(this)" class="width-35 pull-right btn btn-sm btn-danger">
+															<i class="icon-lightbulb"></i>
+															发送!
+														</button>
+													</div>
+												</fieldset>
+											</form>
+										</div><!-- /widget-main -->
+
+										<div class="toolbar center">
+											<a href="#" onclick="show_box('login-box'); return false;" class="back-to-login-link">
+												返回登录
+												<i class="icon-arrow-right"></i>
+											</a>
+										</div>
+									</div><!-- /widget-body -->
+								</div><!-- /forgot-box -->
+
+									</div><!-- /widget-body -->
+								</div><!-- /signup-box -->
+							</div><!-- /position-relative -->
+						</div>
+					</div><!-- /.col -->
+				</div><!-- /.row -->
+			</div>
+		</div><!-- /.main-container -->
+
+		<!-- basic scripts -->
+
+		<!--[if !IE]> -->
+
+		<script src="__PUBLIC__/static/assets/js/jquery.min.js"></script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<![endif]-->
+
+		<!--[if !IE]> -->
+
+		<script type="text/javascript">
+			window.jQuery || document.write("<script src='__PUBLIC__/static/assets/js/jquery-2.0.3.min.js'>"+"<"+"/script>");
+		</script>
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+<script type="text/javascript">
+ window.jQuery || document.write("<script src='__PUBLIC__/static/assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+		<script type="text/javascript">
+			if("ontouchend" in document) document.write("<script src='__PUBLIC__/static/assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+		</script>
+
+		<!-- inline scripts related to this page -->
+
+		<script type="text/javascript">
+			function show_box(id) {
+			 jQuery('.widget-box.visible').removeClass('visible');
+			 jQuery('#'+id).addClass('visible');
+			}
+
+//			$(function(){
+//				// 刷新验证码
+//				var verifyimg = $(".verifyimg").attr("src");
+//				$(".reloadverify").click(function(){
+//					if( verifyimg.indexOf('?')>0){
+//						$(".verifyimg").attr("src", verifyimg+'&random='+Math.random());
+//					}else{
+//						$(".verifyimg").attr("src", verifyimg.replace(/\?.*$/,'')+'?'+Math.random());
+//					}
+//				});
+//			})
+			function refreshVerify() {
+				var ts = Date.parse(new Date())/1000;
+				var img = document.getElementById('verify_img');
+				img.src = "/captcha?id="+ts;
+			}
+		</script>
+	<script>
+			no_go=1;
+			function find_pwd(thi){
+				if(no_go==1){
+					var time=5;
+					thi.innerHTML="<i class='icon-lightbulb'></i>发送!("+time+")";
+					thi.setAttribute("class", "width-35 pull-right btn btn-sm btn-error");
+					var show_time=self.setInterval(function(){
+						time=time-1;
+						thi.innerHTML="<i class='icon-lightbulb'></i>发送!("+time+")";
+						if(time==0){
+							thi.innerHTML="<i class='icon-lightbulb'></i>发送!";
+							clearInterval(show_time)
+							no_go=1;
+							thi.setAttribute("class", "width-35 pull-right btn btn-sm btn-danger");
+						}
+					},1000); 
+					no_go=999;
+				}else{
+					return false;
+				}
+				
+				var form = new FormData($('form[wtq=find_pwd]')[0]);
+				$.ajax({
+			        type: "POST",
+			        url:'{:url("find_pwd")}',
+			        data:form,// 你的formid
+			        processData:false,
+			        contentType:false,
+			        dataType:'json',
+			        error: function(request) {
+			            alert('失败')
+			        },
+			        success: function(data) {
+			        	alert(data);
+			        }
+			    });
+			}
+		</script>
+</body>
+</html>

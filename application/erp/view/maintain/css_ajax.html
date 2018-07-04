@@ -1,0 +1,193 @@
+	
+	<div class="panel-header" style="width: 100%">
+		<div class="panel-title">特殊价格代码</div>
+		<div class="panel-tool"></div>
+	</div>
+	<div wtq="loading" class="datagrid-wrap panel-body">
+		<div id="tb" class="datagrid-toolbar">
+			<a onclick="$('[wtq=sour]').val('')" href="#" class="easyui-linkbutton l-btn l-btn-small" iconcls="icon-search" onclick="reload()" group="" id=""><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">清空</span><span class="l-btn-icon icon-search">&nbsp;</span></span></a>
+			<input wtq="sour" name="TC_PRC01" placeholder="请输入产品编号" value="{:isset($sour_arr['TC_PRC01'])?$sour_arr['TC_PRC01']:''}" style="width:150px;height:28px;" type="text">
+			<input wtq="sour" name="TC_PRC02" placeholder="请输入产客户编号" value="{:isset($sour_arr['TC_PRC02'])?$sour_arr['TC_PRC02']:''}" style="width:150px;height:28px;" type="text">
+			<a onclick="ajaxx(1,{$page[6]},'{$page[10]}','{$page[11]}','sour')" href="#" class="easyui-linkbutton l-btn l-btn-small" iconcls="icon-search" onclick="reload()" group="" id=""><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">查询</span><span class="l-btn-icon icon-search">&nbsp;</span></span></a>
+			<!--a class="easyui-linkbutton getExcel l-btn l-btn-small l-btn-plain" data-options="iconCls:'icon-save',plain:true" group="" id=""><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">导出报表</span><span class="l-btn-icon icon-save">&nbsp;</span></span></a-->
+			<!--a class="easyui-linkbutton editBySearch l-btn l-btn-small l-btn-plain" data-options="iconCls:'icon-edit',plain:true" group="" id=""><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">批量修改</span><span class="l-btn-icon icon-edit">&nbsp;</span></span></a-->
+			<a onclick="go_excel('all')" class="easyui-linkbutton getExcel l-btn l-btn-small l-btn-plain" data-options="iconCls:'icon-save',plain:true" group="" id=""><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">导出当前报表</span><span class="l-btn-icon icon-save">&nbsp;</span></span></a>
+			<a rbq onclick="method5('tableExcel')" download="特殊价格代码.xls" class="easyui-linkbutton getExcel l-btn l-btn-small l-btn-plain" data-options="iconCls:'icon-save',plain:true" group="" id=""><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">导出选中报表</span><span class="l-btn-icon icon-save">&nbsp;</span></span></a>
+		</div>
+	 	
+	 	<div>
+	 		<div div_left style="/*position: absolute;*/float:left;">
+				<table id="tableExcel" class="datagrid-htable" cellpadding="0" cellspacing="0">
+					<thead style="background: linear-gradient(to bottom,#F9F9F9 0,#efefef 100%);">
+						<tr exceltitle1>
+							{foreach $this_title['ding'] as $k=>$key}
+                               		<td style="cursor:pointer;" onclick="ajaxx({$page[2]},{$page[6]},'{$key}','{if condition="$page[10]==$key"} {if condition="$page[11]==''"}1{else /}{/if} {else /}{/if}')" onmouseenter="$(this).css('background-color','#EAF2FF');" onmouseleave="$(this).css('background-color','');">
+		                               	<div tr_shu='{$key}' style="float:left;overflow: hidden;padding:0;" class="datagrid-sort   {if condition="$page[10]==$key"} {if condition="$page[11]==''"}datagrid-sort-asc{else /}datagrid-sort-desc{/if} {else /}{/if}">
+			                               	<span>{$body[$key]}</span>
+			                               	<span class="datagrid-sort-icon"></span>
+		                               	</div>
+		                               	<div onmousedown="name_th_width_down('{$key}','fu')" style="float:right;height:68%;cursor: e-resize;width:1px"></div>
+	                               	</td>
+                            {/foreach}
+						</tr>
+					</thead>
+					<tbody>
+                        {foreach $page_info['ding'] as $ke=>$vo}
+							<tr onclick="tr_colors('{$page_info['ding'][$ke]['id']}')" onmouseenter="if($('tr[tr_color='+$(this).attr('tr_color')+']').attr('no')!=1){$('tr[tr_color='+$(this).attr('tr_color')+']').css('background-color','#EAF2FF')}" onmouseleave="if($('tr[tr_color='+$(this).attr('tr_color')+']').attr('no')!=1){$('tr[tr_color='+$(this).attr('tr_color')+']').css('background-color','white')}" tr_color="{$vo['id']}">
+								{foreach $vo as $key=>$v}
+	                               	<td {if condition="$key=='id'"}onclick="change('','={$v}',this)" ch{/if}><div tr_shu='{$key}' style="overflow: hidden;"><span style="overflow: hidden;">{$v}</span></div></td>
+	                            {/foreach}
+                            </tr>
+                        {/foreach}
+					</tbody>
+				</table>
+			</div>
+			<div div_right style="/*position: absolute;right: 0;max-width:70%;*/float:left;display:block;overflow-x:scroll;">
+				<table class="datagrid-btable" cellpadding="0" cellspacing="0">
+					<thead style="background: linear-gradient(to bottom,#F9F9F9 0,#efefef 100%);">
+						<tr exceltitle2>
+							{foreach $this_title['field'] as $k=>$key}<!-- datagrid-sort-asc 上，正序 datagrid-sort-desc 下 -->
+                               	<td style="cursor:pointer;position: relative;" onclick="ajaxx({$page[2]},{$page[6]},'{$key}','{if condition="$page[10]==$key"} {if condition="$page[11]==''"}1{else /}{/if} {else /}{/if}')" onmouseenter="$(this).css('background-color','#EAF2FF');" onmouseleave="$(this).css('background-color','');">
+                               		<div tr_shu='{$key}' style="float:left;overflow: hidden;padding:0;" class="datagrid-sort   {if condition="$page[10]==$key"} {if condition="$page[11]==''"}datagrid-sort-asc{else /}datagrid-sort-desc{/if} {else /}{/if}">
+                               			<span>{$body[$key]}</span>
+                               			<span class="datagrid-sort-icon"></span>
+                               		</div>
+                               		<div onmousedown="name_th_width_down('{$key}')" style="position: absolute;right: 0px;height:68%;cursor: e-resize;width:1px"></div>
+                               	</td>
+                            {/foreach}
+						</tr>
+					</thead>
+					<tbody>
+						{foreach $page_info['field'] as $ke=>$vo}
+							<tr onclick="tr_colors('{$page_info['ding'][$ke]['id']}')" onmouseenter="if($('tr[tr_color='+$(this).attr('tr_color')+']').attr('no')!=1){$('tr[tr_color='+$(this).attr('tr_color')+']').css('background-color','#EAF2FF')}" onmouseleave="if($('tr[tr_color='+$(this).attr('tr_color')+']').attr('no')!=1){$('tr[tr_color='+$(this).attr('tr_color')+']').css('background-color','white')}" tr_color="{$page_info['ding'][$ke]['id']}">
+								{foreach $vo as $key=>$v}
+	                               	<td {if condition="in_array($key, $change)"}wtq_change="{$key}" wtq_change_id="{$page_info['ding'][$ke]['id']}" onclick="check(this,'={$key}','={$page_info['ding'][$ke]['id']}')" ondblclick="change('={$key}','={$page_info['ding'][$ke]['id']}',this,'db')" ch2{/if} old="{$v}"><div tr_shu='{$key}' style="overflow: hidden;"><span>{$v}</span></div></td>
+	                            {/foreach}
+                            </tr>
+                        {/foreach}
+					</tbody>
+				</table>
+			</div>
+	 	</div>
+	</div>
+	<!--style>
+		tr:hover {background-color:#EAF2FF;}
+	</style-->
+	<div class="datagrid-pager pagination">
+		<table cellspacing="0" cellpadding="0" border="0">
+			<tbody>
+				<tr>
+					<td>
+						<select wtq_id="shul" class="pagination-page-list" onchange="ajaxx({$page[2]},$(this).val(),'{$page[10]}','{$page[11]}')">
+							<option {if condition="$page[6]==5"}selected='selected'{/if} >5</option>
+							<option {if condition="$page[6]==10"}selected='selected'{/if} >10</option>
+							<option {if condition="$page[6]==20"}selected='selected'{/if} >20</option>
+							<option {if condition="$page[6]==30"}selected='selected'{/if} >30</option>
+						</select>
+					</td>
+					<td>
+						<div class="pagination-btn-separator"></div>
+					</td>
+					<td {if condition="$page[2]>1"}onclick="ajaxx(1,{$page[6]},'{$page[10]}','{$page[11]}',1)"{/if}>
+						<a onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn {if condition="$page[12]==1"}l-btn-focus ok{/if} l-btn-small l-btn-plain{$page[1]}" group="" id="">
+							<span class="l-btn-left l-btn-icon-left">
+								<span class="l-btn-text l-btn-empty">&nbsp;</span>
+								<span class="l-btn-icon pagination-first">&nbsp;</span>
+							</span>
+						</a>
+					</td>
+					<td {if condition="$page[2]>1"}onclick="ajaxx({$page[0]},{$page[6]},'{$page[10]}','{$page[11]}',2)"{/if}>
+						<a onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn {if condition="$page[12]==2"}l-btn-focus ok{/if} l-btn-small l-btn-plain{$page[1]}" group="" id="">
+							<span class="l-btn-left l-btn-icon-left">
+							<span class="l-btn-text l-btn-empty">&nbsp;</span>
+							<span class="l-btn-icon pagination-prev">&nbsp;</span>
+							</span>
+						</a>
+					</td>
+					<td>
+						<div class="pagination-btn-separator"></div>
+					</td>
+					<td>
+						<span style="padding-left:6px;">第</span>
+					</td>
+					<td>
+						<input wtq_id="yeshu" class="pagination-num" value="{$page[2]}" size="2" type="text">
+					</td>
+					<td>
+						<span style="padding-right:6px;">共{$page[5]}页</span>
+					</td>
+					<td>
+						<div class="pagination-btn-separator"></div>
+					</td>
+					<td {if condition="$page[2]<$page[5]"} onclick="ajaxx({$page[3]},{$page[6]},'{$page[10]}','{$page[11]}',3)"{/if}>
+						<a onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn {if condition="$page[12]==3"}l-btn-focus ok{/if} l-btn-small l-btn-plain{$page[4]}" group="" id="">
+							<span class="l-btn-left l-btn-icon-left">
+								<span class="l-btn-text l-btn-empty">&nbsp;</span>
+								<span class="l-btn-icon pagination-next">&nbsp;</span>
+							</span>
+						</a>
+					</td>
+					<td {if condition="$page[2]<$page[5]"} onclick="ajaxx({$page[5]},{$page[6]},'{$page[10]}','{$page[11]}',4)"{/if}>
+						<a onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn {if condition="$page[12]==4"}l-btn-focus ok{/if} l-btn-small l-btn-plain{$page[4]}" group="" id="">
+							<span class="l-btn-left l-btn-icon-left">
+								<span class="l-btn-text l-btn-empty">&nbsp;</span>
+								<span class="l-btn-icon pagination-last">&nbsp;</span>
+							</span>
+						</a>
+					</td>
+					<td>
+						<div class="pagination-btn-separator"></div>
+					</td>
+					<td onclick="ajaxx({$page[2]},{$page[6]},'{$page[10]}','{$page[11]}',5)">
+						<a onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn {if condition="$page[12]==5"}l-btn-focus ok{/if} l-btn-small l-btn-plain" group="" id="">
+							<span class="l-btn-left l-btn-icon-left">
+								<span class="l-btn-text l-btn-empty">&nbsp;</span>
+								<span loading class="l-btn-icon pagination-load">&nbsp;</span>
+							</span>
+						</a>
+					</td>
+					<td>
+						<div class="pagination-btn-separator"></div>
+					</td>
+					<td>
+						<a a_d onclick="table_width('定',this)" onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn {if condition="$page[12]==5"}l-btn-focus ok{/if} l-btn-small l-btn-plain" group="" id="">
+							<span class="l-btn-left l-btn-icon-left">
+								<span class="l-btn-text l-btn-empty">定</span>
+							</span>
+						</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="pagination-info">显示{$page[8]}到{$page[9]},共{$page[7]}记录</div>
+		<div style="clear:both;"></div>
+	</div>	
+
+<script>// 
+	$(function(){
+		document.onkeypress = function(e){
+		    var ev = document.all ? window.event : e;
+		    if(ev.keyCode==13) {
+		    	if(no_dong==1){
+		    		if($("input[wtq_id=yeshu]:focus").length > 0){
+			    		ajaxx($("input[wtq_id=yeshu]").val(),$("select[wtq_id=shul]").val(),'{$page[10]}','{$page[11]}',999);	
+			    	}else{
+			    		 $(".ok").trigger('click');
+			    	}
+		    	}
+		     }
+		}
+	}); 
+	
+	
+</script>
+
+
+
+
+
+
+
+
+
+			

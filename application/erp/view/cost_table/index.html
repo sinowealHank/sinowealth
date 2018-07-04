@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/demo.css">
+
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/js/ajaxselect/css/jquery.bigautocomplete.css">
+
+    <script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/assets/js/sw.js"></script>
+    <script src="__PUBLIC__/static/assets/js/layer.js"></script>
+    <script src="__PUBLIC__/static/assets/js/zrj.js"></script>
+    <script src="__PUBLIC__/static/assets/js/ajaxselect/js/jquery.bigautocomplete.js"></script>
+
+    <style>
+        .datagrid-cell{ font-size:14px;}
+        .datagrid-header,.datagrid-cell span{ font-size:20px;}
+    </style>
+    <title>特殊正印</title>
+</head>
+<body class="easyui-layout">
+<div region="center" style="padding:5px; border:#000 solid 1px;" border="true">
+    <table class="easyui-datagrid" id="tt" title="" style="width:100%;">
+        <thead data-options="frozen:true">
+        <tr>
+            <!--<th data-options="field:'id'">序号</th>-->
+            <th data-options="field:'a_pmh02',width:100,sortable:true">WF厂</th>
+            <th data-options="field:'a_ta_pmh09',width:70">a_ta_pmh09</th>
+            <th data-options="field:'a_ta_pmh11',width:85,sortable:true">a_ta_pmh11</th>
+            <th data-options="field:'a_ta_pmh12',width:100,sortable:true">a_ta_pmh12</th>
+            <th data-options="field:'a_ta_pmh13',width:100,sortable:true">a_ta_pmh13</th>
+            <th data-options="field:'a_ta_pmh14',width:100,sortable:true">a_ta_pmh14</th>
+            <th data-options="field:'a_ta_pmh16',width:100,sortable:true">a_ta_pmh16</th>
+        </tr>
+        </thead>
+        <thead>
+        <tr>
+            <th data-options="field:'a_pmh20',width:100,sortable:true">a_pmh20</th>
+            <th data-options="field:'a_ta_pmh15',width:100,sortable:true">a_ta_pmh15</th>
+            <th data-options="field:'a_imaicd14',width:100,sortable:true">a_imaicd14</th>
+            <th data-options="field:'a_imaicd04',width:100,sortable:true">a_imaicd04</th>
+            <th data-options="field:'a_ima021',width:100,sortable:true">a_ima021</th>
+            <th data-options="field:'a_ima131',width:100,sortable:true">a_ima131</th>
+            <th data-options="field:'b_pmh02',width:100,sortable:true">CP厂</th>
+            <th data-options="field:'b_ta_pmh09',width:100,sortable:true">b_ta_pmh09</th>
+            <th data-options="field:'b_ta_pmh11',width:100,sortable:true">b_ta_pmh11</th>
+            <th data-options="field:'b_ta_pmh12',width:100,sortable:true">b_ta_pmh12</th>
+            <th data-options="field:'b_ta_pmh13',width:100,sortable:true">b_ta_pmh13</th>
+            <th data-options="field:'b_ta_pmh14',width:100,sortable:true">b_ta_pmh14</th>
+            <th data-options="field:'b_ta_pmh16',width:100,sortable:true">b_ta_pmh16</th>
+            <th data-options="field:'b_pmh20',width:100,sortable:true">b_pmh20</th>
+            <th data-options="field:'b_ta_pmh15',width:100,sortable:true">b_ta_pmh15</th>
+            <th data-options="field:'b_imaicd14',width:100,sortable:true">b_imaicd14</th>
+            <th data-options="field:'b_imaicd04',width:100,sortable:true">b_imaicd04</th>
+            <th data-options="field:'b_ima021',width:100,sortable:true">b_ima021</th>
+            <th data-options="field:'b_ima131',width:100,sortable:true">b_ima131</th>
+            <th data-options="field:'c_pmh02',width:100,sortable:true">CP厂</th>
+            <th data-options="field:'c_ta_pmh09',width:100,sortable:true">c_ta_pmh09</th>
+            <th data-options="field:'c_ta_pmh11',width:100,sortable:true">c_ta_pmh11</th>
+            <th data-options="field:'c_ta_pmh12',width:100,sortable:true">c_ta_pmh12</th>
+            <th data-options="field:'c_ta_pmh13',width:100,sortable:true">c_ta_pmh13</th>
+            <th data-options="field:'c_ta_pmh14',width:100,sortable:true">c_ta_pmh14</th>
+            <th data-options="field:'c_ta_pmh16',width:100,sortable:true">c_ta_pmh16</th>
+            <th data-options="field:'c_pmh20',width:100,sortable:true">c_pmh20</th>
+            <th data-options="field:'c_ta_pmh15',width:100,sortable:true">c_ta_pmh15</th>
+            <th data-options="field:'c_imaicd14',width:100,sortable:true">c_imaicd14</th>
+            <th data-options="field:'c_imaicd04',width:100,sortable:true">c_imaicd04</th>
+            <th data-options="field:'c_ima021',width:100,sortable:true">c_ima021</th>
+            <th data-options="field:'c_ima131',width:100,sortable:true">c_ima131</th>
+            <th data-options="field:'d_pmh02',width:100,sortable:true">FT厂</th>
+            <th data-options="field:'d_ta_pmh09',width:100,sortable:true">d_ta_pmh09</th>
+            <th data-options="field:'d_ta_pmh11',width:100,sortable:true">d_ta_pmh11</th>
+            <th data-options="field:'d_ta_pmh12',width:100,sortable:true">d_ta_pmh12</th>
+            <th data-options="field:'d_ta_pmh13',width:100,sortable:true">d_ta_pmh13</th>
+            <th data-options="field:'d_ta_pmh14',width:100,sortable:true">d_ta_pmh14</th>
+            <th data-options="field:'d_ta_pmh16',width:100,sortable:true">d_ta_pmh16</th>
+            <th data-options="field:'d_pmh20',width:100,sortable:true">d_pmh20</th>
+            <th data-options="field:'d_ta_pmh15',width:100,sortable:true">d_ta_pmh15</th>
+            <th data-options="field:'d_imaicd14',width:100,sortable:true">d_imaicd14</th>
+            <th data-options="field:'d_imaicd04',width:100,sortable:true">d_imaicd04</th>
+            <th data-options="field:'d_ima021',width:100,sortable:true">d_ima021</th>
+            <th data-options="field:'d_ima131',width:100,sortable:true">d_ima131</th>
+        </tr>
+        </thead>
+    </table>
+    <div id='tb'>
+        &nbsp;&nbsp;TypeNo：<input type="text" name="typeno"  value="" style="width:200px;" />
+        &nbsp;&nbsp;PrdNo：<input type="text" name="prdno"  value="" style="width:200px;" />
+        &nbsp;&nbsp;<a href="#" class="easyui-linkbutton" iconCls="icon-search"  onclick="reload()">查询</a>
+    </div>
+</div>
+</body>
+</html>
+
+<script>
+
+    $('#tt').datagrid({
+        iconCls: 'icon-edit',
+        singleSelect:true,
+        url: "{:url('erp/cost_table/getBomData')}",
+        method:'post',
+        pagination:true,//显示分页
+        pageSize:20,//分页大小
+        pageList:[10,20,30],
+        fit:true,
+        fitcolumns:true,
+        showFooter: true,
+        toolbar:'#tb',
+        onDblClickRow:function(rowIndex,rowData){
+            //点击搜索触发此方法
+
+        }
+    });
+    function reload(){
+        var typeno = $("input[name=typeno]").val();
+        var prdno = $("input[name=prdno]").val();
+        $('#tt').datagrid('reload',{typeno:typeno,prdno:prdno});//重新加载datagrid
+    }
+
+
+</script>
+
+<script src="__PUBLIC__/static/assets/js/lds.js"></script>

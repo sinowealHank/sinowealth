@@ -1,0 +1,99 @@
+{extend name="index@index/base" /}
+{block name="main"}
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<script type="text/javascript">
+		try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	</script>
+
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+				<a href="#">首页</a>
+		</li>
+
+		<li>
+			<a href="#">后台管理</a>
+		</li>
+			<li class="active">用餐数据</li>
+	</ul><!-- .breadcrumb -->
+</div>
+
+<div class="page-content">
+	<div class="page-header col-xs-12">
+            <h1 class="col-xs-9">
+                用餐数据列表        
+            </h1>
+        <div class="pull-right  clearfix">        	
+        </div>        
+	</div><!-- /.page-header -->
+
+	<div class="row"><!-- /.col -->
+    	<div class="col-xs-12">
+            
+            <table class="table table-striped table-bordered table-hover">
+            	<thead>
+                	<tr>
+                    	<th>ID</th>
+                        <th>日期</th>
+                        <th>早餐(次)</th>
+                        <th>早餐</th>
+                        <th>午餐(次)</th>
+                        <th>午餐</th>
+                        <th>晚餐(次)</th>
+                        <th>晚餐</th>
+                        <th>锁定?</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                	{if condition="$page_info.empty eq 1"}						
+						<tr>
+							<td colspan="10" align="center">暂无数据！</td>
+						</tr>
+						{else/}
+						{volist name="page_info.list" id="vo"}
+                            <tr>
+                                <td>{$vo.id}</td>
+                                <td>{$vo.year}-{$vo.month}</td>
+                                <td>{$vo.bf_num}</td>
+                                <td>{$vo.bf_money}</td>
+                                <td>{$vo.lunch_num}</td>
+                                <td>{$vo.lunch_money}</td>
+                                <td>{$vo.supper_num}</td>
+                                <td>{$vo.supper_money}</td>
+                                <td>
+                                	{eq name="$vo['is_lock']" value="1"}
+                                    	<i class="icon-lock  bigger-125"></i>
+                                    {else/}
+                                    	<i class="icon-unlock  bigger-125"></i>
+                                    {/eq}
+                                </td>
+                                <td class="text-center">
+                                    <div class="visible-md visible-lg btn-group">
+                                        <a class="btn btn-xs btn-info layerIframe" url="day_list/year/{$vo.year}/month/{$vo.month}/" max="true"  title="{$vo.year}-{$vo.month}月用餐详细情况">
+                                            <i class="icon-credit-card "></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                    	{/volist}
+                    {/if}
+                </tbody>
+            </table>
+            {$page_info.page}
+            
+        </div>
+	</div><!-- /.row -->
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+	//搜索过滤条件显示用餐数据
+
+	$('a[name=supper_list]').click(function(){
+			m_dialog('/sys/eat_list/cur_day_supper_list/','本日晚餐统计','','','','hideSave');
+		});
+</script>
+{/block}

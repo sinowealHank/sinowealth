@@ -1,0 +1,87 @@
+{extend name="index@index/base" /}
+{block name="main"}
+<style>
+    .search_form input{margin-left: 10px;height: 40px;}
+    .search_form span{margin-left: 10px;}
+    .page-header a {margin-left:10px;width: 100px; }
+</style>
+<div class="breadcrumbs" id="breadcrumbs">
+    <script type="text/javascript">
+        try{ace.settings.check('breadcrumbs','fixed')}catch(e){}
+    </script>
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">首页</a>
+        </li>
+
+        <li>
+            <a href="#">资产管理</a>
+        </li>
+        <li class="active">部门主管领用新人资产</li>
+    </ul><!-- .breadcrumb -->
+</div>
+<div class="page-content">
+    <div class="page-header">
+
+        <a href="{:url('prop/dep/index')}" class="btn btn-primary">返回</a>
+    </div><!-- /.page-header -->
+    <div>
+        <form class="search_form" method="get">
+            <span>领用人:</span><input type="text" name="reg_prop_num" value="{$page_info.reg_prop_num?$page_info.reg_prop_num:'';}">
+            <span>一起名称:</span><input type="text" name="reg_prop_name" value="{$page_info.reg_prop_name?$page_info.reg_prop_name:'';}">
+            <span><button type="submit" class="btn btn-primary">查询</button></span>
+        </form>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>ID:</th>
+                <th>领用人：</th>
+                <th>仪器名称：</th>
+                <th>设备编号：</th>
+                <th>品牌型号：</th>
+                <th>产品序列号：</th>
+                <th>供货商：</th>
+                <th>购买时间：</th>
+                <th>验收状况：</th>
+                <th>签收：</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="$page_info.data" id="vo"}
+            <tr >
+                <td>{$vo.id}</td>
+                <td>{$vo.user_name}</td>
+                <td>{$vo.instr_name}</td>
+                <td>{$vo.equip_num}</td>
+                <td>{$vo.brand_model}</td>
+                <td>{$vo.product_num}</td>
+                <td>{$vo.supplier}</td>
+                <td>{$vo.buy_time}</td>
+                <td>
+                    {switch name="$vo.accept_process"}
+                    {case value="2"}<button class="btn btn-primary btn-xs">部门主管已签字</button>{/case}
+                    {case value="0"}<button class="btn btn-xs btn-info">验收人验收</button>{/case}
+                    {/switch}
+                </td>
+                <td>
+                    <button class="btn btn-primary btn-xs layerIframe" title="主管签收公共资产" wid="650;" hig="600px;" url="receive?id={$vo.id}"><i class="icon-edit"></i></button>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+        {$page_info.page}
+    </div>
+</div>
+{/block}
+{block name="script"}
+
+<script>
+    $('.accept_list').dblclick(function(){
+        var id = $(this).attr('accept_id');
+
+    })
+
+</script>
+{/block}

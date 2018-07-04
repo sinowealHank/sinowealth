@@ -1,0 +1,54 @@
+<div class="row">
+	<div class="col-xs-12">
+    	<form class="form-horizontal" role="form" method="post" action="{:url()}"  onsubmit="return validateCallback(this)">
+        <div class="slim-scroll" style="overflow: auto; width: auto; height: 300px;">
+            <table class="table col-sm-12 table-striped table-bordered table-hover">
+                	<thead>
+                        <tr>
+                            <th>用户</th>
+                            <th>晚餐</th>
+                            <th>代购?</th>
+                        </tr>
+                    </thead>
+                    {if condition="$page_info.count eq 0"}						
+                    <tr>
+                        <td colspan="3" align="center">无晚餐数据！</td>
+                    </tr>
+                    {else/}
+                        {volist name="page_info.supper_arr" id="vo"}
+                            <tr>
+                                <td>{:get_cache_data('user_info',$vo.user_id,'nickname')}</td>
+                                <td>1</td>
+                                <td>{$vo.note_type_2_flag ? '是' : "否"}</td>
+                            </tr>
+                        {/volist}
+                    {/if}
+                </table>
+            
+        </div>
+        <br />
+                {eq name="page_info.supper_flag" value="0"}
+                   <div class="clearfix form-actions">
+                   <label class="pull-left">
+                       <input class="ace" type="checkbox" name="ad">
+                    <span class="lbl"> 抄送给管理部</span>
+                    </label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    
+                     <i class="icon-ok"></i>
+                    <span class="lbl"> 通知前台</span>
+                    &nbsp;&nbsp;{$page_info.mail_info}
+                    
+                    {eq name="page_info.mail_send_flag" value="1"}
+                        <button class="btn btn-info pull-right" type="submit">
+                            <i class="icon-email bigger-110"></i>
+                            发送通知邮件
+                        </button>
+                    {/eq}
+                   </div>
+               {else/}
+                    {$page_info.mail_info}
+               {/eq}
+          </form>
+    </div>
+</div>

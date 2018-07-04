@@ -1,0 +1,128 @@
+<style>
+    table{width:600px; }
+    .type_table input{width: 200px;}
+    .type_table tr td{padding-left: 20px;}
+     tr td input{width: 150px;}
+    .pur_info input{width: 200px;}
+</style>
+<form class="form-horizontal"  role="form" autocomplete="off" action="{:url('prop/manage/addpurform',0,false)}"
+      method="post" onsubmit="return validateCallback(this);" xmlns="http://www.w3.org/1999/html">
+      <input type="hidden" name="apply_id" value="{$page_info.apply_id}">
+      <input type="hidden" name="user_id" value="{$page_info.user_id}">
+      <input type="hidden" name="apply_use_id" value="{$page_info.apply_use_id}">
+      <input type="hidden" name="user_name" value="{$page_info.user_name}">
+      <input type="hidden" name="manage_id" value="{$page_info.dep_id}">
+      <input type="hidden" name="pur_name" value="{$page_info.apply_thing}-{$page_info.thing_num}">
+        <div class="form-group">
+            <label>一、型号推荐及选择:</label>
+            <div>
+            <table class="type_table">
+                <thead>
+                <tr>
+                    <td>编号：</td>
+                    <td>品牌型号：</td>
+                    <td>基本配置信息：</td>
+                    <td>参考价格：</td>
+                    <td>备注：</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="text" name="brand_model[]"></td>
+                    <td><input type="text" name="basic_info[]"></td>
+                    <td><input type="text" name="refer_price[]"></td>
+                    <td><input type="text" name="remark[]"></td>
+                    <!--<td><button class="btn btn-primary btn-xs delete_more">删除</button></td>-->
+                </tr>
+            </table>
+            <button type="button" class="btn btn-primary btn-xs add_more">复制</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>二、供应商选择</label>
+            <div>
+                <table class="table table-border select_form">
+                    <tr>
+                        <td rowspan="2" style="vertical-align:middle"  >型号：</td>
+                        <td colspan="2"  >供应商:<input type="text" name="supplier_1"></td>
+                        <td colspan="2"  >供应商:<input type="text" name="supplier_2"></td>
+                        <td colspan="2"  >供应商:<input type="text" name="supplier_3"></td>
+                    </tr>
+                    <tr>
+                        <td>报价：</td>
+                        <td style="text-align: center">议价清单报价：</td>
+                        <td>报价：</td>
+                        <td style="text-align: center">议价清单报价：</td>
+                        <td>报价：</td>
+                        <td style="text-align: center">议价清单报价：</td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" name="model[]"></td>
+                        <td><input type="text" name="offer_price_1[]"></td>
+                        <td><input type="text" name="bar_price_1[]"></td>
+                        <td><input type="text" name="offer_price_2[]"></td>
+                        <td><input type="text" name="bar_price_2[]"></td>
+                        <td><input type="text" name="offer_price_3[]"></td>
+                        <td><input type="text" name="bar_price_3[]"></td>
+
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label>三、采购相关信息</label>
+            <div>
+                <table class="table table-border pur_info">
+                    <tr>
+                        <td>采购建议：</td>
+                        <td><input type="text" name="pur_advice"></td>
+                        <!--<td>型号选择：</td>-->
+                        <!--<td><input type="text" name="select_model" disabled="disabled"></td>-->
+                        <td>验收人：</td>
+                        <td>
+                            <select name="accept_use_id">
+                                {$page_info.it}
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>统购长是否验收：</td>
+                        <td><input type="checkbox" name="is_pur"></td>
+                        <td>选择申请部门主管：</td>
+                        <td>
+                            <select name="apply_manage_id">
+                                 {$page_info.dep}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>设定(签呈：自)</td>
+                        <td>
+                            <select name="sign_id">
+                                <option>选择申请部门</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="pull-right">
+            <button  class="btn btn-info">添加</button>
+            <a class="btn btn-default closeLayer">取消</a>
+        </div>
+</form >
+<script>
+    $(".add_more").click(function(){
+        $(".type_table").append($(".type_table tr").eq(1).clone());
+        $('.select_form').append($('.select_form tr:nth-of-type(3)').clone())
+    });
+
+    $("select[name=apply_manage_id]").change(function(){
+         var id = $("select[name=apply_manage_id]").find("option:selected").val();
+        $.post("{:url('prop/manage/get_sign_user',0,false)}",{id:id},function(result){
+            $("select[name=sign_id]").html(result);
+        })
+    })
+
+</script>

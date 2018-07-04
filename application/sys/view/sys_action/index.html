@@ -1,0 +1,183 @@
+{extend name="index@index/base" /}
+{block name="main"}
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<script type="text/javascript">
+		try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	</script>
+
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+				<a href="#">首页</a>
+		</li>
+
+		<li>
+			<a href="#">后台管理</a>
+		</li>
+			<li class="active">管理工具</li>
+	</ul><!-- .breadcrumb -->
+
+</div>
+
+<div class="page-content">
+	<div class="page-header col-xs-12">
+            <h1 class="col-xs-8">
+                后台管理工具
+                <small>
+                    <i class="icon-double-angle-right"></i>
+                    首页
+                </small>
+            </h1>
+        <div class="pull-right  clearfix">
+			
+        </div>        
+	</div><!-- /.page-header -->
+
+	<div class="row"><!-- /.col -->
+    	<div class="col-xs-12">
+        
+        	<h3 class="header smaller lighter blue">
+                数据操作
+                <small>最新考勤数据</small>
+            </h3>
+            <div class="col-sm-3">
+                <form class="form-horizontal" role="form" method="post" action="{:url()}"  onsubmit="return validateCallback(this,formAjaxDone)">
+                <div class="control-group">
+                    <div class="checkbox">
+                        <select name="site_id">
+                            {volist name="page_info['site_arr']" id="data"}
+                                <option value="{$data.id}" {eq name="$page_info.site_id" value="$data.id"} selected="selected" {/eq}>{$data.site}</option>
+                            {/volist}
+                        </select> 
+                    </div>
+
+                    <div class="checkbox">
+                        <label>
+                            <input name="action_flag" class="ace" type="checkbox" checked="checked" value="sync_card">
+                            <span class="lbl">打卡数据</span>
+                        </label>
+                    </div>
+
+                    <div class="checkbox">
+                        <label>
+                           
+                        </label>
+                    </div>
+
+                    <div class="checkbox">
+                        <button type="submit" class="btn btn-sm btn-success" onclick="form_send()">提交</button>
+                    </div>
+                </div>
+               </form> 
+            </div>
+        
+        	<div class="col-sm-3">
+                <form class="form-horizontal" role="form" method="post" action="{:url()}"  onsubmit="return validateCallback(this,formAjaxDone)">
+                <div class="control-group">
+                    <div class="checkbox">
+                        <select name="site_id">
+                            {volist name="page_info['site_arr']" id="data"}
+                                <option value="{$data.id}" {eq name="$page_info.site_id" value="$data.id"} selected="selected" {/eq}>{$data.site}</option>
+                            {/volist}
+                        </select> 
+                        <select name="month">
+                            {for start="1" end="date('m',time())+1"}
+                                <option value="{$i}" {eq name="$page_info.cur_month" value="$i"} selected="selected" {/eq}>{$i}月</option>
+                            {/for}
+                        </select> 
+                    </div>
+
+                    <div class="checkbox">
+                        <label>
+                            <input name="action_flag" value="calculate_hr" class="ace" type="checkbox" checked="checked">
+                            <span class="lbl">计算考勤</span>
+                        </label>
+                    </div>
+
+                    <div class="checkbox">
+                        <label>
+                           
+                        </label>
+                    </div>
+
+                    <div class="checkbox">
+                        <button type="submit" class="btn btn-sm btn-success" onclick="form_send()">提交</button>
+                    </div>
+                </div>
+               </form> 
+            </div>
+            
+            <div class="col-sm-3">
+                <form class="form-horizontal" role="form" method="post" action="{:url()}"  onsubmit="return validateCallback(this,formAjaxDone)">
+                <div class="control-group">
+                    <div class="checkbox">
+                        <select name="site_id">
+                            {volist name="page_info['site_arr']" id="data"}
+                                <option value="{$data.id}" {eq name="$page_info.site_id" value="$data.id"} selected="selected" {/eq}>{$data.site}</option>
+                            {/volist}
+                        </select> 
+                    </div>
+
+                    <div class="checkbox">
+                        <label>
+                            <input name="action_flag" class="ace" type="checkbox" checked="checked" value="batch_user_pay_base">
+                            <span class="lbl">同步薪资基础数据</span>
+                        </label>
+                    </div>
+
+                    <div class="checkbox">
+                        <label>
+                           
+                        </label>
+                    </div>
+
+                    <div class="checkbox">
+                        <button type="submit" class="btn btn-sm btn-success" onclick="form_send()">提交</button>
+                    </div>
+                </div>
+               </form> 
+            </div>
+            
+            <div class="col-sm-3">
+                <form class="form-horizontal" role="form" method="post" action="{:url()}"  onsubmit="return validateCallback(this,formAjaxDone)">
+                <div class="control-group">
+                    <div class="checkbox">
+                        <select name="site_id">
+                            {volist name="page_info['site_arr']" id="data"}
+                                <option value="{$data.id}" {eq name="$page_info.site_id" value="$data.id"} selected="selected" {/eq}>{$data.site}</option>
+                            {/volist}
+                        </select>
+                    </div>
+
+                    <div class="checkbox">
+                        <label>
+                            <input name="action_flag" class="ace" type="checkbox" checked="checked" value="batch_user_pay_row">
+                            <span class="lbl">重新计算薪资数据</span>
+                        </label>
+                    </div>
+
+                    <div class="checkbox">
+                        <label>
+                           
+                        </label>
+                    </div>
+
+                    <div class="checkbox">
+                        <button type="submit" class="btn btn-sm btn-success" onclick="form_send()">提交</button>
+                    </div>
+                </div>
+               </form> 
+            </div>
+            
+            
+        </div>
+	</div><!-- /.row -->
+</div>
+
+<script>
+
+</script>
+
+{/block}
+

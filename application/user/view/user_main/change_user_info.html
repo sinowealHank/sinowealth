@@ -1,0 +1,35 @@
+<div class="row">
+	<div class="col-xs-12">
+        <form class="form-horizontal" role="form" method="post" action="/sys/User_main/change_user_info/"  onsubmit="return validateCallback(this)">
+            <fieldset>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">问题描述:</label>
+                        <div class="col-sm-4">
+                            <textarea style="width:300px; height:200px;" name="q_val"  placeholder="提交问题到管理部" ></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">回复邮件通知:</label>
+                        <div class="col-sm-4">
+                        	<label class="pull-left inline mail_flag_switch">
+                                <input class="ace ace-switch ace-switch-5"  checked="checked" type="checkbox">
+                                <span class="lbl"></span>
+                                <input type="hidden" name="mail_flag" value="1" />
+							</label>
+                        </div>
+                    </div>
+             </fieldset>
+            </form>
+    </div>
+</div>
+<script>
+	//是否接收反馈通知邮件
+	$('.mail_flag_switch').click(function(){
+		$obj=$(this).find('input[name=mail_flag]');
+		if($obj.val()==0){
+				$obj.val('1');
+			}else{
+				$obj.val('0');
+				}
+	});
+</script>

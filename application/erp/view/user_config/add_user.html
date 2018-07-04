@@ -1,0 +1,61 @@
+<meta charset="utf-8" />
+<div>
+    <div class="col-xs-11">
+        <form class="form-horizontal" role="form" method="post" name="add_user_type" action="{:url('bpm/user_config/user_save')}"  onsubmit="return validateCallback(this)">
+            <div class="form-group" style="margin:10px -12px 10px -12px;">
+                <label class="col-sm-3 control-label no-padding-right">用户工号：</label>
+                <div class="col-sm-5">
+                    <div class="input-group">
+                        <input type="text" name='user_gh_val'/>
+                    </div>
+                </div>
+
+            </div>
+            <div class="form-group" style="margin:10px -12px 10px -12px;">
+                <label class="col-sm-3 control-label no-padding-right">用户部门：</label>
+                <div class="col-sm-5">
+                    <div class="input-group">
+                        <select name="dep">
+                            <option value="1">PP部门成员</option>
+                            <option value="2">PM部门成员</option>
+                            <option value="3">维护组成员</option>
+                            <option value="4">SD部门成员</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div style="display: none;" class="line" >
+            </div>
+            <div style="float: right;">
+                <button class='btn btn-info btn-sm'>提交</button>
+                <button class='btn btn-info btn-sm closeLayer' type='button'>关闭</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+$("select[name=dep]").change(function(){
+    var select_val = $(this).val();
+    //获取对应的PM的产品线
+    if(select_val == 2){
+        var checkbox = '';
+
+        var pm_user_gh = $.trim($('input[name=user_gh_val]').val());
+        if(!pm_user_gh){
+            alert("请填入对应PM工号");
+            $('select[name=dep] option:first').prop("selected", 'selected');
+            return false;
+        }
+        //从erp中获取Line数据。
+        $.post("{:url('erp/user_config/get_line')}",{user_gh:pm_user_gh},function(result){
+            $.each(result,function(k,v){
+                checkbox += '<span style="margin-left:5px;">'+v+'<input value="'+v+'" type="checkbox" name="line[]"><span>';
+            });
+            $(".line").html(checkbox);
+            $(".line").css('display','block');
+        })
+    }else{
+        $(".line").html('');
+    }
+})
+</script>

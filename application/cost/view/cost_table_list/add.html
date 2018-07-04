@@ -1,0 +1,61 @@
+<meta charset="utf-8" />
+<form action="addRow" method="post" id="rowForm">
+	<div style="margin-left:5%">
+	   	<table cellpadding="5" >
+	   		<tr>
+	   		{volist name="page_info.info" id="vo" key="k"}
+
+	   		{php}if (($k-1)%4 == 0){
+					echo "</tr>";
+					echo "<tr>";
+				}
+			{/php}
+	   			<td  align="right">{$vo.field_show}:</td>
+	   			{in name="vo.field" value="$page_info.field_category_4"}
+			    {php}$content = cost_get_select_content($vo['field']);{/php}
+			<td>
+				<select name='{$vo.field}' style="width:100%">
+					{volist name="content" id="v"}
+					<option  value = "{$v}" >{$v}</option >
+					{/volist}
+				</select>
+			</td>
+	   		
+			{else /}
+			<td><input type="text" name="{$vo.field}"/></td>
+			{/in}
+			{/volist}
+	   		</tr>
+	   			
+	   	</table>
+   </div>
+    <div style="margin:3% 20% 2% 40%"><span>提交下个部门：</span><input type="checkbox" name="email"/></div>
+</form>
+	<div style="margin:3% 0 10% 40%">
+	   	<button onclick="rowSubmit()" type="button" style='cursor:pointer;' id="subadd">提交</button>
+	   	<button class='closeLayer' style='cursor:pointer;'>关闭</button>
+   	</div>
+<script>
+    function rowSubmit(){
+    	var $form = $('#rowForm');
+		$.ajax({
+			type:$form.method || 'POST',
+			url:$form.attr("action"),
+			beforeSend: function(){
+				this.layerIndex = layer.load(1, {
+					shade: [0.1,'#fff'] //0.1透明度的白色背景
+				});
+			},
+			data:$form.serializeArray(),
+			dataType:"json",
+			success:function(result){
+				layer.close(this.layerIndex);
+				showMsg(result);
+				if(result.statusCode == 1){
+					reload_list();
+				}
+			},
+		});
+    }
+</script>
+

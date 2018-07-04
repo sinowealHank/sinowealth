@@ -1,0 +1,81 @@
+<div style="float: right;">
+    <button class="btn btn-primary btn-xs all_select">全选</button>
+    <button class="btn btn-primary btn-xs cancel_select">取消全选</button>
+    <button id="batchPri"  class="btn btn-primary btn-xs btn-xs">保存</button>
+</div>
+<div style="overflow-x: hidden">
+    <div class="col-md-6" >
+           <label class="header green clearfix">权限树形结构图</label>
+        <div id="pri_tree" style="overflow-x: hidden">
+            {$pri_tree}
+        </div>
+    </div>
+    <div class="col-md-6">
+           <label class="header blue">角色树形结构图</label>
+        <div id="role_tree" style="overflow-x: hidden">
+            {$role_tree}
+        </div>
+    </div>
+</div>
+
+<script>
+    var allBox = $("#pri_tree:checkbox");
+    allBox.click(function () {
+        allBox.removeAttr("checked");
+        $(this).attr("checked", "checked");
+    });
+    makeTree('pri_tree',0,1);
+    makeTree('role_tree',0,1);
+    //获得标题的高度
+    var title_height = $(".layui-layer-title").height();
+    var content_height = win_height-title_height-50;
+    $("#pri_tree").css('height',content_height);
+    $("#role_tree").css('height',content_height);
+    //点击保存
+    $("#batchPri").unbind('click').bind('click',function(){
+        //获取level为2的权限
+        var id_pri = $("input:checkbox[name='pri']:checked").map(function (index, elem) {
+            return $(elem).val();
+        }).get().join(',');
+        //获取角色的数据
+        var id_role = $("input:checkbox[name='role']:checked").map(function (index, elem) {
+            return $(elem).val();
+        }).get().join(',');
+        //传到后台中
+        $.post("{:url('sys/access/addbatch')}",{pri:id_pri,role:id_role},function(result){
+            showMsg(result);
+        },"JSON")
+
+    });
+
+    //点击权限时，角色树形结构改变
+    $("input[name=pri]").change(function(){
+        if($(this).is(":checked")){
+            //只能单个权限批量增加
+            $("#pri_tree :checkbox").not($(this)).removeAttr("checked");
+            var pri_val = $(this).attr('value');
+            //把权限赋值到到添加按钮
+            $('#role_tree  input[type=checkbox]').prop('checked',false);
+            //传入到后台
+            $.post("{:url('sys/access/getrole')}",{pri:pri_val},function(result){
+                $.each(result,function(k,v){
+                    var role_id = v.role_id;
+                    $("input[name=role][value= '"+role_id+"']").prop('checked','checked');
+                });
+                //取消功能
+
+            },"JSON")
+
+        }
+    });
+    $(".all_select").click(function(){
+        $('input[name=role]').prop('checked','checked');
+    });
+
+    $(".cancel_select").click(function(){
+        $('input[name=role]').prop('checked',false);
+    })
+
+
+
+</script>

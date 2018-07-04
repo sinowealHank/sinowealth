@@ -1,0 +1,127 @@
+{extend name="index@index/base" /}
+{block name="main"}
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<script type="text/javascript">
+		try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	</script>
+
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+				<a href="#">首页</a>
+		</li>
+
+		<li>
+			<a href="#">erp</a>
+		</li>
+			<li class="active">bom完善权限</li>
+	</ul><!-- .breadcrumb -->
+</div>
+
+<div class="page-content">
+	<div class="page-header col-xs-12">
+	</div><!-- /.page-header -->
+
+	<div class="row"><!-- /.col -->
+    	<div class="col-xs-12">
+    	<button onclick="Inverse(2,1,this,'正')">逆</button>
+            <div wtq_id="1">
+				<div style="padding-right:40px">
+					<div style="float:left;direction:rtl;overflow-y: scroll;overflow-x: hidden;height:500px;display:block;">
+						<div class="tabbable tabs-left">
+							<ul class="nav nav-tabs" id="myTab3" style="direction:rtl">
+								{$left}
+							</ul>
+						</div>
+					</div>
+					<div class="tab-content" style="overflow-y: auto;height:500px;display:block;">
+						{$right}
+					</div>
+				</div>
+			</div>
+			<div wtq_id="2" style="display:none">
+				<div style="padding-right:40px">
+					<div style="float:left;direction:rtl;overflow-y: scroll;overflow-x: hidden;height:500px;display:block;">
+						<div class="tabbable tabs-left">
+							<ul class="nav nav-tabs" id="myTab3" style="direction:rtl">
+								{$ni_left}
+							</ul>
+						</div>
+					</div>
+					<div class="tab-content" style="overflow-y: auto;height:500px;display:block;">
+						{$ni_right}
+					</div>
+				</div>
+			</div>
+        </div>
+	</div><!-- /.row -->
+</div>
+<style>
+	td{width:110px;}
+</style>
+<script>
+	$("input[type=checkbox]").on('click','',function(){
+		if($(this).is(':checked')){
+			var tr=true;
+		}else{
+			var tr=false;
+		}
+		$("input[name="+$(this).attr('value')+"][value="+$(this).attr('name')+"]").prop("checked", tr);
+	})
+	function Inverse(id,id2,thi,t){
+		$("div[wtq_id="+id2+"]").css("display","none");
+		$("div[wtq_id="+id+"]").css("display","");
+		$(thi).attr("onclick","Inverse("+id2+","+id+",this,'"+$(thi).html()+"')");
+		$(thi).html(t);
+	}
+	function Inverse_staradd(name){
+		var inp=$("input[name="+name+"]");
+		for(var i=0;i<inp.length;i++){
+			var pd=$("a[href=#a"+inp.eq(i).val()+"]").attr('wtq_pd')
+			var dep_id=inp.eq(i).val();
+			if(pd==0){
+				var id='';
+			}else{
+				var id=dep_id;
+			}
+			var thi="button[wtq_id="+dep_id+"]";
+			
+			if(inp.eq(i).is(':checked')){
+				var wtq_ajax=1;
+			}else{
+				var wtq_ajax=2;
+			}
+			if(inp.eq(i).attr("wtq_ajax")!=wtq_ajax){
+				inp.eq(i).attr("wtq_ajax",wtq_ajax)
+				staradd(pd,dep_id,id,thi)
+			}
+		}
+	}
+	
+	
+	
+	
+	
+	
+	function staradd(pd,dep_id,id,thi){
+		var change='';
+		var inp=$("input[name="+dep_id+"]:checked");
+		for(var i=0;i<inp.length;i++){
+			if(change==''){
+				change=inp.eq(i).val();
+			}else{
+				change=change+","+inp.eq(i).val();
+			}
+		}
+		$.post('{:url("qx_save")}',{pd:pd,dep_id:dep_id,id:id,change:change},
+                function (data) {
+					$("a[href=#a"+dep_id+"]").attr('wtq_pd',1)
+					$(thi).attr("onclick","staradd("+1+","+dep_id+","+data[2]+",this)");
+					mythisalert(data[0],data[1]);
+                },"json").error(
+                		function() {mythisalert(0,'失败');}
+               );
+	}
+</script>
+{/block}

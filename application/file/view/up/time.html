@@ -1,0 +1,175 @@
+<!--div style="display:none;width:122.5%;height:10000%;background-color:black;position: absolute;z-index:9999;top:-100%;left:-22%;filter:alpha(Opacity=50);-moz-opacity:0.5;opacity: 0.5;">
+	<div class="loading">
+	     <span></span>
+	     <span></span>
+	     <span></span>
+	     <span></span>
+	     <span></span>
+	</div>
+</div>
+<style type="text/css">  
+	.loading{
+		 z-index:9999;
+		 position: absolute;
+		 top:10%;
+   		 left:50%;
+	
+	     width: 80px;
+	     height: 40px;
+	     margin: 0 auto;
+	     margin-left:100px;
+	 }
+	 .loading span{		 	 
+	     display: inline-block;
+	     width: 8px;
+	     height: 100%;
+	     border-radius: 4px;
+	     background: lightgreen;
+	     -webkit-animation: load 1s ease infinite;
+	 }
+	 @-webkit-keyframes load{
+	     0%,100%{
+	         height: 40px;
+	         background: lightgreen;
+	     }
+	     50%{
+	         height: 70px;
+	         margin: -15px 0;
+	         background: lightblue;
+	     }
+	 }
+	 .loading span:nth-child(2){
+	     -webkit-animation-delay:0.2s;
+	 }
+	 .loading span:nth-child(3){
+	     -webkit-animation-delay:0.4s;
+	 }
+	 .loading span:nth-child(4){
+	     -webkit-animation-delay:0.6s;
+	 }
+	 .loading span:nth-child(5){
+	     -webkit-animation-delay:0.8s;
+	 }
+</style-->
+
+<script>
+function mythisalert(a,val,title,time){
+	if(a==0){color='error';shad=0.3}else{color='success';shad=0;}
+	if(!title){if(a==0){title='错误';}else{title='成功'}}
+	if(!time){if(a==0){time='0';}else{time='2000'}}
+	layer.open({
+		  title: title,
+		  content: val,
+		  offset: 't',
+		  time:time,
+		  anim:Math.floor(Math.random()*7),
+		  fixed:true,
+		  zIndex:19891014,
+		  move: false,
+		  skin:'demo-class-'+color,
+		  shade: shad
+		});     
+}
+$(window).keyup(function(e){
+	if(e.keyCode==27){
+		$("a[class=layui-layer-btn0]").trigger('click');
+	}
+})
+</script>
+<style>
+body .demo-class-error .layui-layer-title{background:red; color:#fff; border: none;}
+body .demo-class-error .layui-layer-btn{border-top:1px solid red}
+body .demo-class-error .layui-layer-btn a{background:red;}
+body .demo-class-error .layui-layer-btn .layui-layer-btn1{background:red;}
+
+body .demo-class-success .layui-layer-title{background:#87B87F; color:#fff; border: none;}
+body .demo-class-success .layui-layer-btn{border-top:1px solid #87B87F}
+body .demo-class-success .layui-layer-btn a{background:#87B87F;}
+body .demo-class-success .layui-layer-btn .layui-layer-btn1{background:#87B87F;}
+</style>
+<script>
+//<!--#1b6aaa-->
+	//单个
+	$(document).on("click",'[time]',function(){//¦
+		a=$(this).attr('id');
+		format=$("#"+a).attr('format');
+		if(typeof(format)=='undefined'){format='YYYY/MM/DD hh:mm:ss';}
+		min=$("#"+a).attr('min');
+		if(typeof(min)=='undefined'){min=laydate.now();}
+		max=$("#"+a).attr('max');
+		if(typeof(max)=='undefined'){max='2099-06-16 23:59:59';}
+		laydate({
+			  elem: '#'+a,
+			  format: format, // 分隔符可以任意定义，该例子表示只显示年月
+			  festival: true, //显示节日
+			  min: min, //设定最小日期为当前日期
+			  max: max, //最大日期
+			  choose: function(datas){ //选择日期完毕的回调
+			    //alert('得到：'+datas);
+			  }
+			});
+	})
+	
+	//开始  结束
+	var time_c=0;
+	$(document).on("click","#star",function(){
+		time2('star','end',this)
+	})
+	$(document).on("click","#end",function (){
+		time2('star','end',this)
+	})
+	$(document).on("click","[star]",function (){
+		a=$(this).attr('id');
+		b=$(this).attr('star');
+		time2(a,b,this)
+	})
+	$(document).on("click","[end]",function (){
+		a=$(this).attr('end');
+		b=$(this).attr('id');
+		time2(a,b,this)
+	})
+	function time2(a,b,thi){
+		time_c++;
+		star_format=$("#"+a).attr('format');
+		if(typeof(star_format)=='undefined'){star_format='YYYY/MM/DD hh:mm:ss';}
+		star_min=$("#"+a).attr('min');
+		if(typeof(star_min)=='undefined'){star_min=laydate.now();}
+		star_max=$("#"+a).attr('max');
+		if(typeof(star_max)=='undefined'){star_max='2099-06-16 23:59:59';}
+		var start = {
+				  elem: '#'+a,
+				  format: star_format,
+				  min: star_min, //设定最小日期为当前日期
+				  max: star_max, //最大日期
+				  istime: true,
+				  istoday: false,
+				  choose: function(datas){
+				     end.min = datas; //开始日选好后，重置结束日的最小日期
+				     end.start = datas //将结束日的初始值设定为开始日
+				  }
+				};
+		
+		end_format=$("#"+b).attr('format');
+		if(typeof(end_format)=='undefined'){end_format='YYYY/MM/DD hh:mm:ss';}
+		end_min=$("#"+b).attr('min');
+		if(typeof(end_min)=='undefined'){end_min=laydate.now();}
+		end_max=$("#"+b).attr('max');
+		if(typeof(end_max)=='undefined'){end_max='2099-06-16 23:59:59';}
+		var end = {
+		  elem: '#'+b,
+		  format: end_format,
+		  min: end_min,
+		  max: end_max,
+		  istime: true,
+		  istoday: false,
+		  choose: function(datas){
+		    start.max = datas; //结束日选好后，重置开始日的最大日期
+		  }
+		};
+		laydate(start);
+		laydate(end);
+		if(time_c==1){
+			$(thi).trigger('click')
+		}
+	}
+	</script>

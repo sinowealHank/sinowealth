@@ -1,0 +1,263 @@
+{extend name="index@index/base" /}
+{block name="main"}
+	<div class="breadcrumbs" id="breadcrumbs">
+	    <script type="text/javascript">
+	        try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	    </script>
+	    <ul class="breadcrumb">
+	        <li>
+	            <i class="icon-home home-icon"></i>
+	            <a href="#">新入职员工列表</a>
+	            <span wtq_zs_id="zs"></span>
+	            <span wtq_mem_id="mem"></span>
+	        </li>
+	    </ul>
+	</div>
+	<div class="col-md-12">
+	    <div class="box">
+	        <div class="box-header" style="height:40px;margin: 5px 0 0 5px;">
+	        	{eq name="$request->action()" value="index"}
+					<button wid="80%" hig="90%" url="{:url('new_user_add')}" title="新人入职" class="btn btn-sm btn-primary layerIframe" rbac_flag="new_user_add">添加</button>
+				{/eq}
+	        	
+	        	<button wid="50%" hig="90%" url="{:url('process')}" title="流程设置" class="btn btn-sm btn-primary layerIframe" rbac_flag="process">流程</button>
+	        	
+	        	<!--button onclick="index_thead_tr()" class="btn btn-sm btn-primary">页面</button-->
+	        	
+	        	<div style="float: right;">
+					<!--名字：<input wtq_entry_sour="name" >
+					
+					<button onclick="entry_sour()" class="btn btn-sm btn-primary">搜索</button-->
+				</div>
+	        </div>
+		    <div class="box-body">
+			    <table align="center" class="table table-hover" style="/*width:auto*/">
+			        <thead>
+			            <tr>
+							<td onclick="paixu(this,'id')" width="40" style="cursor:pointer;">id<i wtq_id='id' wtq_up_index_i="i"  class="icon-level-up"  style="color:red;"></td>
+							<td onclick="paixu(this,'nickname')" width="110" style="cursor:pointer;">名字<i wtq_up_index_i="i" style="color:red;"></td>
+							
+							<td onclick="paixu(this,'entry_date')" width="100" style="cursor:pointer;">入职日期<i wtq_up_index_i="i" style="color:red;"></td>
+							<td onclick="paixu(this,'dep_id')" width="100" style="cursor:pointer;">所属部门<i wtq_up_index_i="i" style="color:red;"></td>							
+							
+							
+							<!--td width="100">入职进度<i wtq_up_index_i="i" style="color:red;"></td-->
+							<td width="76">操作</td>
+						</tr>
+			        </thead>
+			        <tbody add="add" style="/*height: 650px;overflow-y: scroll;position:absolute*/">
+			        	
+			        </tbody>
+			    </table>
+			    
+			    
+			    
+			    
+			    
+		    </div>
+		    <div class="box-footer">
+		    
+		    	<div class="text-right" footer='footer' style="float: right;">
+					
+		    	</div>
+		    	<div this_vip="this_vip" class="text-right" style="float: left;padding-top: 20px;padding-right: 5px;">
+		    		每页显示 <input onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();" this_page_size="this_page_size" style="width:35px;height: 25px;border: solid 1px;font-size:20px;"> 条&nbsp&nbsp&nbsp
+		    		第 <input onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();" this_page="this_page" style="width:35px;height: 25px;border: solid 1px;font-size:20px;"> 页 <button onclick="entry_index_go($('input[this_page=this_page]').val())" class="btn btn-xs">跳转</button>
+		    	</div>
+		    </div>
+		</div>
+	</div>
+{/block}
+{block name="script"}
+<script>
+	//搜索
+	function entry_sour(this_i='',clas="icon-level-up",thi="i[wtq_up_index_i=i][wtq_id=id]"){
+		var nickname=$("input[wtq_entry_sour=name]").val();
+		$.post('{:url("index_ajax")}'+this_i,{nickname:nickname},
+	            function (data) {
+					$('i[wtq_up_index_i=i]').attr('class',' ')
+					if(this_i==''){
+						$(thi).attr('class',clas)
+					}else{
+						$(thi).children('i').attr('class',clas)
+					}
+					
+					dat=data
+					var page=$("div[class=box-footer]").find("li[class=active]").find("a").html();
+					entry_index_go(page)
+	           },"json").error(function(){mythisalert(0,'失败');});
+	}
+</script>
+<script>
+	//点击表头排序
+	function paixu(thi,ii){
+		if($(thi).children('i').attr('class')=='icon-level-down'){var a='&a=1';var clas='icon-level-up';}else{var a='&a=';var clas='icon-level-down';}
+		var this_i="?ii="+ii+a;
+		entry_sour(this_i,clas,thi)
+	}
+	//调用循环输出内容
+	$(document).ready(function(){
+		dat={$user};
+		entry_index_go()
+	})
+	//修改内容后调用异步修改显示数据
+	function entry_index_ajax(){
+		$.post('{:url("index_ajax")}?ii=id&a=1',{},
+	            function (data) {
+					dat=data
+					var page=$("div[class=box-footer]").find("li[class=active]").find("a").html();
+					entry_index_go(page)
+	           },"json").error(function(){mythisalert(0,'失败');});
+	}
+	//调用循环函数
+	tr=['id','nickname','entry_date','dep_name','pd'];
+	function entry_index_go(page,shu='10'){
+		if(!isNaN(page)){}else{
+			page=1;
+		}
+		if(!isNaN(shu)){}else{
+			shu=10;
+		}
+		if(vip=='wtq'){
+			if($('input[this_page_size=this_page_size]').val()){
+				shu=$('input[this_page_size=this_page_size]').val();
+			}
+		}
+		if(shu<=0){shu=10}
+		wtq_ajax_index_paging(dat,tr,page,'entry_index_go','tbody[add=add]','div[footer=footer]',shu,'','')
+	}
+</script>
+
+<script>
+	vip='';
+	//循环函数
+	function wtq_ajax_index_paging(data,name,page=1,click,index_name,foot_name,num=10,button,special=''){
+		var text='';
+		var len=data.length;
+		//获取总分页数
+		zy = len/num;
+		zy = Math.ceil(zy);
+		//判断页码正确性
+		if(page>zy){page=zy;}
+		if(page<=0){page=1;}
+		star=page*num-num;
+		end=star*1+num*1;
+		for(i=star;i<end;i++){
+			if(i>=len){
+				break;
+			}
+			text=text+'<tr>'
+			$.each(name, function (index, item) {
+				if(item=='pd'){
+					/*if('{$request->action()}'=='index'){
+						text=text+'<td>基本信息录入</td>'
+					}else if('{$request->action()}'=='index_e'){
+						text=text+'<td>分机号 邮箱</td>'
+					}else if('{$request->action()}'=='index_g'){
+						text=text+'<td>管理信息录入</td>'
+					}else if('{$request->action()}'=='index_s'){
+						text=text+'<td>主管审核</td>'
+					}*/
+				}else{
+					if($.inArray(item, special)=='-1'){
+						text=text+'<td>'+data[i][item]+'</td>'
+					}else{
+						text=text+'<td>'+special_pd(item,data[i][item])+'</td>'
+					}
+				}
+			})
+			/*if('{$request->action()}'=='index'){
+				var button='<button rbac_flag="new_user_add" url="{:url(\'new_user_add\')}?id='+data[i]['id']+'" wid="70%" hig="90%" title="信息完善" class="btn btn-xs layerIframe" >信息完善</button> '+
+							'<button rbac_flag="progress_o" url="{:url(\'progress_o\')}?id='+data[i]['id']+'" wid="600px" hig="75%" title="信息完善" class="btn btn-xs layerIframe">进度详情</button> ';
+			}else if('{$request->action()}'=='index_e'){
+				var button='<button rbac_flag="goods_grant" url="{:url(\'goods_grant\')}?id='+data[i]['id']+'" wid="500px" hig="200px;" title="信息完善" class="btn btn-xs layerIframe">信息完善</button> '+
+							'<button rbac_flag="progress_e" url="{:url(\'progress_e\')}?id='+data[i]['id']+'" wid="600px" hig="75%" title="信息完善" class="btn btn-xs layerIframe">进度详情</button> ';
+			}else if('{$request->action()}'=='index_g'){
+				var button='<button rbac_flag="new_user_perfect" url="{:url(\'new_user_perfect\')}?id='+data[i]['id']+'" wid="70%" hig="90%" title="信息完善" class="btn btn-xs layerIframe">信息完善</button> '+
+							'<button rbac_flag="progress_g" url="{:url(\'progress_g\')}?id='+data[i]['id']+'" wid="600px" hig="75%" title="信息完善" class="btn btn-xs layerIframe">进度详情</button> ';
+			}else if('{$request->action()}'=='index_s'){
+				var button='<button rbac_flag="look_user_information" url="{:url(\'look_user_information\')}?id='+data[i]['id']+'" wid="70%" hig="90%" title="信息完善" class="btn btn-xs layerIframe">查看信息</button> '+
+							'<button rbac_flag="process" onclick="new_user_is_old(\''+data[i]['id']+'\')" class="btn btn-xs">通过并发送邮件</button> '+
+							'<button rbac_flag="progress_s" url="{:url(\'progress_s\')}?id='+data[i]['id']+'" wid="600px" hig="75%" title="信息完善" class="btn btn-xs layerIframe">进度详情</button> ';
+			}*/
+			
+			var button='<button rbac_flag="new_user_add" url="{:url(\'new_user_add\')}?id='+data[i]['id']+'" wid="80%" hig="90%" title="信息完善" class="btn btn-xs layerIframe" >信息完善</button> '+
+						'<button rbac_flag="progress_o" url="{:url(\'progress_o\')}?id='+data[i]['id']+'" wid="600px" hig="75%" title="信息完善" class="btn btn-xs layerIframe">进度详情</button> '+
+			'<button rbac_flag="goods_grant" url="{:url(\'goods_grant\')}?id='+data[i]['id']+'" wid="500px" hig="200px;" title="信息完善" class="btn btn-xs layerIframe">信息完善</button> '+
+						'<button rbac_flag="progress_e" url="{:url(\'progress_e\')}?id='+data[i]['id']+'" wid="600px" hig="75%" title="信息完善" class="btn btn-xs layerIframe">进度详情</button> '+
+			//'<button rbac_flag="new_user_perfect" url="{:url(\'new_user_perfect\')}?id='+data[i]['id']+'" wid="70%" hig="90%" title="信息完善" class="btn btn-xs layerIframe">信息完善</button> '+
+			//			'<button rbac_flag="progress_g" url="{:url(\'progress_g\')}?id='+data[i]['id']+'" wid="600px" hig="75%" title="信息完善" class="btn btn-xs layerIframe">进度详情</button> '+
+			'<button rbac_flag="look_user_information" url="{:url(\'look_user_information\')}?id='+data[i]['id']+'" wid="80%" hig="90%" title="信息完善" class="btn btn-xs layerIframe">查看信息</button> '+
+						'<button rbac_flag="user_email" url="{:url(\'user_email\')}?id='+data[i]['id']+'&name='+data[i]['nickname']+'" wid="520px" hig="260px" title="发邮件" class="btn btn-xs layerIframe" onclick="new_user_is_old(\''+data[i]['id']+'\')">通过并发送邮件</button> '+
+						'<button rbac_flag="progress_s" url="{:url(\'progress_s\')}?id='+data[i]['id']+'" wid="600px" hig="75%" title="信息完善" class="btn btn-xs layerIframe">进度详情</button> ';
+		
+			
+			if(button){
+				text=text+'<td>'+button+'</td>';
+			}
+			/*if(typeof(button) != "undefined"){
+				text=text+'<td>'+button+'</td>';
+			}*/
+			text=text+'</tr>';
+			
+		}
+	    $(index_name).html(text);
+	    
+		//如果超过一页拼接底部分页
+		if(zy>1){
+			s=page-1;
+			clas='';
+			if(s<=0){clas='disabled';}
+			
+			if(vip!="wtq"){
+				$('div[this_vip=this_vip]').css('display','none');
+			
+				page_num='<ul class="pagination"><li class="'+clas+'"><a page_prev="page_prev" href="javascript:void(expression)" onclick="'+click+'(\''+s+'\')">&laquo;</a></li>';
+				clas='';
+				for (i = 1; i <= zy; i++) {
+					if(i==page){clas='active';}
+					page_num=page_num+'<li class="'+clas+'"><a href="javascript:void(expression)" onclick="'+click+'(\''+i+'\')">'+i+'</a></li>';
+					clas='';
+				}
+				x=page*1+1*1;
+				clas='';
+				if(x>zy){clas='disabled';}
+				page_num=page_num+'<li class="'+clas+'"><a page_next="page_next" href="javascript:void(expression)" onclick="'+click+'(\''+x+'\')">&raquo;</a></li></ul>';
+			
+			}else{
+				$("div[this_vip=this_vip]").css("display","")
+				
+				margin_num=(page-5)*41;
+	       		if(margin_num<=0 || zy<=8){
+	       			margin_num=0
+	       		}else if(margin_num>41*(zy-8)){
+	       			margin_num=-41*(zy-8);
+	       		}else{
+	       			margin_num=-margin_num;
+	       		}
+	       		if(zy<8){
+	       			var page_width=41.125*zy
+	       		}else{
+	       			var page_width=329
+	       		}
+	       		page_num='<ul class="pagination" style="float:left;"><li class="'+clas+'"><a href="javascript:void(expression)" onclick="'+click+'(\'1\')">s</a></li>'+
+	       				'<li class="'+clas+'"><a page_prev="page_prev" href="javascript:void(expression)" onclick="'+click+'(\''+s+'\')">&laquo;</a></li></ul><div style="height:54px;width:'+page_width+'px;overflow: hidden;float:left;"><ul class="pagination" style="margin-left: '+margin_num+'px;width:99999999999999px;">';
+	       		clas='';
+	       		for (i = 1; i <= zy; i++) {
+	       			if(i==page){clas='active';}
+	       			page_num=page_num+'<li class="'+clas+'"><a style="width:42px;text-align: center;" href="javascript:void(expression)" onclick="'+click+'(\''+i+'\')">'+i+'</a></li>';
+	       			clas='';
+	       		}
+	       		x=page*1+1*1;
+	       		clas='';
+	       		if(x>zy){clas='disabled';}
+	       		page_num=page_num+'</ul></div><ul class="pagination"><li class="'+clas+'"><a page_next="page_next" href="javascript:void(expression)" onclick="'+click+'(\''+x+'\')">&raquo;</a></li>'+
+	       						'<li class="'+clas+'"><a href="javascript:void(expression)" onclick="'+click+'(\''+zy+'\')">e</a></li></ul>';
+			}
+			
+		
+			}else{page_num='';}
+		$(foot_name).html(page_num)
+	}
+</script>
+{/block}

@@ -1,0 +1,220 @@
+<form wtq_add_id="perfect_add">
+	<div class="new_user_add">	
+		<p style="font-size:20px;">公司相关信息</p>
+		<hr>
+		<table>
+			<tr>
+				<td style="float:right;">部门：</td>
+				<td>
+					<!--input value="<?php echo isset($user['dep_id'])?$user['dep_id']:''; ?>" readonly="readonly" name=""-->
+					<select disabled="disabled">
+						{$select_dep}
+					</select>
+				</td>
+				<td style="float:right;">站点：</td>
+				<td>
+					<!--input value="<?php echo isset($user['site_id'])?$user['site_id']:''; ?>" name="site_id"-->
+					<select disabled="disabled">
+						{$select_site}
+					</select>
+				</td>
+				<td style="float:right;">权限组：</td>
+				<td>
+					<!--input value="<?php echo isset($user['role_id'])?$user['role_id']:''; ?>" name="role_id"-->
+					<select name="role_id">
+						<?php $role_id=isset($user['role_id'])?$user['role_id']:''; ?>
+						{foreach name="$page_info['role_arr']" item="vo"}
+						    <option <?php if($vo['id']==$role_id){echo 'selected="selected"';$role_pd=1;} ?> value="{$vo.id}">{$vo.role_name}</option>
+						{/foreach}
+						<?php if(isset($role_pd)!=1){echo '<option selected="selected"></option>';} ?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td style="float:right;">工号：</td>
+				<td><input value="<?php echo isset($user['user_gh'])?$user['user_gh']:''; ?>" readonly="readonly" name=""></td>
+				<td style="float:right;">密码：</td>
+				<td><input value="<?php echo isset($user['password'])?$user['password']:''; ?>" name="password"></td>
+				<td style="float:right;">邮箱：</td>
+				<td><input value="<?php echo isset($user['email'])?$user['email']:''; ?>"  readonly="readonly" name=""></td>
+			</tr>
+			<tr>
+				<td style="float:right;">职位名称：</td>
+				<td>
+					<!--input value="<?php echo isset($user['technical_ng'])?$user['technical_ng']:''; ?>" name="technical_ng"-->
+					<select name="technical_ng">
+						<?php $technical_ng=isset($user['technical_ng'])?$user['technical_ng']:''; ?>
+						{foreach name="$page_info['hr_technical_arr']" item="vo"}
+						    <option <?php if($key==$technical_ng){echo 'selected="selected"';$technical_ng_pd=1;} ?> value="{$key}">{$vo}</option>
+						{/foreach}
+						<?php if(isset($technical_ng_pd)!=1){echo '<option selected="selected"></option>';} ?>
+					</select>
+				</td>
+				<td style="float:right;">职等：</td>
+				<td>
+					<!--input value="<?php echo isset($user['hr_work_level_id'])?$user['hr_work_level_id']:''; ?>" name="hr_work_level_id"-->
+					<select name="hr_work_level_id">
+						<?php $hr_work_level_id=isset($user['hr_work_level_id'])?$user['hr_work_level_id']:''; ?>
+						{foreach name="$page_info['hr_work_level_arr']" item="vo"}
+						    <option <?php if($key==$hr_work_level_id){echo 'selected="selected"';$work_level_pd=1;} ?> value="{$key}">{$vo}</option>
+						{/foreach}
+						<?php if(isset($work_level_pd)!=1){echo '<option selected="selected"></option>';} ?>
+					</select>
+				</td>
+				<td style="float:right;">岗位：</td>
+				<td>
+					<!--input value="<?php echo isset($user['hr_job_type_id'])?$user['hr_job_type_id']:''; ?>" name="hr_job_type_id"-->
+					<select name="hr_job_type_id">
+						<?php $hr_job_type_id=isset($user['hr_job_type_id'])?$user['hr_job_type_id']:''; ?>
+						{foreach name="$page_info['hr_job_type_arr']" item="vo"}
+						    <option <?php if($key==$hr_job_type_id){echo 'selected="selected"';$job_type_pd=1;} ?> value="{$key}">{$vo}</option>
+						{/foreach}
+						<?php if(isset($job_type_pd)!=1){echo '<option selected="selected"></option>';} ?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td style="float:right;">入职日期：</td>
+				<td><input disabled="disabled" value="<?php echo isset($user['entry_date'])?$user['entry_date']:''; ?>"></td>
+				<td style="float:right;">年休时数：</td>
+				<td><input value="<?php echo isset($user['annual_num'])?$user['annual_num']:''; ?>" name="annual_num"></td>
+				<td style="float:right;">补休时数：</td>
+				<td><input value="<?php echo isset($user['repair_num'])?$user['repair_num']:''; ?>" name="repair_num"></td>
+			</tr>
+			<tr>
+				<td style="float:right;">年资：</td>
+				<td colspan="5">
+					外*：<input value="<?php echo isset($user['out_seniority'])?$user['out_seniority']:''; ?>" name="out_seniority" style="width:45px">
+					内：<input value="<?php echo isset($user[''])?$user['']:''; ?>" name="" style="width:45px">
+					总：<input value="<?php echo isset($user[''])?$user['']:''; ?>" name="" style="width:45px">
+				</td>
+			</tr>
+			<tr>
+				<td style="float:right;">分机：</td>
+				<td><input value="<?php echo isset($user['ext_tel'])?$user['ext_tel']:''; ?>" readonly="readonly" name=""></td>
+				<td style="float:right;">N次续约：</td>
+				<td><input value="<?php echo isset($user['pact_num'])?$user['pact_num']:''; ?>" name="pact_num"></td>
+				<td style="float:right;">合约到期日：</td>
+				<td><input value="<?php echo isset($user['pact_end_date'])?$user['pact_end_date']:''; ?>" name="pact_end_date" time id="pact_end_time" format="YYYY-MM-DD"></td>
+			</tr>
+			<tr>
+				<td style="float:right;">考勤主管：</td>
+				<td>
+					<!--input value="<?php echo isset($user['hr_user_id'])?$user['hr_user_id']:''; ?>" name="hr_user_id"-->
+					<select name="hr_user_id">
+						<?php $hr_user_id=isset($user['hr_user_id'])?$user['hr_user_id']:''; ?>
+						{foreach name="$page_info['hr_user_info']" item="vo"}
+						    <option <?php if($key==$hr_user_id){echo 'selected="selected"';$hr_user_pd=1;} ?> value="{$key}">{$vo}</option>
+						{/foreach}
+						<?php if(isset($hr_user_pd)!=1){echo '<option selected="selected"></option>';} ?>
+					</select>
+				</td>
+				<td style="float:right;">考勤规则：</td>
+				<td>
+					<!--input value="<?php echo isset($user['hr_role_id'])?$user['hr_role_id']:''; ?>" name="hr_role_id"-->
+					<select name="hr_role_id">
+						<?php $hr_role_id=isset($user['hr_role_id'])?$user['hr_role_id']:''; ?>
+						{foreach name="$page_info['hr_role_info']" item="vo"}
+						    <option <?php if($vo['id']==$hr_role_id){echo 'selected="selected"';$hr_role_pd=1;} ?> value="{$vo.id}">{$vo.role_name}</option>
+						{/foreach}
+						<?php if(isset($hr_role_pd)!=1){echo '<option selected="selected"></option>';} ?>
+					</select>
+				</td>
+				<td style="float:right;">是否考勤：</td>
+				<td>
+					<label class="inline is_hr_user_switch">
+						<?php $is_hr_user=isset($user['is_hr_user'])?$user['is_hr_user']:'1'; ?>
+	                    <input onclick="if($(this).is(':checked')){$('input[name=is_hr_user]').val(1);}else{$('input[name=is_hr_user]').val(0);}" class="ace ace-switch ace-switch-5" <?php if($is_hr_user==1){echo 'checked="checked"';} ?>  type="checkbox">
+	                    <span class="lbl"></span>
+	                    <input name="is_hr_user" value="{$is_hr_user}" type="hidden">
+					</label>
+				</td>
+			</tr>
+			<tr>
+				<td style="float:right;">门禁卡号：</td>
+				<td><input value="<?php echo isset($user['card_id'])?$user['card_id']:''; ?>" readonly="readonly" name="card_id"></td>
+				<td style="float:right;">状态：</td>
+				<td>
+					<!--input value="<?php echo isset($user['hr_status'])?$user['hr_status']:''; ?>" name="hr_status"-->
+					<select name="hr_status">
+						<?php $hr_status=isset($user['hr_status'])?$user['hr_status']:''; ?>
+						{foreach name="$page_info['hr_status_arr']" item="vo"}
+						    <option <?php if($key==$hr_status){echo 'selected="selected"';$hr_status_pd=1;} ?> value="{$key}">{$vo}</option>
+						{/foreach}
+						<?php if(isset($hr_status_pd)!=1){echo '<option selected="selected"></option>';} ?>
+					</select>
+				</td>
+				<td style="float:right;">主管：</td>
+				<td>
+					<label class="inline is_hr_user_switch">
+                    	<?php $is_hr_manage=isset($user['is_hr_manage'])?$user['is_hr_manage']:'0'; ?>
+	                    <input onclick="if($(this).is(':checked')){$('input[name=is_hr_manage]').val(1);}else{$('input[name=is_hr_manage]').val(0);}" class="ace ace-switch ace-switch-5" <?php if($is_hr_manage==1){echo 'checked="checked"';} ?>  type="checkbox">
+	                    <span class="lbl"></span>
+	                    <input name="is_hr_manage" value="{$is_hr_manage}" type="hidden">
+					</label>
+				</td>
+			</tr>
+		</table>
+		<br/>
+		<p style="font-size:20px;">财务相关信息</p>
+		<hr>
+		<table>
+			<tr>
+				<td style="float:right;">银行帐号：</td>
+				<td><input value="<?php echo isset($user['bank_card'])?$user['bank_card']:''; ?>" readonly="readonly" name=""></td>
+				<td style="float:right;">公积金帐号：</td>
+				<td><input value="<?php echo isset($user['fund_account'])?$user['fund_account']:''; ?>" name="fund_account"></td>
+			</tr>
+			<tr>
+				<td style="float:right;">社保账号：</td>
+				<td><input value="<?php echo isset($user['social_security_account'])?$user['social_security_account']:''; ?>" name="social_security_account"></td>
+				<td style="float:right;">薪资审核人：</td>
+				<td><input value="<?php echo isset($user[''])?$user['']:''; ?>" name=""></td>
+			</tr>
+		</table>
+	</div>
+</form>
+<div style="float:right;">
+	<button onclick="perfect_add()" class="btn btn-sm btn-primary" style="margin:0 5px 10px 0;">保存</button>
+	<a onclick="" class="btn btn-sm btn-primary layui-layer-close" style="margin:0 60px 10px 0;position: initial;" wtq_up_index_alert_close="close">关闭</a>
+</div>
+<script>
+	//保存内容
+	function perfect_add(){
+		var id='{$id}';
+		if(id){
+			
+		}else{
+			mythisalert(0,'缺少id');
+			return false;
+		}
+		var form = new FormData($('form[wtq_add_id=perfect_add]')[0]);
+		$.ajax({
+	        type: "POST",
+	        url: '{:url("new_user_perfect_add")}?id='+id,
+	        data:form,// 你的formid
+	        processData:false,
+	        contentType:false,
+	        dataType:'json',
+	        error: function(request) {
+	            mythisalert(0,'失败')
+	        },
+	        success: function(data) {
+	        	mythisalert(data[0],data[1]);
+	        }
+	    })
+	}
+</script>
+<style>
+	.new_user_add{
+		padding:10px;
+	}
+	.new_user_add tr{
+		height:27px;
+	}
+	.new_user_add input{
+		margin-right:10px;
+		padding: 2px;
+		border: 1px solid #8b84ac;
+	}
+</style>

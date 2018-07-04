@@ -1,0 +1,228 @@
+<style>
+    label{padding-left: 1.5em }
+    .FormData{width: 320px;float: left}
+    .form {margin-top: 5px;}
+    .left{display:block;position:absolute;width:120px}
+    .right{display:block;margin-left:120px}
+    .left_com{display: block;position: absolute;width: 90px}
+    .right_com{display: block;margin-left:100px}
+    #home3 input{width: 120px;}
+    .com_info {float: left;}
+    .com_info div{margin-top: 5px;}
+</style>
+<form action="{:url('prop/manage/editacceptdata',0,false)}" method="post" role="form" onsubmit="return validateCallback(this);">
+    <input type="hidden" name="id" value="{$page_info.data.id}">
+    <div>
+        <div class="FormData">
+            <div class="form">
+                <span class="left"><label>仪器设备名称：</label></span>
+                 <span class="right">
+                     <input type="text" name="instr_name" value="{$page_info.data.instr_name}"><span style="color: red">*</span>
+                 </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>品牌型号：</label></span>
+                 <span class="right">
+                     <input type="text" name="brand_model" value="{$page_info.data.brand_model}"><span style="color: red">*</span>
+                 </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>供货商：</label></span>
+                 <span class="right">
+                     <input type="text" name="supplier" value="{$page_info.data.supplier}"><span style="color: red">*</span>
+                 </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>验收人：</label></span>
+                <span class="right">
+                     <select name="accept_user_id">
+                        {$page_info.user}
+                     </select><span style="color: red">*</span>
+                </span>
+            </div>
+        </div>
+
+        <div class="FormData">
+            <div class="form">
+                <span class="left"><label>设备编号：</label></span>
+                 <span class="right">
+                     <input type="text" name="equip_num" value="{$page_info.data.equip_num}"><span style="color: red">*</span>
+                 </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>产品序列号：</label></span>
+                 <span class="right">
+                     <input type="text" name="product_num" value="{$page_info.data.product_num}"><span style="color: red">*</span>
+                 </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>购买时间：</label></span>
+                 <span class="right">
+                      <input style="height: 28px;width: 162px;" value="{$page_info.data.buy_time}" class="laydate-icon-molv dateControl" id="buy_time" format='YYYY-MM-DD ' festival="" skin="molv" name="buy_time"><span style="color: red">*</span>
+                 </span>
+            </div>
+            <div class="form">
+                <span class="left"><label>所在部门：</label></span>
+                 <span class="right">
+                     <select name="dep_id">
+                          {$page_info.dep}
+                     </select><span style="color: red">*</span>
+                 </span>
+            </div>
+        </div>
+
+        <div  style="clear: both;width: 620px;padding-top: 20px;">
+            <div class="tabbable tabs-left">
+                <ul class="nav nav-tabs" id="myTab3">
+                    <li class="active">
+                        <a data-toggle="tab" href="#home3">
+                            <i class="pink icon-dashboard bigger-110"></i>
+                            电脑配置参数表
+                        </a>
+                    </li>
+
+                    <li class="">
+                        <a data-toggle="tab" href="#profile3">
+                            <i class="blue icon-user bigger-110"></i>
+                            其他
+                        </a>
+                    </li>
+
+                    <li class="">
+                        <a data-toggle="tab" href="#dropdown13">
+                            <i class="icon-rocket"></i>
+                            其他
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div id="home3" class="tab-pane active" >
+                        <div class="com_info">
+                            <div>
+                                <span class="left_com"><label>显示器：</label></span>
+                                <span class="right_com">
+                                     <input type="text" name="computer_display" value="{$page_info.data.computer_display}">
+                                </span>
+                            </div>
+                            <div>
+                                <span class="left_com"><label>CPU：</label></span>
+                                <span class="right_com">
+                                     <input type="text" name="cpu" value="{$page_info.data.cpu}">
+                                </span>
+                            </div>
+                            <div>
+                                <span class="left_com"><label>显卡：</label></span>
+                                <span class="right_com">
+                                     <input type="text" name="gpu" value="{$page_info.data.gpu}">
+                                </span>
+                            </div>
+                            <div>
+                                <span class="left_com"><label>内存：</label></span>
+                                <span class="right_com">
+                                     <input type="text" name="ram" value="{$page_info.data.ram}">
+                                </span>
+                            </div>
+                            <div>
+                                <span class="left_com"><label>硬盘：</label></span>
+                                <span class="right_com">
+                                     <input type="text" name="hdd" value="{$page_info.data.hdd}">
+                                </span>
+                            </div>
+                            <div>
+                                <span class="left_com"><label>系统：</label></span>
+                                <span class="right_com">
+                                     <input type="text" name="system" value="{$page_info.data.system}">
+                                </span>
+                            </div>
+                            <div>
+                                <span class="left_com"><label>DVD：</label></span>
+                                <span class="right_com">
+                                     <input type="text" name="dvd" value="{$page_info.data.dvd}">
+                                </span>
+                            </div>
+
+                        </div>
+                        <div class="com_info">
+                            <div>
+                                <span class="left_com"><label>数量：</label></span>
+                                <span class="right_com">
+                                     <input type="text" name="computer_display_num" value="{$page_info.data.computer_display_num}">
+                                </span>
+                            </div>
+                            <div>
+                                <span class="left_com"><label>数量：</label></span>
+                                <span class="right_com">
+                                     <input type="text" name="cpu_num" value="{$page_info.data.cpu_num}">
+                                </span>
+                            </div>
+                            <div>
+                                <span class="left_com"><label>数量：</label></span>
+                                <span class="right_com">
+                                     <input type="text" name="gpu_num" value="{$page_info.data.gpu_num}">
+                                </span>
+                            </div>
+                            <div>
+                                <span class="left_com"><label>数量：</label></span>
+                                <span class="right_com">
+                                     <input type="text" name="ram_num" value="{$page_info.data.ram_num}">
+                                </span>
+                            </div>
+                            <div>
+                                <span class="left_com"><label>数量：</label></span>
+                                <span class="right_com">
+                                     <input type="text" name="hdd_num" value="{$page_info.data.hdd_num}">
+                                </span>
+                            </div>
+                            <div>
+                                <span class="left_com"><label>数量：</label></span>
+                                <span class="right_com">
+                                     <input type="text" name="system_num" value="{$page_info.data.system_num}">
+                                </span>
+                            </div>
+                            <div>
+                                <span class="left_com"><label>数量：</label></span>
+                                <span class="right_com">
+                                     <input type="text" name="dvd_num" value="{$page_info.data.dvd_num}">
+                                </span>
+                            </div>
+                        </div>
+                        <div style="clear: both">
+                            <span>
+                                <label>备注：</label>
+                            </span>
+                            <span class="right_com">
+                                <textarea name="remark">{$page_info.data.remark}</textarea>
+                            </span>
+                        </div>
+
+                    </div>
+                    <div id="profile3" class="tab-pane">
+                        其他
+                    </div>
+
+                    <div id="dropdown13" class="tab-pane">
+                        其他1
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="clear: both;">
+        <button type="button" class="layui-btn layui-btn-small layerSubmit" confirm='是否确认表单信息' url="delaccept?id={$page_info.data.id}">确认信息</button>
+        <button type="button" class="layui-btn layui-btn-small closeLayer pull-right">取消</button>
+        <button class="layui-btn layui-btn-small pull-right">修改</button>
+
+    </div>
+</form>
+<script>
+    $("select[name=dep_id]").click(function(){
+        var id = $(this).find("option:selected").val();
+        $.post("{:url('prop/manage/getdepdata')}",{id:id},function(result){
+            $('select[name=accept_user_id]').html(result);
+
+        })
+    });
+
+</script>

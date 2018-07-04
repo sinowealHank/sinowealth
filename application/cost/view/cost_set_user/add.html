@@ -1,0 +1,55 @@
+<meta charset="utf-8" />
+<div>
+	<div class="col-xs-11">
+        <form class="form-horizontal" role="form" method="post" name="add_note_form" action="{:url('userAdd')}"  onsubmit="return validateCallback(this)">
+        	<input type="hidden" value="" name="from" />
+				<div class="form-group" style="margin:10px -12px 10px -12px;">
+                     <label class="col-sm-3 control-label no-padding-right">用户工号：</label>
+                     <div class="col-sm-5">
+                         <div class="input-group">
+                            <input type="text" name='job_nb'/>                            
+                         </div>
+                     </div>
+                    
+                 </div>
+                 <div class="form-group" style="margin:10px -12px 10px -12px;">
+                     <label class="col-sm-3 control-label no-padding-right">用户部门：</label>
+                     <div class="col-sm-5">
+                         <div class="input-group">
+                             <select name="power_1">
+                             <!-- 1:pp查看 2:pp编辑 3:pe查看 4:pe编辑 5:te查看 6te编辑 7:qa查看 8:qa编辑 9:mt查看 -->
+                             	 <option value="1">PP</option>
+                                
+                                 <option value="3">PE</option>
+                               
+                                 <option value="5">TE</option>
+                                 
+                                 <option value="7">QA</option>
+                                 
+                                 <option value="9">FD</option>
+                             </select>
+                             
+                    
+                         </div>
+                     </div>
+                    
+                 </div>
+     			<div class="form-group" style="margin:10px -12px 10px -12px;">
+                     <label class="col-sm-3 control-label no-padding-right">用户权限：</label>
+                     <div class="col-sm-5">
+                         <div class="input-group">
+                             <select name="power_2">                           
+                             	<option value="1">查看</option>
+                                <option value="2">编辑</option>                               
+                             </select>                                               
+                         </div>
+                     </div>
+                    
+                 </div>
+                 <div style="margin:30% 0 0 35%">
+                 	<button class='btn btn-info btn-sm'>提交</button>
+                 	<button class='btn btn-info btn-sm closeLayer' type='button'>关闭</button>
+                 </div>
+            </form>
+    </div>
+</div>

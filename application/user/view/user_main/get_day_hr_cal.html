@@ -1,0 +1,35 @@
+
+<p class="lead">
+   {$page_info.hr_info}
+</p>
+<br>
+<h3>本日有效考勤打卡计数({$page_info.card_num_count})次</h3>
+<table class="layui-table">
+    <thead>
+    <tr>
+      <th>打卡点</th>
+      <th>打卡时间</th>
+      <th>是否有效</th>
+    </tr> 
+  </thead>
+  <tbody>
+  	{gt name="$page_info.card_num_count" value="0"}
+  	{volist name="$page_info.card_info" id="vo"}
+        <tr>
+          <td>{$vo.card_site}</td>
+          <td>{$vo.entry_dt}</td>
+          <td>{$vo.card_status}</td>
+        </tr>
+    {/volist}
+    {else/}
+    	<tr>
+        	<td colspan="3">本日无打卡!</td>
+        </tr>
+    {/gt}
+  </tbody>
+</table>
+<div class="form-actions center">
+    <button type="button" class="btn btn-sm btn-info closeLayer">
+        关闭
+    </button>
+</div>  

@@ -1,0 +1,132 @@
+{extend name="index@index/base" /}
+{block name="main"}
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<script type="text/javascript">
+		try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	</script>
+
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+				<a href="#">首页</a>
+		</li>
+
+		<li>
+			<a href="#">台湾考勤数据</a>
+		</li>
+	</ul><!-- .breadcrumb -->
+</div>
+
+<div class="page-content">
+	<div class="page-header col-xs-12">
+            <h1 class="col-xs-8">
+                台湾考勤数据导入
+                <small>
+                    <i class="icon-double-angle-right"></i>
+                    列表
+                </small>
+            </h1>
+        <div class="pull-right  clearfix">
+        </div>        
+	</div><!-- /.page-header -->
+
+	<div class="row"><!-- /.col -->
+    	<div class="col-xs-12">
+            <form class="form-horizontal" role="form"  enctype="multipart/form-data"  method="post" action="" name="tw_hr_file_up"  onsubmit="return valiUpFileCallback(this)">
+                <div class="form-group">
+                <select name="year_month" class="form-control" style="width:150px; float:left; margin:0 0 0 12px;">
+                	  <option value="0">导入考勤数据月份</option>
+                	{volist name="$page_info.month_arr" id="vo"}
+                      <option value="{$vo.value}">{$vo.tit}</option>
+                    {/volist}
+                </select>
+                    <div class="col-md-9 input-group" style="float:left;">  
+                            
+                            <input  name="tw_hr_file" id="choose_file" style="display:none" type="file" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" >
+                            <span class="input-group-addon" onclick="$('input[id=choose_file]').click();" style="cursor: pointer; background-color: #e7e7e7; margin:0 5px 0 20px;"><i class="fa fa-folder-open"></i>选择文件</span>
+                            <input class="form-control" id="choose_file_path" type="text" style="width:300px; margin:0 5px 0 5px;" readonly="readonly">
+                            <button class="btn" type="button" name="upload_file">
+                                <i class="icon-cloud-upload align-top bigger-125"></i>
+                                上传
+                            </button>
+                        </div>
+                        
+                </div>
+         </form>
+        	
+            <table class="table table-striped table-bordered table-hover">
+            	<thead>
+                	<tr>
+                    	<th>ID</th>
+                        <th>标题</th>
+                        <td>导入数据</td>
+                        <th>操作人员</th>
+                        <th>操作日期</th>
+                    </tr>
+                </thead>
+                <tbody>
+                	{if condition="$page_info.empty eq 1"}						
+						<tr>
+							<td colspan="9" align="center">暂无数据！</td>
+						</tr>
+						{else/}
+						{volist name="page_info.list" id="vo"}
+                            <tr>
+                                <td>{$vo.id}</td>
+                                <td>{$vo.tit}</td>
+                                <td>{$vo.count_num}</td>
+                                <td>{:get_user_nickname($vo['user_id'])}</td>
+                                <td>{$vo.create_time}</td>
+                            </tr>
+                    	{/volist}
+                    {/if}
+                </tbody>
+            </table>
+            {$page_info.page}            
+        </div>
+	</div><!-- /.row -->
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+	//上传文件路径处理
+	$('#choose_file').change(function(){
+			file_name=$(this).val().replace("C:\\fakepath\\","");
+			$('#choose_file_path').val(file_name);
+		});
+		
+	//上传按钮
+	$('button[name=upload_file]').click(function(){
+			//判断是否有选择考勤数据导入月份
+			year_month=$('select[name=year_month]').val();
+			if(year_month==0){
+				layerMsg('请选择导入考勤数据月份!','err',2000);
+				return false;
+			}			
+			
+			//判断是否有选择文件
+			file_name=$('#choose_file_path').val();
+			if(file_name.length==0){
+				layerMsg('请选择需要导入的文件!','err',2000);
+				return false;
+			}
+
+			//判断当前月份是否已经有上传记录,如果有,则提醒用户是否进行覆盖操作?
+			$.post("{:url('check_tw_hr_month')}/year_month/"+year_month,function(result){
+					if(result.length>0){
+						layer.confirm(result,function(index){
+							$('form[name=tw_hr_file_up]').submit();
+						});
+					}else{
+						$('form[name=tw_hr_file_up]').submit();
+						}
+				});
+			
+			//form提交
+			//$('form[name=tw_hr_file_up]').submit();
+			
+		});
+</script>
+{/block}

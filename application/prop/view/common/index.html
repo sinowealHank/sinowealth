@@ -1,0 +1,112 @@
+{extend name="index@index/base" /}
+{block name="main"}
+<style>
+    .search_form span{margin-left: 10px;}
+</style>
+<div class="breadcrumbs" id="breadcrumbs">
+    <script type="text/javascript">
+        try{ace.settings.check('breadcrumbs','fixed')}catch(e){}
+    </script>
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">首页</a>
+        </li>
+
+        <li>
+            <a href="#">资产管理</a>
+        </li>
+        <li class="active">公司、部门公共财产列表</li>
+    </ul><!-- .breadcrumb -->
+</div>
+<div class="page-content">
+    <div class="page-header">
+          <h1>公共资产列表</h1>
+    </div><!-- /.page-header -->
+    <div>
+        <div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+                    <div class="tabbable">
+                        <ul class="nav nav-tabs padding-18 tab-size-bigger" id="myTab">
+                            <li class="active">
+                                <a data-toggle="tab" href="#faq-tab-1">
+                                    <i class="blue icon-question-sign bigger-120"></i>
+                                    部门以及公司公共资产
+                                </a>
+                            </li>
+
+                            <!--<li>-->
+                                <!--<a data-toggle="tab" href="#faq-tab-2">-->
+                                    <!--<i class="green icon-user bigger-120"></i>-->
+                                    <!--公司公共资产-->
+                                <!--</a>-->
+                            <!--</li>-->
+                        </ul>
+                        <div class="tab-content no-border padding-24">
+                            <div id="faq-tab-1" class="tab-pane fade in active">
+                                <div id="faq-list-1" class="panel-group accordion-style1 accordion-style2">
+                                    <form class="search_form" method="get">
+                                    <span>资产编号：<input type="text" name="reg_prop_num" value="{$reg_prop_num ? $reg_prop_num : '';}"></span>
+                                    <span>资产名称：<input type="text" name="reg_prop_name" value="{$reg_prop_name ? $reg_prop_name : '';}"></span>
+                                    <span>使用人名：<input type="text" name="prop_user" value="{$prop_user ? $prop_user : '';}"></span>
+                                    <button type="submit" class="btn btn-primary seacrch_dep">查询</button>
+                                    </form>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>ID:</th>
+                                            <th>资产编号：</th>
+                                            <th>资产名称：</th>
+                                            <th>规格型号：</th>
+                                            <th>所在部门：</th>
+                                            <th>使用部门：</th>
+                                            <th>负责部门：</th>
+                                            <th>申请人：</th>
+                                            <th>使用人：</th>
+                                            <th>购买时间：</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="dep_info" >
+                                        {volist name="$page_info.alldep" id="vo"}
+                                        <tr>
+                                            <td>{$vo.id}</td>
+                                            <td>{$vo.reg_prop_num}</td>
+                                            <td>{$vo.reg_prop_name}</td>
+                                            <td>{$vo.product_model}</td>
+                                            <td>{$vo.dep} </td>
+                                            <td>{$vo.use_dep} </td>
+                                            <td>{$vo.respon_dep} </td>
+                                            <td>{$vo.propuser} </td>
+                                            <td>{$vo.prop_user} </td>
+                                            <td>{$vo.buy_time} </td>
+                                        </tr>
+                                        {/volist}
+                                        </tbody>
+                                    </table>
+                                    <div class="page">
+                                        {$page}
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div id="faq-tab-2" class="tab-pane fade">
+                                <div id="faq-list-2" class="panel-group accordion-style1 accordion-style2">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- PAGE CONTENT ENDS -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div>
+
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+
+</script>
+{/block}

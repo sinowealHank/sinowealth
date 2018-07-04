@@ -1,0 +1,1002 @@
+<title>BOM关系校验</title>
+	<link rel="stylesheet" href="__PUBLIC__/static/assets/css/ace.min.css" />
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/demo.css">
+	<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.min.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/easyui-lang-zh_CN.js"></script>		
+	<script src="__PUBLIC__/static/assets/js/layer.js"></script>
+	<script src="__PUBLIC__/static/assets/js/laydate/laydate.js"></script>
+
+<script src="__PUBLIC__/static/assets/js/wtq.js"></script>
+<div class="panel datagrid">
+	<div class="panel-header" style="width: 100%">
+		<div class="panel-title"><span onclick="hide()">BOM关系校验&nbsp&nbsp&nbspps:</span>
+			<div onclick="ch_input()" class="ts" style="background: #F3B7B7;"></div>:错,
+			<div onclick="ch_save()" class="ts" style="background: #999797;"></div>:不判断,
+			<div onclick="ch_no()" class="ts" style="border: 1px solid black;width: 8px;height: 8px;"></div>:正常,
+			<div onclick="ch_all()" class="ts" style="background: #C0C0E5;"></div>:不进行修改
+			<div onclick="wid_correct()" class="ts" style="background: #f9ff004d;"></div>:你可以修改的列
+		</div>
+		<div class="panel-tool"></div>
+	</div>
+	<div wtq="loading" class="datagrid-wrap panel-body">
+		<div id="tb" class="datagrid-toolbar">
+			<a onclick="$('[sour]').val('');" href="#" class="easyui-linkbutton l-btn l-btn-small" iconcls="icon-search">清空</a>
+			<input sour="1" name="BMB01" placeholder="本体" value="" style="width:150px;height:28px;" type="text">
+			<select sour="2" name="IMAICD04" class="pagination-page-list">
+				<option value="">全部</option>
+        		<option value="0_BODY">BODY</option>
+        		<option value="1_WF">WF</option>
+        		<option value="2_CP">CP</option>
+        		<option value="2_CP_5">CP_5</option>
+        		<option value="3_PKG">PKG</option>
+        		<option value="4_FT">FT</option>
+			</select>
+			<select sour="2" name="line" class="pagination-page-list">
+				<option value="">全部</option>
+        		{foreach $title['right'] as $k=>$key}
+        			<option value="{$key}">{$name[$key]}</option>
+	            {/foreach}
+			</select>
+			<select sour="2" name="line_pd" class="pagination-page-list">
+				<option value="">全部</option>
+        		<option value="no">bad</option>
+        		<option value="ok">good</option>
+			</select>
+			<a onclick="thissour()" href="#" class="easyui-linkbutton l-btn l-btn-small" iconcls="icon-search">查询</a>
+			<!--a onclick="hide()" class="easyui-linkbutton l-btn l-btn-small" iconcls="icon-search">隐藏列</a-->
+			<a b_rbq onclick="method5('tableExcel','all')" download="bom.xls" class="easyui-linkbutton getExcel l-btn l-btn-small l-btn-plain" data-options="iconCls:'icon-save',plain:true">导出当前报表</a>
+			<a rbq onclick="method5('tableExcel')" download="bom.xls" class="easyui-linkbutton getExcel l-btn l-btn-small l-btn-plain" data-options="iconCls:'icon-save',plain:true">导出选中报表</a>
+			
+			<!--a rbq onclick="ch_input()" download="bom.xls" class="easyui-linkbutton getExcel l-btn l-btn-small l-btn-plain" data-options="iconCls:'icon-save',plain:true">一键修改</a-->
+			<!--a rbq onclick="ch_save()" download="bom.xls" class="easyui-linkbutton getExcel l-btn l-btn-small l-btn-plain" data-options="iconCls:'icon-save',plain:true">一键保存</a-->
+			<!--a rbq onclick="ch_no()" download="bom.xls" class="easyui-linkbutton getExcel l-btn l-btn-small l-btn-plain" data-options="iconCls:'icon-save',plain:true">一键取消</a-->
+			
+			<!--a rbq onclick="ch_all()" download="bom.xls" class="easyui-linkbutton getExcel l-btn l-btn-small l-btn-plain" data-options="iconCls:'icon-save',plain:true">批量修改</a-->
+		</div>
+	 	<div wtq="1">
+	 		<div div_left style="/*position: absolute;*/float:left;">
+				<table id="tableExcel" class="datagrid-htable" cellpadding="0" cellspacing="0">
+					<thead style="background: linear-gradient(to bottom,#F9F9F9 0,#efefef 100%);">
+						<tr exceltitle1>
+							{foreach $title['left'] as $k=>$key}
+				               <td onclick="paixu(this)" style="cursor: pointer; position: relative;" {if condition="$title['ii']==$key"}now_order='me'{/if}>
+				                  	<div tr_shu='{$key}' style="float:left;overflow: hidden;" class="datagrid-sort {if condition="$title['ii']==$key"}datagrid-sort-asc{/if}">
+				                   	<span>{$name[$key]}</span>
+				                   	<span class="datagrid-sort-icon"></span>
+				                  	</div>
+				                  	<div onmousedown="name_th_width_down('{$key}','fu')" style="position: absolute;right: 0px;height:68%;cursor: e-resize;width:1px"></div>
+				                </td>
+				            {/foreach}
+			            </tr>
+					</thead>
+					<tbody>
+			            <?php $i=1; ?>
+			            {foreach $body as $ke=>$vo}
+							<tr show_or_hide="{$i}" style="display:none" onclick="tr_colors('{$vo['ROWNUM']}')" onmouseenter="if($('tr[tr_color='+$(this).attr('tr_color')+']').attr('no')!=1){$('tr[tr_color='+$(this).attr('tr_color')+']').css('background-color','#EAF2FF')}" onmouseleave="if($('tr[tr_color='+$(this).attr('tr_color')+']').attr('no')!=1){$('tr[tr_color='+$(this).attr('tr_color')+']').css('background-color','white')}" tr_color="{$vo['ROWNUM']}" {foreach $title['right'] as $k=>$key}{$key}="{:isset($vo[$key.'_PD'])?$vo[$key.'_PD']:$vo[$key]}"{/foreach}{foreach $title['left'] as $k=>$key}{$key}="{$vo[$key]}"{/foreach}>
+								{foreach $title['left'] as $k=>$key}
+			                     	<td><div tr_shu='{$key}' style="overflow: hidden;"><span style="overflow: hidden;">{$vo[$key]}</span></div></td>
+			                 	{/foreach}
+			                 </tr>
+			                 <?php $i++; ?>
+			            {/foreach}
+					</tbody>
+				</table>
+				<div wtq="no_td_show" style="display:none;background-color: #d7d7d7;color: #1d90a8;font-size: 38px;">没有该条件数据</div>
+			</div>
+			<div div_right style="/*position: absolute;right: 0;max-width:70%;*/float:left;display:block;overflow-x:auto;">
+				<table id="tableExcel2" class="datagrid-btable" cellpadding="0" cellspacing="0">
+					<thead style="background: linear-gradient(to bottom,#F9F9F9 0,#efefef 100%);">
+						<tr exceltitle2>
+							{foreach $title['right'] as $k=>$key}
+				                <td onclick="paixu(this)" style="cursor:pointer; position: relative;{if condition="in_array($key,$change)"}background:#f9ff004d;{/if}" {if condition="$title['ii']==$key"}now_order='me'{/if}>
+				                   	<div tr_shu='{$key}' style="float:left;overflow: hidden;" class="datagrid-sort {if condition="$title['ii']==$key"}datagrid-sort-asc{/if}">
+				                    	<span>{$name[$key]}</span>
+				                    	<span class="datagrid-sort-icon"></span>
+				                   	</div>
+				                   	<div onmousedown="name_th_width_down('{$key}','fu')" style="position: absolute;right: 0px;height:68%;cursor: e-resize;width:1px"></div>
+				                 </td>
+				             {/foreach}
+			             </tr>
+					</thead>
+					<tbody>
+						 <?php $i=1; ?>
+			            {foreach $body as $ke=>$vo}
+							<tr show_or_hider="{$i}" style="display:none" onclick="tr_colors('{$vo['ROWNUM']}')" onmouseenter="if($('tr[tr_color='+$(this).attr('tr_color')+']').attr('no')!=1){$('tr[tr_color='+$(this).attr('tr_color')+']').css('background-color','#EAF2FF')}" onmouseleave="if($('tr[tr_color='+$(this).attr('tr_color')+']').attr('no')!=1){$('tr[tr_color='+$(this).attr('tr_color')+']').css('background-color','white')}" tr_color="{$vo['ROWNUM']}" {foreach $title['right'] as $k=>$key}{$key}="{:isset($vo[$key.'_PD'])?$vo[$key.'_PD']:$vo[$key]}"{/foreach}{foreach $title['left'] as $k=>$key}{$key}="{$vo[$key]}"{/foreach}>
+								{foreach $title['right'] as $k=>$key}
+			                     	<td {if condition="in_array($key,$change)"}change='ok'{/if} style="{if condition="isset($vo[$key.'_PD'])"}
+					                     			{if condition="$vo[$key.'_PD']=='no'"}{if condition="in_array($key,$change)"}border:red 1px solid;{/if}background:#d813134d{elseif condition="$vo[$key.'_PD']=='no judge'" /}background:#6e6b6bb3{/if}
+					                     		{else /}
+					                     			{if condition="$vo[$key]=='no'"}{if condition="in_array($key,$change)"}border:red 1px solid;{/if}background:#2f2fa84d{elseif condition="$vo[$key]=='no judge'" /}background:#6e6b6bb3{/if}
+					                     		{/if}">
+			                     		<div {if condition="in_array($key,$change)"}
+			                     				{if condition="isset($vo[$key.'_PD'])"}
+					                     			{if condition="$vo[$key.'_PD']=='no'"}ondblclick="input_cli_2(this)"{/if}
+					                     		{else /}
+					                     			{if condition="$vo[$key]=='no'"}ondblclick="input_cli_2(this)"{/if}
+					                     		{/if}
+			                     			{/if} tr_shu='{$key}' style="overflow: hidden;"><span style="overflow: hidden;">{$vo[$key]}</span></div>
+			                     	</td>
+			                 	{/foreach}
+			                 </tr>
+			                 <?php $i++; ?>
+			            {/foreach}
+					</tbody>
+				</table>
+			</div>
+	 	</div>
+	</div>
+	<!--style>
+		tr:hover {background-color:#EAF2FF;}
+	</style-->
+	<div class="datagrid-pager pagination">
+		<table cellspacing="0" cellpadding="0" border="0">
+			<tbody>
+				<tr>
+					<td>
+						<select wtq_id="shul" class="pagination-page-list" onchange="ok('',$(this).val())">
+							<option>5</option>
+							<option>10</option>
+							<option selected='selected'>20</option>
+							<option>30</option>
+							<option rbq style="background-color:#e6ce68" onclick="you_look(this)"></option>
+						</select>
+					</td>
+					<td>
+						<div class="pagination-btn-separator"></div>
+					</td>
+					<td onclick="ok(1)">
+						<a wtq_p='s' onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+							<span class="l-btn-left l-btn-icon-left">
+								<span class="l-btn-text l-btn-empty">&nbsp;</span>
+								<span class="l-btn-icon pagination-first">&nbsp;</span>
+							</span>
+						</a>
+					</td>
+					<td onclick="ok('s')">
+						<a wtq_p='s' onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+							<span class="l-btn-left l-btn-icon-left">
+							<span class="l-btn-text l-btn-empty">&nbsp;</span>
+							<span class="l-btn-icon pagination-prev">&nbsp;</span>
+							</span>
+						</a>
+					</td>
+					<td>
+						<div class="pagination-btn-separator"></div>
+					</td>
+					<td>
+						<span style="padding-left:6px;">第</span>
+					</td>
+					<td>
+						<input wtq_id="yeshu" class="pagination-num" value="" size="2" type="text" style="width:50px" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9^.]/,'');}).call(this)" onblur="this.v();">
+					</td>
+					<td>
+						<span style="padding-right:6px;">共<span wtq="all_page">{:ceil(($i-1)/20)}</span>页</span>
+					</td>
+					<td>
+						<div class="pagination-btn-separator"></div>
+					</td>
+					<td onclick="ok('x')">
+						<a wtq_p='e' onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+							<span class="l-btn-left l-btn-icon-left">
+								<span class="l-btn-text l-btn-empty">&nbsp;</span>
+								<span class="l-btn-icon pagination-next">&nbsp;</span>
+							</span>
+						</a>
+					</td>
+					<td onclick="ok('e')">
+						<a wtq_p='e' onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+							<span class="l-btn-left l-btn-icon-left">
+								<span class="l-btn-text l-btn-empty">&nbsp;</span>
+								<span class="l-btn-icon pagination-last">&nbsp;</span>
+							</span>
+						</a>
+					</td>
+					<td>
+						<div class="pagination-btn-separator"></div>
+					</td>
+					<td>
+						<a a_d onclick="table_width('定',this)" onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+							<span class="l-btn-left l-btn-icon-left">
+								<span class="l-btn-text l-btn-empty">定</span>
+							</span>
+						</a>
+					</td>
+					<td>
+						<a onclick="table_width('全散',this)" onblur="$(this).removeClass('l-btn-focus ok');" onfocus="$(this).addClass('l-btn-focus ok')" href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain" group="" id="">
+							<span class="l-btn-left l-btn-icon-left">
+								<span class="l-btn-text l-btn-empty" style="width: 20px;">全散</span>
+							</span>
+						</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="pagination-info">显示<span wtq="show">1到20,共{$i-1}记录</span></div>
+		<div style="clear:both;"></div>
+	</div>	
+</div>
+<div wtq="hide" style="display:none">
+	{foreach $title['left'] as $k=>$key}
+		<input name="thishide" checked="checked" type="checkbox" value="{$key}">{$name[$key]}<br>
+	{/foreach}
+	{foreach $title['right'] as $k=>$key}
+		<input name="thishide"  checked="checked" type="checkbox" value="{$key}">{$name[$key]}<br>
+	{/foreach}
+	<hr>
+	<button onclick="hide_ok()">完成</button>
+	<button onclick='$("div[wtq=hid]").find("input").prop("checked", true)'>全选</button>
+	<button onclick="hide_change()">改</button>
+	<a wtq_up_index_alert_close="close" class="btn btn-xs  btn-success layui-layer-close" style="display:none">关闭</a>
+</div>
+<div wtq="change_all" style="display:none">
+	<select name="change_line" class="pagination-page-list">
+		<option value="">请选择</option>
+   		{foreach $change as $k=>$key}
+   			<option value="{$key}">{$name[$key]}</option>
+        {/foreach}
+	</select>：
+	<input placeholder="请输入内容" wtq_change_val="val" style="border: 1px solid #fb0000;font-size: 15px;">
+	<hr>
+	<button onclick="all_change()" style="margin-left: 65px;">完成</button>
+	<button onclick="all_change('no')">完成但是不保存</button>
+	<a wtq_up_index_alert_close="close" class="btn btn-xs  btn-success layui-layer-close" style="display:none">关闭</a>
+</div>
+<script>
+function you_look(thi){
+	layer.open({
+		  type: 1,
+		  skin: 'layui-layer-rim', //加上边框
+		  area: ['320px', '120px'], //宽高
+		  content: '<div><input onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9]/,\'\');}).call(this)" onblur="this.v();" rbq_in value="'+$(thi).html()+'"><hr><button rbq_c onclick="$(\'option[rbq]\').html($(\'input[rbq_in]\').val());ok(\'\',$(\'input[rbq_in]\').val())">ok</button><a wtq_up_index_alert_close="close" class="btn btn-xs  btn-success layui-layer-close" style="display:none">取消</a></div>',
+		  title:'你想看多少',
+		});
+	
+	var t=$("input[rbq_in]").val();
+	 $("input[rbq_in]").focus();
+	 $("input[rbq_in]").val('');
+	 $("input[rbq_in]").val(t);
+}
+</script>
+<!-- 批量修改 -->
+<!--script>
+function ch_all(){
+	layer.open({
+	  type: 1,
+	  skin: 'layui-layer-rim', //加上边框
+	  area: ['320px', '120px'], //宽高
+	  content: "<div wtq='hid'>"+$("div[wtq=change_all]").html()+"</div>",
+	  title:'选批量修改，谨慎操作',
+	});
+}
+function all_change(pd=''){
+	var val=$("input[wtq_change_val=val]").eq(1).val();
+	if(!confirm("确定将“"+$("select[name=change_line]").eq(1).find("option:selected").text()+"”列所有错误项改为"+val)){
+		mythisalert(1,'已经全部取消掉了');
+		//ch_no();
+		return false;
+	}else if(val==''){
+		mythisalert(0,'值不能为空');
+		ch_no();
+		return false;
+	}else{
+		var pd_input=$("select[name=change_line]").eq(1).val();
+		$("td[change=ok]").children('div[tr_shu='+pd_input+']').trigger('dblclick')
+		$("input[wtq_bg="+pd_input+"]").val(val);
+		if(pd=='no'){
+			mythisalert(1,'完成');
+			return false;
+		}
+		var fa=$("td[change=ok]").children("input[wtq_bg="+pd_input+"]");
+		var le=fa.length;
+		if(le==0){
+			mythisalert(2,'没有需要修改的内容');
+			return false;
+		}
+		var lei_id='';
+		if(le=={$i-1}){
+			lei_id='all';
+		}else{
+			for(var i=0;i<le;i++){
+				if(lei_id==''){
+					lei_id="'"+fa.eq(i).attr('key')+"'";
+				}else{
+					lei_id=lei_id+",'"+fa.eq(i).attr('key')+"'";
+				}
+			}
+		}
+		$.post('{:url("save")}',{name:fa.attr("wtq_bg"),val:fa.val(),key:lei_id,all:'all'},
+	            function (data) {
+					if(data[0]==0){
+						mythisalert(data[0],data[1]);
+					}else{
+						fa.parent("td").html('<div ondblclick="input_cli_2(this)" tr_shu="'+fa.attr("wtq_bg")+'" style="overflow: hidden;"><span style="overflow: hidden;">'+fa.val()+'</span></div>');
+						mythisalert(1,'完成');
+					}
+	            },"json").error(
+	            		function() {mythisalert(0,'失败');}
+	           );
+	}
+}
+</script>
+<!-- 隐藏列 -->
+<script>
+//只选中可以修改的列
+var ok_change_1={:json_encode($change)};
+function hide_change(){
+	$("div[wtq=hid]").find("input").prop("checked", false);
+	$("div[wtq=hid]").find("input[value=ROWNUM]").prop("checked", true);
+	$("div[wtq=hid]").find("input[value=BMB01]").prop("checked", true);
+	$.each(ok_change_1, function (index, item) {
+		$("div[wtq=hid]").find("input[value="+item+"]").prop("checked", true);
+	})
+	
+}
+//隐藏列弹框
+function hide(){
+	layer.open({
+		  type: 1,
+		  skin: 'layui-layer-rim', //加上边框
+		  area: ['420px', '520px'], //宽高
+		  content: "<div wtq='hid'>"+$("div[wtq=hide]").html()+"</div>",
+		  title:'选择你要显示和隐藏的列',
+		});
+}
+//隐藏列操作
+function hide_ok(){
+	//先全部显示
+	$("div[tr_shu]").parent("td").css("display","");
+	//隐藏div全部选中
+	$("div[wtq=hide]").find("input").attr("checked", true);
+	
+	//获取没有选中的长度
+	var le=$("div[wtq=hid]").find("input[name=thishide]:not(:checked)").length;
+	for(var i=0;i<le;i++){
+		//隐藏没有选中的
+		var hid=$("div[wtq=hid]").find("input[name=thishide]:not(:checked)").eq(i).val();
+		$("div[tr_shu="+hid+"]").parent("td").css("display","none");
+		//勾掉隐藏div没有选中的
+		$("div[wtq=hide]").find("input[value="+hid+"]").attr("checked", false);
+	}
+	//宽度矫正
+	wid_correct()
+}
+</script>
+<!-- 行内编辑系列 -->
+<!--script>
+//批量双击
+function ch_input(){
+	$("td[change=ok]:visible").children('div').trigger('dblclick');
+	$("input[wtq_input]").eq(0).focus();
+}
+//批量保存
+function ch_save(){
+	le=$("td[change=ok]:visible").children('input').length;
+	i2=0;i3=0;save_ok='no';
+	for(var i=0;i<le;i++){
+		ch_save_go(i)
+	}
+}
+//批量开始保存
+function ch_save_go(i){
+	var fa=$("td[change=ok]:visible").children('input').eq(i);
+	var l=le-1;
+	if(i==l){
+		save_ok='ok';
+	}
+	if(fa.val()==fa.attr("old")){
+		if(save_ok=='ok' && i2==0){
+			$("td[change=ok]:visible").children("div").css('display','');
+			$("td[change=ok]:visible").children("input").remove();
+			wid_correct();
+		}
+		return false;
+	}
+	i2++;
+	var wtq_bg=fa.attr("wtq_bg");
+	$.post('{:url("save")}',{name:fa.attr("wtq_bg"),val:fa.val(),key:fa.attr("key")},
+            function (data) {
+				if(data[0]==0){
+					mythisalert(data[0],data[1]);
+				}else{
+					fa.parent("td").html('<div ondblclick="input_cli_2(this)" tr_shu="'+fa.attr("wtq_bg")+'" style="overflow: hidden;"><span style="overflow: hidden;">'+fa.val()+'</span></div><input>');
+				}
+				i3++;
+				if(save_ok=='ok' && i2==i3){
+					$("td[change=ok]:visible").children("div").css('display','');
+					$("td[change=ok]:visible").children("input").remove();
+					wid_correct();
+				}
+            },"json").error(
+            		function() {mythisalert(0,'失败');}
+           );
+}
+//批量取消
+function ch_no(){
+	$("td[change=ok]").children("div").css('display','');
+	$("td[change=ok]").children("input").remove();
+}
+//双击转input
+function input_cli_2(thi){
+	var change_w=$(thi).html();
+	 var td=$(thi).parent("td");
+	 //判断是否权限内
+	 if($(thi).parent("td").attr("change")=="ok" && td.children("input").attr('old')==undefined){
+		 //判断是否错误数据
+		 	 td.children("div").css('display','none');
+			 td.append("<input old='"+td.children("div").children("span").html()+"' key='"+td.parent('tr').attr('bmb01')+"' wtq_input='"+td.parent('tr').attr('show_or_hider')+"' wtq_bg='"+td.children("div").attr("tr_shu")+"' value='"+td.children("div").children("span").html()+"' style='width:100%;height:23px'>")
+			 td.children("input").focus();
+			 
+			 var t=td.children("input").val();
+			 td.children("input").focus();
+			 td.children("input").val('');
+			 td.children("input").val(t);
+	 }
+}
+</script>
+<!--按键事件-->
+<script>
+//回车事件
+$(function(){
+	document.onkeypress = function(e){
+	    var ev = document.all ? window.event : e;
+	    if(ev.keyCode==27) {
+	    	if($("input[wtq_input]:focus").length > 0){
+	    		var fa=$("input[wtq_input]:focus");
+	    		fa.prev("div").css('display','');
+	    		fa.remove();
+	    		$("input[wtq_input]").eq(0).focus();
+	    	}
+	    }
+	    if(ev.keyCode==13) {
+	    	$("button[rbq_c]").trigger('click');
+	    	
+    		if($("input[wtq_id=yeshu]:focus").length > 0){
+    			//翻页
+    			ok($("input[wtq_id=yeshu]").val());
+	    	}else{
+	    		if($("input[wtq_input]:focus").length > 0){
+	    			//数据更改后回写
+	    			var fa=$("input[wtq_input]:focus");
+	    			$.post('{:url("save")}',{name:fa.attr("wtq_bg"),val:fa.val(),key:fa.attr("key")},
+	    	                function (data) {
+			    				if(data[0]==0){
+		    						mythisalert(data[0],data[1]);
+			    				}else{
+			    					fa.parent("td").html('<div ondblclick="input_cli_2(this)" tr_shu="'+fa.attr("wtq_bg")+'" style="overflow: hidden;"><span style="overflow: hidden;">'+fa.val()+'</span></div>');
+			    				}
+	    						
+	    	                },"json").error(
+	    	                		function() {mythisalert(0,'失败');}
+	    	               );
+	    			
+	    		}
+	    	}
+	     }
+	}
+});
+</script>
+<!-- 公共方法 -->
+<script>
+//右侧滚动条处理
+$(window).resize(function(){
+	wid_correct(1);
+	setTimeout(function(){
+		wid_correct(1);
+	},'50')
+});
+
+//rbq
+function wid_correct(a=2){
+	if(a==2){$("[div_right]").css("width","0px");}
+	
+	var pd_he_1=$("div[wtq=loading]").height();
+	$("[div_left]").css("overflow-x","scroll");
+	var pd_he_2=$("div[wtq=loading]").height();
+	
+	var all_width=$("#tb").css("width");
+	var ta_1_width=$("[div_left]").css("width");
+	var new_width=all_width.substring(0,all_width.length-2)-ta_1_width.substring(0,ta_1_width.length-2);//-13;
+	$("[div_right]").css("width",new_width+"px");
+	
+	var pd_he=$("div[wtq=loading]").height();
+	$("[div_left]").css("overflow-x","");
+	if(pd_he_1==pd_he || pd_he_2==pd_he){
+		return false;
+	}
+	wid_correct();
+}
+//隐藏覆盖层
+function endd(){
+	$(".datagrid-mask").hide();
+	$(".datagrid-mask-msg").hide();
+}
+</script>
+<!-- js搜索翻页等 -->
+<script>
+//排序
+function paixu(thi){
+	$("<div class=\"datagrid-mask\"></div>").css({display:"block",width:"100%",height:$("[wtq=loading]").height()}).appendTo("[wtq=loading]"); 
+	$("<div class=\"datagrid-mask-msg\"></div>").html("正在处理，请稍候。。。").appendTo("[wtq=loading]").css({display:"block",left:($(document.body).outerWidth(true) - 190) / 2,top:($("[wtq=loading]").height() - 45) / 2}); 
+	if($(thi).attr("now_order")=='me' || $(thi).attr("now_order")=='you'){
+		//正反序js处理
+		setTimeout(function(){
+			var bigContainer = document.querySelectorAll("#tableExcel>tbody>tr");
+			var bigContainer2 = document.querySelectorAll("#tableExcel2>tbody>tr");
+		    for(var i=bigContainer.length-1;i>-1;i--){  
+		        document.querySelector("#tableExcel>tbody").appendChild(bigContainer[i]);
+		        document.querySelector("#tableExcel2>tbody").appendChild(bigContainer2[i]);
+		    }
+		    
+		    if($(thi).attr("now_order")=='me'){
+		    	$(thi).children("div").eq(0).attr("class","datagrid-sort datagrid-sort-desc");
+		    	$(thi).attr("now_order","you");
+		    }else if($(thi).attr("now_order")=='you'){
+				$(thi).children("div").eq(0).attr("class","datagrid-sort datagrid-sort-asc");
+				$(thi).attr("now_order","me");
+		    }
+			ok(page);
+			endd();
+		
+		
+		}, 10);
+		
+	}else{
+		
+		//其他排序ajax
+		$.post('{:url("")}?ii='+$(thi).children("div").eq(0).attr('tr_shu'),{ok:'ok'},
+                function (data) {
+					$("div[wtq=1]").html(data);
+					$.each(arr, function (index, item) {
+						$("div[tr_shu="+index+"]").css('width',item);
+					})
+					thissour();
+					endd();
+                },"json").error(
+                		function() {
+                			mythisalert(0,'失败');
+                			endd()
+                		}
+               );
+		
+	}
+}
+//js搜索
+function thissour(){
+	sour_pd='';
+	var BMB01=$("input[name=BMB01]").val();
+	if(BMB01){sour_pd=sour_pd+"[BMB01*='"+BMB01+"']";}
+	
+	var IMAICD04=$("select[name=IMAICD04]").val();
+	if(IMAICD04){sour_pd=sour_pd+"[IMAICD04='"+IMAICD04+"']";}
+	
+	var line=$("select[name=line]").val();
+	var line_pd=$("select[name=line_pd]").val();
+	if(line_pd){sour_pd=sour_pd+"["+line+"='"+line_pd+"']";}
+	
+	
+	if(sour_pd){
+		var leng=$("tr[show_or_hide]"+sour_pd).length;
+		all_page=leng;
+	}else{
+		all_page=$("tr[show_or_hide]").length;
+	}
+	rowpage_new=rowpage*1+1*1;
+	ok('',rowpage_new);
+}
+var page=1;
+var endpage={:ceil(($i-1)/20)};
+var rowpage=19;
+var all_page={$i-1};
+var sour_pd='';
+$(document).ready(function() {
+	ok(1);
+})
+//翻页操作
+function ok(o,rowpage_new=''){
+	//先隐藏所有行
+	$("tr[show_or_hide]").css("display","none");
+	$("tr[show_or_hider]").css("display","none");
+	//判断操作类型 e最后一页  x下一页  s上一页  o第一页 rowpage_new改变每页显示数量 空用户自定义翻页
+	if(o=='e'){
+		page=endpage;
+	}else if(o=='x'){
+		page=page*1+1*1;
+	}else if(o=='s'){
+		page=page-1;
+	}else if(o=='1'){
+		page=1;
+	}else if(rowpage_new){
+		rowpage=rowpage_new-1;
+		endpage=Math.ceil(all_page/rowpage_new);
+		$("span[wtq=all_page]").html(endpage);
+	}else{
+		page=o;
+	}
+	//校验页码是否在范围内
+	if(page>endpage){
+		page=endpage;
+	}else if(page<1){
+		page=1
+	}
+	
+	//判断显示第几到第几条，sour_pdL:搜索条件
+	var star=(page-1)*(rowpage*1+1*1);
+	//左侧
+	$("tr[show_or_hide]"+sour_pd+":eq("+star+")").css("display","");
+	$("tr[show_or_hide]"+sour_pd+":gt("+star+"):lt("+rowpage+")").css("display","");
+	//右侧
+	$("tr[show_or_hider]"+sour_pd+":eq("+star+")").css("display","");
+	$("tr[show_or_hider]"+sour_pd+":gt("+star+"):lt("+rowpage+")").css("display","");
+	//回填页码
+	$("input[wtq_id=yeshu]").val(page);
+	//改变右下角提示
+	star=star*1+1*1;end=star+19;
+	$("span[wtq=show]").html(star+"到"+end+",共"+all_page+"记录");
+	//判断页码是否把按钮变灰，先全部不变灰
+	$("a[wtq_p]").removeClass('l-btn-disabled')
+	if(page==1){
+		$("a[wtq_p=s]").addClass('l-btn-disabled');
+	}
+	if(page==endpage){
+		$("a[wtq_p=e]").addClass('l-btn-disabled');
+	}
+	
+	
+	if($("tr[show_or_hide]:visible").length==0){
+		$("div[wtq=no_td_show]").css('display',"");
+	}else{
+		$("div[wtq=no_td_show]").css('display',"none");
+	}
+	/*$.each(arr, function (index, item) {
+		$("div[tr_shu="+index+"]").css('width',item);
+	})*/
+	//宽度矫正
+	wid_correct()
+	//清空最后标记
+	end_id='';
+	$('tr[tr_color]').removeAttr('no');
+	$('tr[tr_color]').css('background-color','white');
+}
+</script>
+<!-- 选中行 -->
+<script>
+//选中行
+var tr_colors_del=1;var end_id='';
+function tr_colors(id){
+	//0：按下ctrl状态1：正常状态2：shift状态
+	//标签为1选中
+	//标记为1和2 所有颜色转为败的
+	if(tr_colors_del==1 || tr_colors_del==2){
+		$('tr[tr_color]').removeAttr('no');
+		$('tr[tr_color]').css('background-color','white');
+	}
+	//标记为0并且标签为1取消选中
+	if(tr_colors_del==0 && $('tr[tr_color='+id+']').attr('no')==1){
+		$('tr[tr_color='+id+']').removeAttr('no');
+		$('tr[tr_color='+id+']').css('background-color','white');
+	}else if(tr_colors_del==2){
+		//end_id按下shift是否有最后一次点击的存在，并且是否和当前点击的为同一个
+		if(end_id && $('tr[tr_color='+end_id+']').attr("tr_color")==end_id){
+			
+		}else{
+			//如果没有点击过，那么迷人为第一个开始
+			end_id=$('tr:visible[tr_color]').eq(0).attr("tr_color");
+		}
+		//转化数字以避免判断出错
+		id=parseInt(id);
+		end_id=parseInt(end_id);
+		//判断是象前延伸还是向后延伸
+		if(id<end_id){
+			for(var id;id<=end_id;id++){
+				$('tr[tr_color='+id+']'+sour_pd+'').css('background-color','#FFE48D');
+				$('tr[tr_color='+id+']'+sour_pd+'').attr('no','1');
+			}
+			return false;
+		}
+		if(id>=end_id){
+			for(var id;id>=end_id;id--){
+				$('tr[tr_color='+id+']'+sour_pd+'').css('background-color','#FFE48D');
+				$('tr[tr_color='+id+']'+sour_pd+'').attr('no','1');
+			}
+			return false;
+		}
+		
+		
+	}else{
+		//正常情况下只显示当前点击的那一个
+		$('tr[tr_color='+id+']').css('background-color','#FFE48D');
+		$('tr[tr_color='+id+']').attr('no','1');
+	}
+	//在点下shift前end_id会变成你最后点击的哪一个tr
+	if(tr_colors_del!=2){
+		end_id=id;
+	}
+}
+</script>
+<!-- 宽度 -->
+<script>
+//手动改变的宽度数组
+var arr = {};//定义一个数组
+//var sour={};
+	
+	//var a_d=0;//似乎无用
+	function table_width(a,thi){
+		//固定宽度
+		if(a=="定"){
+			//a_d=1;
+			//所有宽度固定为当前宽度
+			var tr=$("thead").find("[tr_shu]");
+			for(var i=0;i<tr.length;i++){
+				var tr_wid=tr.eq(i).parent("td").css('width');
+				var tr_wid=tr_wid.substring(0,tr_wid.length-2);
+				$("div[tr_shu="+tr.eq(i).attr("tr_shu")+"]").css('width',tr_wid-8);
+			}
+			$(thi).css("background-color","#9fd3ff");
+			$(thi).attr("onclick","table_width('散',this)");
+			$(thi).children("span").children("span").html("散");
+		}else if(a=="散"){
+			//a_d=0;
+			//所有宽度释放为自动宽度
+			$("div[tr_shu]").css('width','');
+			//手动改变过的宽度不释放或者说在固定回去
+			$.each(arr, function (index, item) {
+				$("div[tr_shu="+index+"]").css('width',item);
+			})
+			$(thi).css("background-color","#fcfcfc");
+			$(thi).attr("onclick","table_width('定',this)");
+			$(thi).children("span").children("span").html("定");
+		}else if(a=="全散"){
+			//所有宽度释放为自动宽度
+			$("div[tr_shu]").css('width','');
+		}
+		//宽度矫正
+		wid_correct()
+	}
+	
+	$(function(){
+		document.onkeydown = function(e){
+		    var ev = document.all ? window.event : e;
+		    if(ev.keyCode==16){
+		    	//点下shift的时候转化为2
+		    	tr_colors_del=2;
+		    	//避免按下shift的时候选中文字
+				$("body").css('-moz-user-select','none');/*火狐*/
+				$("body").css('-webkit-user-select','none');/*webkit浏览器*/
+				$("body").css('-ms-user-select','none');/*IE10*/
+				$("body").css('-khtml-user-select','none');/*早期浏览器*/
+				$("body").css('-user-select','none');
+		    }
+		    if(ev.keyCode==17) {
+		    	//按下ctrl的时候转化为0
+		    	tr_colors_del=0;
+		    }
+		}
+		document.onkeyup = function(e){
+			//松开的时候还为1
+			var ev = document.all ? window.event : e;
+			if(ev.keyCode==16){
+				//同时去掉选中限制
+				$("body").attr('style','');
+		    	tr_colors_del=1;
+		    }
+		    if(ev.keyCode==17) {
+		    	tr_colors_del=1;
+		    }
+		}
+	});
+	
+	//改变宽度
+	var star='';var side='';var old_width='';var fu_w='';var change_click='';
+	function name_th_width_down(thi,fuu){
+		//获取当前点击的鼠标的位置
+		star=lastX;
+		//获取是那一列,是否为左侧的
+		side=thi;
+		fu_w=fuu;
+		//获取当前的宽度
+		old_width=$("div[tr_shu="+side+"]").parent("td").css('width');
+		old_width=old_width.substring(0,old_width.length-2);
+		//避免选中文字
+		$("body").css("cursor"," e-resize");
+		$("body").css('-moz-user-select','none');/*火狐*/
+		$("body").css('-webkit-user-select','none');/*webkit浏览器*/
+		$("body").css('-ms-user-select','none');/*IE10*/
+		$("body").css('-khtml-user-select','none');/*早期浏览器*/
+		$("body").css('-user-select','none');
+		
+		change_click=$("div[tr_shu="+side+"]").parent("td").attr('onclick');
+		$("div[tr_shu="+side+"]").parent("td").attr('onclick','');
+	}
+	var fx;var lastX = 0;
+	$(document).ready(function() {
+		$("body").mouseup(function() {
+			if(star){
+				star='';
+				$("body").attr('style','');
+				setTimeout(function(){$("div[tr_shu="+side+"]").parent("td").attr('onclick',change_click);},5);
+				
+				
+				arr[side]=$("div[tr_shu="+side+"]").css('width');
+			}
+		 }
+		)
+	    $("body").mousemove(function(e) {
+	    	//在body里移动的时候开始改变宽度
+	    	//判断是左还是右
+	        if (lastX > e.pageX) {
+	        	fx='l';
+	        } else if (lastX < e.pageX) {
+	        	fx='r';
+	        } else {
+	           $("#dirSpan").text("—");
+	        }
+	        lastX = e.pageX;
+	    	//判断star存在的情况下在进行操作
+	        if(star){
+		        //根据移动的方向进行宽度变更
+    			if(fx=='l'){
+    				wid=star-lastX;
+    				new_width=old_width-wid;
+    			}else if(fx=='r'){
+    				wid=lastX-star;
+    				new_width=wid*1+old_width*1;
+    			}
+    			//进行最大和最小的范围限制
+	    		if(new_width<10){
+	    			new_width=10;
+	    		}else if(new_width>800){
+	    			//new_width=800;
+	    		}
+				//获取当前的宽度
+	    		now_div=$("div[tr_shu="+side+"]").css('width');
+				//改为新的宽度
+	    		$("div[tr_shu="+side+"]").css('width',new_width+'px');
+				
+				//如果移动的是左边的
+	    		if(fu_w=='fu'){
+	    			//左右table宽度矫正
+	    			var all_width=$("#tb").css("width");
+					var ta_1_width=$("[div_left]").css("width");
+					new_width=all_width.substring(0,all_width.length-2)-ta_1_width.substring(0,ta_1_width.length-2)-13;
+					if(new_width<100){
+						//$("div[rbq]").append(now_div+'<br>');
+						$("div[tr_shu="+side+"]").css('width',now_div);
+					}else{
+						
+						$("[div_right]").css("width",new_width+"px");
+					}
+					
+	    		}
+	    	}
+	    });
+	});
+</script>
+<style>
+	body{background-color: cadetblue;padding:0}
+	td div{padding-right: 8px;}
+	td span{padding-left: 8px;}
+	td{word-break: keep-all;white-space:nowrap;border: dotted #CCCCCC;border-width: 0 1px 1px 0;height:25px;font-size:12px;}
+	#tableExcel2 tbody tr td input{border:0;}
+	.ts{
+		width:10px;
+		height:10px;
+		border-radius: 5px;
+		font-size: 10px;
+		display: inline-block;
+		margin-top: 4px;
+	}
+</style>
+<style>
+body .demo-class-error .layui-layer-title{background:#D15B47; color:#fff; border: none;}
+body .demo-class-error .layui-layer-btn{border-top:1px solid #D15B47}
+body .demo-class-error .layui-layer-btn a{background:#D15B47;}
+body .demo-class-error .layui-layer-btn .layui-layer-btn1{background:#D15B47;}
+
+body .demo-class-success .layui-layer-title{background:#87B87F; color:#fff; border: none;}
+body .demo-class-success .layui-layer-btn{border-top:1px solid #87B87F}
+body .demo-class-success .layui-layer-btn a{background:#87B87F;}
+body .demo-class-success .layui-layer-btn .layui-layer-btn1{background:#87B87F;}
+</style>
+
+<!-- js导出表格 -->
+<script language="JavaScript" type="text/javascript">  
+            //表格导出第五种方法  
+            var idTmr;  
+            function  getExplorer() {  
+                var explorer = window.navigator.userAgent ;  
+                //ie  
+                if (explorer.indexOf("MSIE") >= 0) {  
+                    return 'ie';  
+                }  
+                //firefox  
+                else if (explorer.indexOf("Firefox") >= 0) {  
+                    return 'Firefox';  
+                }  
+                //Chrome  
+                else if(explorer.indexOf("Chrome") >= 0){  
+                    return 'Chrome';  
+                }  
+                //Opera  
+                else if(explorer.indexOf("Opera") >= 0){  
+                    return 'Opera';  
+                }  
+                //Safari  
+                else if(explorer.indexOf("Safari") >= 0){  
+                    return 'Safari';  
+                }  
+            }  
+            var js_excel='';
+            function method5(tableid,js_ex='') {  
+            	js_excel=js_ex;
+                if(getExplorer()=='ie')  
+                {  
+                	mythisalert(0,'不支持ie');
+                	return false;
+                    var curTbl = document.getElementById(tableid);  
+                    var oXL = new ActiveXObject("Excel.Application");  
+                    var oWB = oXL.Workbooks.Add();  
+                    var xlsheet = oWB.Worksheets(1);  
+                    var sel = document.body.createTextRange();  
+                    sel.moveToElementText(curTbl);  
+                    sel.select();  
+                    sel.execCommand("Copy");  
+                    xlsheet.Paste();  
+                    oXL.Visible = true;  
+      
+                    try {  
+                        var fname = oXL.Application.GetSaveAsFilename("Excel.xls", "Excel Spreadsheets (*.xls), *.xls");  
+                    } catch (e) {  
+                        print("Nested catch caught " + e);  
+                    } finally {  
+                        oWB.SaveAs(fname);  
+                        oWB.Close(savechanges = false);  
+                        oXL.Quit();  
+                        oXL = null;  
+                        idTmr = window.setInterval("Cleanup();", 1);  
+                    }  
+      
+                }  
+                else  
+                {   
+                    tableToExcel(tableid) 
+                }  
+            }  
+            function Cleanup() {  
+                window.clearInterval(idTmr);  
+                CollectGarbage();  
+            }  
+            var tableToExcel = (function() {
+                var uri = 'data:application/vnd.ms-excel;base64,',  
+                        base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) },  
+                        format = function(s, c) {  
+                            return s.replace(/{(\w+)}/g,  
+                                    function(m, p) { return c[p]; }) }  
+                return function(table, name) { 
+                	
+                	var new_table='<tr>'+$("tr[exceltitle1]").html()+$("tr[exceltitle2]").html()+'</tr>';
+                	if(js_excel==''){
+                		var tab='[no=1]';
+                		var rbq='rbq';
+                	}else{
+                		var tab=sour_pd;
+                		var rbq='b_rbq';
+                	}
+                	var len=$("#tableExcel").find("tbody").find("tr[show_or_hide]"+tab+"").length;
+                	for(var i=0;i<len;i++){
+                		new_table=new_table+'<tr>'+$("#tableExcel").find("tr[show_or_hide]"+tab+"").eq(i).html()+$("#tableExcel2").find("tr[show_or_hider]"+tab+"").eq(i).html()+'</tr>';
+                	}
+                	
+                	template = '<html><head><meta charset="UTF-8"></head><body><table border="1">'+new_table+'</table></body></html>' ;
+					name='safsaf';
+                    if (!table.nodeType) table = document.getElementById(table)  
+                    var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
+					
+                    $("["+rbq+"]").attr("href",uri + base64(format(template, ctx)));
+                    //$("[rbq]").click();
+                    //window.location.href = uri + base64(format(template, ctx))  
+                }  
+            })()  
+        </script>

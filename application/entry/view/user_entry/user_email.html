@@ -1,0 +1,37 @@
+<div class="new_eamil" wtq_new_email="new_eamil">
+
+</div>
+<script>
+	new_user_is_old()
+	//审核通过并发送邮件
+	function new_user_is_old(id={$id},name='{$name}'){
+		var div='<div style="padding:10px;"><input onclick="$(\'textarea[wtq_entry_email=new]\').css(\'display\',\'none\');$(\'textarea[wtq_entry_email=new_old]\').css(\'display\',\'\');" checked="checked" name="this_email" type="radio"> 关联人员通知  '+
+			'<input onclick="$(\'textarea[wtq_entry_email=new]\').css(\'display\',\'\');$(\'textarea[wtq_entry_email=new_old]\').css(\'display\',\'none\');" name="this_email" type="radio"> 新用户通知'+
+			'<div><textarea wtq_entry_email="new_old">用户'+name+'入职流程完成</textarea>'+
+			'<textarea wtq_entry_email="new"  style="display:none;"></textarea></div>';
+		div=div+'<hr><div><div style="float:right;padding-right:80px;"><button onclick="new_user_is_old_go('+id+')" style="margin-right:5px;" class="btn btn-sm btn-primary">发送</button> '+
+				' <a class="btn btn-sm btn-primary layui-layer-close" wtq_up_index_alert_close="close">关闭</a></div></div></div>';
+		$("div[wtq_new_email=new_eamil]").html(div);
+	}
+	function new_user_is_old_go(id){
+		var new_old=$('textarea[wtq_entry_email=new_old]').val();
+		var new_o=$('textarea[wtq_entry_email=new]').val();
+		$.post('{:url("new_user_is_old")}?id='+id,{new_old:new_old,new_o:new_o},
+	    	function (data) {
+	        	mythisalert(data[0],data[1]);
+	        	if(data[0]==1){
+	        		dat=data[2];
+	        		entry_index_go();
+	        		$('a[wtq_up_index_alert_close=close]').trigger('click');
+	        	}
+	     	},"json").error(function(){mythisalert(0,'失败');});
+	}
+</script>
+<style>
+	.new_eamil textarea{
+		width:400px;
+		height:100px;
+		padding: 5px;
+		margin-top: 3px;
+	}
+</style>

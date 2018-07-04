@@ -1,0 +1,319 @@
+{extend name="index@index/base" /}
+{block name="main"}
+	<div class="breadcrumbs" id="breadcrumbs">
+	    <script type="text/javascript">
+	        try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	    </script>
+	    <ul class="breadcrumb">
+	        <li>
+	            <i class="icon-home home-icon"></i>
+	            <a href="#">List维护</a>
+	            <span wtq_zs_id="zs"></span>
+	            <span wtq_mem_id="mem"></span>
+	        </li>
+	    </ul>
+	</div>
+	<div class="col-md-12">
+	    <div class="box">
+	        <div class="box-header">
+	        	<button class="btn btn-sm btn-primary" onclick="Excel_out()">导出</button>
+				<!--button class="btn btn-sm btn-primary" onclick="Excel_in()">导入</button-->
+				<button class="btn btn-sm btn-primary" onclick="add()">添加</button>
+				<button class="btn btn-sm btn-primary" onclick="sour()" style="margin-right: 20px;float:right">搜索</button>
+				<div style="float: right;">
+					<select wtq_list_id="belong" style="margin-right: 10px;padding: 2px;border: 1px solid;height: 30px;width: 50px;float:right">
+						<option value=''>all</option>
+						{$select}
+						<option style="display:none;background-color:#e6ce68" disabled wtq_new_belong_id="new_belong_id" value="" onclick="add_new_belong(this)">添加新的</option>
+					</select>
+					<span style="padding-top: 5px;float:right">归属：</span>
+					<input wtq_list_id="Partnumber" style="margin-right: 10px;padding: 2px;border: 1px solid;height: 30px;float:right" value="">
+					<span style="padding-top: 5px;float:right">Partnumber：</span>
+					<select wtq_list_id="rule" style="margin-right: 10px;padding: 2px;border: 1px solid;height: 30px;width: 100px;float:right">
+						<option value=''>all</option>
+						{:json_decode($rule)}
+					</select>
+					<span style="padding-top: 5px;float:right">下单规则：</span>
+					<input wtq_list_id="Typ_no" style="margin-right: 10px;padding: 2px;border: 1px solid;height: 30px;width: 80px;float:right" value="">
+					<span style="padding-top: 5px;float:right">Typ no：</span>
+					<select wtq_list_id="wafer" style="margin-right: 10px;padding: 2px;border: 1px solid;height: 30px;width: 50px;float:right">
+						<option value=''>all</option>
+						{$select}
+						<option style="display:none;background-color:#e6ce68" disabled wtq_new_belong_id="new_belong_id" value="" onclick="add_new_belong(this)">添加新的</option>
+					</select>
+					<span style="padding-top: 5px;float:right">wafer：</span>
+				</div>
+				
+	        </div>
+		    <div class="box-body">
+			    <table align="center" class="table table-hover" style="width:auto">
+			        <thead>
+			            <tr>
+							<td onclick="paixu(this,'id')" width="20" style="cursor:pointer;">id<i wtq_id='id' wtq_up_index_i="i" style="color:red;"></td>
+							<td onclick="paixu(this,'wafer_belong')" width="110" style="cursor:pointer;">wafer产品归属<i wtq_up_index_i="i" style="color:red;"></td>
+							<td onclick="paixu(this,'typ_no')" width="100" style="cursor:pointer;">Typ no<i wtq_up_index_i="i" style="color:red;"></td>
+							<td onclick="paixu(this,'rule')" width="180" style="cursor:pointer;">下单规则<i wtq_up_index_i="i" style="color:red;"></td>
+							<td onclick="paixu(this,'Partnumber')" width="180" style="cursor:pointer;">Partnumber<i wtq_up_index_i="i" style="color:red;"></td>
+							<td onclick="paixu(this,'belong')" width="100" style="cursor:pointer;">封装产品归属<i wtq_up_index_i="i" style="color:red;"></td>
+							<td width="100">操作</td>
+						</tr>
+			        </thead>
+			        <tbody add="add" style="height: 650px;overflow-y: scroll;position:absolute">
+			        
+			        </tbody>
+			    </table>
+			    
+		    </div>
+		    <div class="box-footer">
+		    	<div class="text-right">
+					
+		    	</div>
+		    </div>
+		</div>
+	</div>
+{/block}
+{block name="script"}
+<script>
+	function Excel_out(){		
+		var wafer=$("select[wtq_list_id=wafer]").val();
+		var rule=$("select[wtq_list_id=rule]").val();
+		var Typ_no=$("input[wtq_list_id=Typ_no]").val();
+		var Partnumber=$("input[wtq_list_id=Partnumber]").val();
+		var belong=$("select[wtq_list_id=belong]").val();
+		
+		self.location='{:url("list_excel.php")}?wafer='+wafer+'&rule='+rule+'&Typ_no='+Typ_no+'&Partnumber='+Partnumber+'&belong='+belong;
+	}
+	function Excel_in(){
+		th='<form style="padding-left:10px;" wtq_id="excel_in"><input name="file" type="file"></form>'+
+			'<hr><button onclick="$(\'span[class=layui-layer-setwin]\').children(\'a\').trigger(\'click\')" style="float:right;margin-right:20px" class="btn btn-sm btn-primary" wtq_up_index_alert_close="close">关闭</button><button style="float:right;margin-right:10px" class="btn btn-sm btn-primary" onclick="excel_in_go()">保存</button>';
+		layer.open({
+			  type: 1,
+			  title: '添加',
+			  skin: 'layui-layer-rim', //加上边框
+			  area: ['320px', '150px'], //宽高
+			  content: th
+		});
+	}
+	function excel_in_go(){
+		var form = new FormData($('form[wtq_id=excel_in]')[0]);
+		$.ajax({
+            type: "POST",
+            url:'{:url("list_excel_in")}',
+            data:form,// 你的formid
+            processData:false,
+            contentType:false,
+            dataType:'json',
+            error: function(request) {
+                mythisalert(0,'失败')
+            },
+            success: function(data) {
+                mythisalert(data[0],data[1]);
+                index()
+            }
+		})
+	}
+	function add(){
+		th="<table style='margin-left:20px;'>"+
+				'<tr style="height:40px"><td><span style="float:right;">wafer产品归属：</span></td><td><select wtq_add_name="wafer_belong">{$select}<option style="display:none;background-color:#e6ce68" disabled wtq_new_belong_id="new_belong_id" value="" onclick="add_new_belong(this)">添加新的</option></select></td></tr>'+
+				'<tr style="height:40px"><td><span style="float:right;">下单规则：</span></td><td><select wtq_add_name="rule">{$rule}</select></td></tr>'+
+				'<tr style="height:40px"><td><span style="float:right;">Typ no：</span></td><td><input wtq_add_name="typ_no"></td></tr>'+
+				'<tr style="height:40px"><td><span style="float:right;">Partnumber：</span></td><td><input wtq_add_name="Partnumber"></td></tr>'+
+				'<tr style="height:40px"><td><span style="float:right;">封装产品归属：</span></td><td><select wtq_add_name="belong">{$select}<option style="display:none;background-color:#e6ce68" disabled wtq_new_belong_id="new_belong_id" value="" onclick="add_new_belong(this)">添加新的</option></select></td></tr>'+
+			'</table><hr><button onclick="$(\'span[class=layui-layer-setwin]\').children(\'a\').trigger(\'click\')" style="float:right;margin-right:20px" class="btn btn-sm btn-primary" wtq_up_index_alert_close="close">关闭</button><button style="float:right;margin-right:10px" class="btn btn-sm btn-primary" onclick="Preservation()">保存</button>';
+		layer.open({
+	  		  type: 1,
+	  		  title: '添加',
+	  		  skin: 'layui-layer-rim', //加上边框
+	  		  area: ['320px', '350px'], //宽高
+	  		  content: th
+	  		});
+	}
+	function Preservation(){
+		var wafer_belong=$("select[wtq_add_name=wafer_belong]").val();
+		var rule=$("select[wtq_add_name=rule]").val();
+		var typ_no=$("input[wtq_add_name=typ_no]").val();
+		var Partnumber=$("input[wtq_add_name=Partnumber]").val();
+		var belong=$("select[wtq_add_name=belong]").val();
+		$.post('{:url("add")}',{wafer_belong:wafer_belong,typ_no:typ_no,Partnumber:Partnumber,belong:belong,rule:rule},
+	            function (data) {
+					mythisalert(data[0],data[1])
+					if(data[0]==1){
+						index()
+					}
+	            },"json").erroe(function(){mythisalert(0,'保存失败');});
+	}
+	//alert(<?php echo 1; ?>)
+	function change(id,Partnumber){
+		var belong=$('select[wtq_select='+id+']').eq(1).val();
+		var rule=$('select[wtq_select='+id+']').eq(0).val();
+		$.post('{:url("change")}',{id:id,Partnumber:Partnumber,belong:belong,rule:rule},
+	            function (data) {
+					mythisalert(data[0],data[1])
+	            },"json").erroe(function(){mythisalert(0,'修改失败');});
+	}
+	function del(id,Partnumber){
+		var statu = confirm("确定删除"+Partnumber+"么?");
+        if(!statu){
+            return false;
+        }
+		$.post('{:url("del")}',{id:id,Partnumber:Partnumber},
+	            function (data) {
+					mythisalert(data[0],data[1])
+					if(data[0]==1){
+						sour()
+					}
+	            },"json").erroe(function(){mythisalert(0,'修改失败');});
+	}
+	function add_new_belong(thi){
+		var name=prompt("请输入新的","");
+		if (name){
+			var new_option='<option value="'+name+'">'+name+'</option>';
+			$(thi).before(new_option);
+			$(thi).prev().attr('selected','selected');
+			$(thi).attr('wtq_new_belong_id','');
+            $('option[wtq_new_belong_id=new_belong_id]').before(new_option);
+			$(thi).attr('wtq_new_belong_id','new_belong_id')
+        }else{
+        	var option=$(thi).siblings('option[selected=selected]').val();
+        	
+        	$(thi).siblings('option[value='+option+']').attr('selected',true)
+        }
+		return false;
+	}
+	function sour(url='',thi){
+		var wafer=$("select[wtq_list_id=wafer]").val();
+		var rule=$("select[wtq_list_id=rule]").val();
+		var Typ_no=$("input[wtq_list_id=Typ_no]").val();
+		var Partnumber=$("input[wtq_list_id=Partnumber]").val();
+		var belong=$("select[wtq_list_id=belong]").val();
+		$.post('{:url("index_ajax")}'+url,{wafer:wafer,Typ_no:Typ_no,Partnumber:Partnumber,belong:belong,rule:rule},
+	            function (data) {
+					index_ajax(data[0],data[1]);
+					if(thi){
+						$('i[wtq_up_index_i=i]').attr('class','')
+						$(thi).children('i').attr('class',data[2])
+					}else{
+						$('i[wtq_up_index_i=i]').attr('class','')
+						$('i[wtq_id=id]').attr('class','icon-level-up')
+					}
+	           },"json").erroe(function(){mythisalert(0,'检索失败');});
+	}
+	//排序
+	function paixu(thi,ii){
+		if($(thi).children('i').attr('class')=='icon-level-down'){var a='&a=1';}else{var a='';}
+		url='?ii='+ii+a
+		sour(url,thi)
+	}
+	sour()
+	function index(url='',thi){
+		$.post('{:url("index_ajax")}'+url,{},
+	            function (data) {
+					index_ajax(data[0],data[1])
+					if(thi){
+						$('i[wtq_up_index_i=i]').attr('class','')
+						$(thi).children('i').attr('class',data[2])
+					}else{
+						$('i[wtq_up_index_i=i]').attr('class','')
+						$('i[wtq_id=id]').attr('class','icon-level-up')
+					}
+	           },"json").erroe(function(){mythisalert(0,'数据拉取失败');});
+	}
+	function index_ajax(data,data_list){
+		var wafer='';
+		var typ_no='';
+		var text='';
+		var i=1;var yes='';var ii=0
+		var name_id=new Array();
+		var name_id_shu=new Array();
+		var len=data.length;
+		$.each(data, function (index, item) {
+			text=text+'<tr><td width="20" style="border:1px solid">'+item['id']+'</td>';
+			if(item['wafer_belong']!=wafer){
+				yes='yes';
+			}
+			if(item['typ_no']!=typ_no){
+				yes='yes';
+			}
+			typ_no=item['typ_no'];
+			wafer=item['wafer_belong'];
+			if(yes=='yes'){}else{i++;}
+			if(yes=='yes'){
+				name_id[ii]=[item['id'],i];
+				ii++;
+				text=text+'<td width="110" name_id="'+item['id']+'" style="border:1px solid;vertical-align:inherit;">'+item['wafer_belong']+'</td>';
+				text=text+'<td width="100" name_id="'+item['id']+'" style="border:1px solid;vertical-align:inherit;">'+item['typ_no']+'</td>';
+				yes='';
+				i=1;
+			}
+			if(len-1==index){
+				name_id[ii]=['',i];
+			}
+			text=text+'<td width="180" style="border:1px solid;">'+special_pd('rule',item['rule'],item['id'],data_list)+'</td>';
+			text=text+'<td width="180" style="border:1px solid;">'+item['Partnumber']+'</td>';
+			text=text+'<td width="100" style="border:1px solid;">'+special_pd('belong',item['belong'],item['id'],data_list)+'</td>';
+			text=text+'<td width="50" style="border:1px solid;"><button class="btn btn-xs" onclick="change('+item['id']+',\''+item['Partnumber']+'\')">保存</button>'+
+						' <button class="btn btn-xs" onclick="del('+item['id']+',\''+item['Partnumber']+'\')">删除</button></td>';
+			text=text+'</tr>';
+		})
+		$('tbody[add=add]').html(text);
+		
+		$.each(name_id, function (index, item) {
+			if(item[0]){
+				$("td[name_id="+item[0]+"]").attr('rowSpan',name_id[index*1+1*1][1])
+			}
+			
+		})
+		function special_pd(name,val,id,data){
+			if(name=='belong' || name=='rule'){
+				var select='<select wtq_select="'+id+'">';
+				$.each(data[name], function (index, item) {
+					if(item[name]==val){
+						selected='selected=selected';
+					}else{
+						selected='';
+					}
+					select=select+'<option '+selected+' value="'+item[name]+'">'+item[name]+'</option>';
+				})
+				select=select+'<option style="display:none;background-color:#e6ce68" disabled wtq_new_belong_id="new_belong_id" value="" onclick="add_new_belong(this)">添加新的</option></select>';
+				return select
+			}
+		}
+	}
+</script>
+<script>
+//点击esc关闭弹框
+$(window).keyup(function(e){
+		if(e.keyCode==27){
+			$('button[wtq_up_index_alert_close=close]').trigger('click')
+		}
+	})
+function mythisalert(a,val,title,time){
+	if(a==0){color='error';shad=0.3}else{color='success';shad=0;}
+	if(!title){if(a==0){title='错误';}else{title='成功'}}
+	if(!time){if(a==0){time='0';}else{time='2000'}}
+	layer.open({
+		  title: title,
+		  content: val,
+		  offset: 't',
+		  time:time,
+		  anim:Math.floor(Math.random()*7),
+		  fixed:true,
+		  zIndex:19891014,
+		  move: false,
+		  skin:'demo-class-'+color,
+		  shade: shad
+		});     
+}
+</script>
+<style>
+body .demo-class-error .layui-layer-title{background:red; color:#fff; border: none;}
+body .demo-class-error .layui-layer-btn{border-top:1px solid red}
+body .demo-class-error .layui-layer-btn a{background:red;}
+body .demo-class-error .layui-layer-btn .layui-layer-btn1{background:red;}
+
+body .demo-class-success .layui-layer-title{background:#87B87F; color:#fff; border: none;}
+body .demo-class-success .layui-layer-btn{border-top:1px solid #87B87F}
+body .demo-class-success .layui-layer-btn a{background:#87B87F;}
+body .demo-class-success .layui-layer-btn .layui-layer-btn1{background:#87B87F;}
+</style>
+{/block}

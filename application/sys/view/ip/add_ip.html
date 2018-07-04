@@ -1,0 +1,43 @@
+<meta charset="utf-8" />
+<div>
+    <div class="col-xs-11">
+        <form class="form-horizontal" name="ip" role="form" method="post"   >
+            <div class="form-group" style="margin:10px -12px 10px -12px;">
+                <label class="col-sm-3 control-label no-padding-right">IP：</label>
+                <div class="col-sm-5">
+                    <div class="input-group">
+                        <input type="text" name='ip'/>
+                    </div>
+                </div>
+
+            </div>
+            <div class="form-group" style="margin:10px -12px 10px -12px;">
+                <label class="col-sm-3 control-label no-padding-right">类型：</label>
+                <div class="col-sm-5">
+                    <div class="input-group">
+                        <div class="input-group">
+                            <select name="ip_type">
+                                <option value="0">IP地址</option>
+                                <option value="1">IP段</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="float: right;">
+                <button type="button" class='btn btn-info btn-sm add_ip'>提交</button>
+                <button class='btn btn-info btn-sm closeLayer' type='button'>关闭</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    $(".add_ip").click(function(){
+        var data = $("form[name=ip]").serialize();
+        $.post("{:url('sys/ip/save_ip')}",data,function(result){
+            showMsg(result);
+        },"JSON")
+    })
+
+</script>
+

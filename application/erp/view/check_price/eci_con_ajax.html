@@ -1,0 +1,23 @@
+<thead>
+	<tr>
+		{foreach $eci_con_title as $key=>$t}
+			<td onclick="eci_con_paixu('{$key}','{$eci_con_zorf}')" style="cursor: pointer;"><div><b>{$t}{if condition="$eci_con_sort_name==$key"}<i wtq_up_index_i="i" class="icon-level-up" style="padding-left:5px;color:red;font-size: 16px;">{if condition="$eci_con_zorf==1"}↑{else /}↓{/if}</i>{/if}</b></div></td>
+		{/foreach}
+		<td><div><b>操作</b></div></td>
+	</tr>
+</thead>
+<tbody>
+	{foreach $eci_con_val as $con}
+		<tr wtq_id="{$con['ECI01']}">
+			{foreach $eci_con_title as $key=>$c}
+				<td eci_con_wtq_type="{$key}" realy="{$con[$key]}"><div>{if condition="$key=='ECI02'"}{$con_show[$con[$key]]}{else /}{$con[$key]}{/if}</div></td>
+			{/foreach}
+			<td>
+				<div>
+					<button onclick="add_eci_con('{$con['ECI01']}')">修改</button>
+					<button onclick="del_eci_con('{$con['ECI01']}')">删除</button>
+				</div>
+			</td>
+		</tr>
+  		{/foreach}
+</tbody>

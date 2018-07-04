@@ -1,0 +1,178 @@
+<div style="width:100%;">
+	<div id="fuelux-wizard" class="row-fluid" data-target="#step-container">
+		<ul class="wizard-steps">
+			<li wtq_data_target="#step1" class="active">
+				<span class="step">1</span>
+				<span class="title">文件说明</span>
+			</li>
+	
+			<li wtq_data_target="#step2" class="">
+				<span class="step">2</span>
+				<span class="title">选择权限</span>
+			</li>
+	
+			<li wtq_data_target="#step3" class="">
+				<span class="step">3</span>
+				<span class="title">上传文件</span>
+			</li>
+	
+			<!--li wtq_data_target="#step4" class="">
+				<span class="step">4</span>
+				<span class="title">success</span>
+			</li-->
+		</ul>
+	</div>
+	<hr>
+	<div style="display:none"  wtq_up_my_file_id="3" id="dropzone">
+		<button class="btn btn-success" id="submit-all">上传</button>
+		<button class="btn btn-success" id="clear-dropzone">清空</button>
+		
+		<div class="dropzone" id="my-dropzone"></div>
+	</div>
+	<div wtq_up_my_file_bj="ok" wtq_up_my_file_id="1" style="">
+		{$list3}
+	</div>
+	<div wtq_up_my_file_id="2" style="display:none;">
+		{$list2}
+	</div>
+	<div wtq_up_my_file_id="4" style="display:none;height:250px;text-align:center">
+		<p style="font-size:50px;color:green;padding-top:100px;"><i class="icon-ok"></i>操作完成</p>
+	</div>
+	<hr>
+	<div class="row-fluid wizard-actions">
+		<button wtq_s="s" onclick="gg('s')" class="btn btn-prev">
+			<i class="icon-arrow-left"></i>
+			上一步
+		</button>
+
+		<button wtq_s="x"  onclick="gg('x')" class="btn btn-success" style="margin-right:20px;">
+			下一步
+			
+		<i class="icon-arrow-right icon-on-right"></i></button>
+	</div>
+</div>
+
+<script>
+
+	/*//判断是否一次全部上传完毕
+	//var a=1;var b=0;var c=0;
+	
+	function aa(thi){
+		if($(thi).is(':checked')){a=1;}else{a=0;}
+	}*/
+	//批量上传
+	var url_go='';
+	$("#my-dropzone").dropzone({
+		  url:"{:url('One_up/file_sql')}",//上传路径
+		  autoProcessQueue: false,// 设置不上传
+		  addRemoveLinks: true,//添加删除按钮
+		  uploadMultiple:false,
+		  init: function() {
+		    var submitButton = document.querySelector("#submit-all");
+		    var clearButton = document.querySelector("#clear-dropzone");
+		        myDropzone = this; // closure
+	
+		    submitButton.addEventListener("click", function() {
+		    	up_nei()
+		    	myDropzone.processQueue();
+		    	 // 点击上传
+		    });
+		    clearButton.addEventListener("click", function() {		      
+		        myDropzone.removeAllFiles();//删除所有的文件
+		     });
+		    this.on("addedfile", function(files) {
+		    	//this_url_hou()
+		    	
+		    	//校验
+		      // 添加了一个文件时发生
+		    });
+		    this.on("removedfile", function() {
+			  // 一个文件被移除时发生
+			});
+		    this.on("error", function() {myDropzone.processQueue();
+				  // 上传失败时发生
+		    	/*c++;
+		    	if(a==1){
+		    		if(c==2){
+		    			c=0;
+		    			myDropzone.processQueue();
+		    		}
+		    	}*/
+				});
+		    this.on("success", function(file) {myDropzone.processQueue();
+		    	/*c++;
+		    	if(a==1){
+		    		if(c==2){
+		    			c=0;
+		    			myDropzone.processQueue();
+		    		}
+		    	}*/
+					// 添加成功时发生
+	      });
+		  	
+		  }
+	});
+	//获取说明数据
+	function up_nei(){
+		var xz=$("input[name=xz]:checked").val();
+		var lei=$("input[type='radio'][name='ml']:checked").val();
+		var gj=$("input[name=gj]").val();
+		var sta=$("textarea[name=sta]").val();
+		var bb=$("input[name=bb]").val();
+		var die_time=$("input[name=old_time]").val();
+		var more_id=$("input[wtq_is=more_id]").val();
+	    if($("input[biaoshi=all]:checked").val()=='all'){
+	    	id='all';
+	    }else{
+	    	var diyu_id='';var bumen_id='';var geren_id='';
+			var d = {};
+		    var t = $('form[wtq_id=qx]').serializeArray();
+		    $.each(t, function() {
+		    	if(this.name=='site[]'){
+		    		diyu_id=diyu_id+'{'+this.value+'}'
+		    	}
+		    	if(this.name=='dep[]'){
+		    		bumen_id=bumen_id+'['+this.value+']'
+		    	}
+		    	if(this.name=='geren[]'){
+		    		geren_id=geren_id+'('+this.value+')'
+		    	}
+	    	    });
+		    id=diyu_id+bumen_id+geren_id;
+	    }
+	    only_identification_probably="{$only_identification_probably}";
+		if(more_id && !lei){
+			url_go="{:url('One_up/file_sql_change')}?xz="+xz+"&gj="+gj+"&sta="+sta+"&id="+id+"&bb="+bb+"&die_time="+die_time+"&more_id="+more_id+"&only_identification_probably="+only_identification_probably;
+		}
+		if(lei && !more_id){
+			url_go="{:url('One_up/file_sql')}?xz="+xz+"&lei="+lei+"&gj="+gj+"&sta="+sta+"&id="+id+"&bb="+bb+"&die_time="+die_time+"&only_identification_probably="+only_identification_probably;
+		}
+	}
+	//上下步
+	function gg(a){
+		var id=$("div[wtq_up_my_file_bj=ok]").attr('wtq_up_my_file_id')
+		if(a=='s'){
+			id=id-1;if(id<=0){return false}
+		}else if(a=='x'){
+			id=id*1+1*1;if(id>3){return false}
+		}
+		
+		$("#fuelux-wizard").find("li").attr('class','');
+		for(i=1;i<=id;i++){
+			$("li[wtq_data_target=#step"+i+"]").attr('class','complete');
+		}
+		$("li[wtq_data_target=#step"+id+"]").attr('class','active');
+		$("div[wtq_up_my_file_bj=ok]").css('display','none')
+		$("div[wtq_up_my_file_bj=ok]").attr('wtq_up_my_file_bj','no')
+		$("div[wtq_up_my_file_id="+id+"]").attr('wtq_up_my_file_bj','ok')
+		$("div[wtq_up_my_file_id="+id+"]").css('display','');
+		if(id==3){
+			$("button[wtq_s=x]").css('display','none');
+		}else{
+			$("button[wtq_s=x]").css('display','');
+		}
+		if($("input[biaoshi=all]:checked").val()=='all'){
+			if(id==2){$("button[wtq_s="+a+"]").trigger('click')}
+		}
+	}
+</script>

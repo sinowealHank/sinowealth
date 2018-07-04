@@ -1,0 +1,65 @@
+{extend name="index@index/base" /}
+{block name="main"}
+<div class="breadcrumbs" id="breadcrumbs">
+    <script type="text/javascript">
+        try{ace.settings.check('breadcrumbs','fixed')}catch(e){}
+    </script>
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">首页</a>
+        </li>
+
+        <li>
+            <a href="#">资产管理</a>
+        </li>
+        <li class="active">用户申请资产</li>
+    </ul><!-- .breadcrumb -->
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <!--<a class="btn btn-primary layerIframe" hig="400px;" title="申请资产表单" url="{:url('prop/apply/add',0,false)}"><i class="icon-plus"></i>申请资产</a>-->
+        <a href="{:url('prop/apply/index')}" class="btn btn-primary  ">返回</a>
+    </div><!-- /.page-header -->
+    <div>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>ID:</th>
+                <th>申请人：</th>
+                <th>使用人名称：</th>
+                <th>需求时间：</th>
+                <th>申请物品：</th>
+                <th>申请数量：</th>
+                <th>申请理由：</th>
+                <th>资产所属</th>
+                <th>审批流程：</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="$page_info.data" id="vo"}
+            <tr>
+                <td>{$vo.id}</td>
+                <td>{$vo.nickname|}</td>
+                <td>{$vo.use_prop_name}</td>
+                <td>{$vo.require_time}</td>
+                <td>{$vo.apply_thing}</td>
+                <td>{$vo.thing_num}</td>
+                <td>{$vo.apply_reason}</td>
+                <td>{$vo.type|get_type}</td>
+                <td>{$vo.apply_process}</td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+        {$page_info.page}
+    </div>
+</div>
+{/block}
+{block name="script"}
+
+<script>
+
+</script>
+{/block}

@@ -1,0 +1,684 @@
+<html>
+	<head>
+		<title>核价信息</title>
+		<link rel="stylesheet" href="__PUBLIC__/static/assets/css/ace.min.css" />
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/default/easyui.css">
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/icon.css">
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/demo.css">
+		<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/easyui-lang-zh_CN.js"></script>		
+		<script src="__PUBLIC__/static/assets/js/layer.js"></script>
+		<script src="__PUBLIC__/static/assets/js/laydate/laydate.js"></script>
+	
+		<script src="__PUBLIC__/static/assets/js/wtq.js"></script>
+	</head>
+	<body>
+		<div class="panel datagrid" style="margin: 7px;">
+			<div class="panel-header" style="width: 100%">
+				<div class="panel-title">
+					<span>核价信息</span>
+				</div>
+				<div class="panel-tool"></div>
+			</div>
+			<div wtq="loading" class="datagrid-wrap panel-body" style="height: 90%;">
+				<div id="tb" class="datagrid-toolbar" style="padding-bottom: 5px;">
+					<a onclick="$('[wtq_sour_name]').val('');" href="#" class="easyui-linkbutton l-btn l-btn-small" iconcls="icon-search">清空</a>
+					<select wtq_sour_name="site_code"  onchange="show_or_hidden()">
+						<option value="">选择站点</option>
+						{volist name="\think\Config::get('site_code')" id="vo"}
+			            	<option value="{$vo}">{$vo}</option>
+			            {/volist}
+					</select>
+					<select wtq_sour_name="ima06" onchange="show_or_hidden()">
+						<option value="">选择阶段</option>
+						{volist name="\think\Config::get('ima06')" id="vo"}
+			            	<option value="{$vo}">{$vo}</option>
+			            {/volist}
+					</select>
+					<select wtq_sour_name="fac_name" onchange="index_ajax()">
+						<option value="">委外厂</option>
+						{volist name="$fac_name" id="vo"}
+			            	<option disabled="disabled" show1="{$vo['site_code']}" show="{$vo['ima06']}" value="{$vo['fac_num']}" style="display:none">{$vo['fac_name']}</option>
+			            {/volist}
+					</select>
+					{volist name="$fac_name" id="vo"}
+		            	<span style="display:none" site_code="{$vo['site_code']}" ima06="{$vo['ima06']}" fac_name="{$vo['fac_num']}">{$vo['p_num']}</span>
+		            {/volist}
+					<!--a onclick="index_ajax()" href="#" class="easyui-linkbutton l-btn l-btn-small" iconcls="icon-search">查询</a-->
+					<a onclick="add_this()" href="#" class="easyui-linkbutton l-btn l-btn-small" iconcls="icon-search">新增</a>
+					
+					
+					<!--a onclick="factory_flag()" href="#" class="easyui-linkbutton l-btn l-btn-small" iconcls="icon-search">厂商信息维护</a-->
+		
+					<a onclick="eci_con()" href="#" class="easyui-linkbutton l-btn l-btn-small" iconcls="icon-search">机台维护</a>
+		
+					<a onclick="config()" href="#" class="easyui-linkbutton l-btn l-btn-small" iconcls="icon-search">维护</a>
+					
+					<a onclick="all_change()" href="#" class="easyui-linkbutton l-btn l-btn-small" iconcls="icon-search">批量修改</a>
+					
+					<a onclick="save_all_change()" href="#" class="easyui-linkbutton l-btn l-btn-small" iconcls="icon-search">保存</a>
+					
+					<a id="tbody_show" onclick="show_or_hide()" href="#" class="easyui-linkbutton l-btn l-btn-small" iconcls="icon-search" style="color:red;display:none;">补全数据</a>
+					<a id="tbody_show2" onclick="show_or_hide_save()" href="#" class="easyui-linkbutton l-btn l-btn-small" iconcls="icon-search" style="color:red;display:none;">保存</a>
+				</div>
+			 	<div wtq="1">
+			 		<div div_left style="width: 100%;display:block;overflow-x:auto;height:1px;">
+						<form wtq_form="tbody_show">
+							<table id="tableExcel" class="datagrid-htable" cellpadding="0" cellspacing="0">
+								
+							</table>
+						</form>
+						<div wtq="no_td_show" style="display:none;background-color: #d7d7d7;color: #1d90a8;font-size: 38px;">没有该条件数据</div>
+					</div>
+			 	</div>
+			</div>
+			<!--style>
+				tr:hover {background-color:#EAF2FF;}
+			</style-->
+			<div wtq_foot="foot" class="datagrid-pager pagination">
+				
+					
+				
+			</div>	
+		</div>
+		<!--  -->
+		<script>
+			function show_or_hide(){
+				$('div[div_left]').find('table').find('tbody').css('display','none');
+				if($('input[tbody_show]').val()==1){
+					$('tbody[wtq_what=need_add]').css('display','');
+					$('input[tbody_show]').val(2);
+				}else{
+					$('tbody[wtq_show=show]').css('display','');
+					$('input[tbody_show]').val(1);
+				}
+			}
+		</script>
+		<script>
+			function show_or_hide_save(){
+				var site_code=sour['site_code'];
+				var fac_name=sour['fac_name'];
+				var p_num=sour['p_num'];
+				var form = new FormData($('form[wtq_form=tbody_show]:last')[0]);
+				$.ajax({
+			        type: "POST",
+			        url:'{:url("save_new_msg_two")}?site_code='+site_code+'&fac_name='+fac_name+'&p_num='+p_num,
+			        data:form,// 你的formid
+			        processData:false,
+			        contentType:false,
+			        dataType:'json',
+			        error: function(request) {
+			            mythisalert(0,'失败')
+			        },
+			        success: function(data) {
+			        	mythisalert(data[0],data[1]);
+			        	if(data[0]==1){
+			        		index_ajax();
+			        	}
+			        }
+			    });
+			}
+		</script>
+		<!-- 显示的工厂 -->
+		<script>
+			function show_or_hidden(){
+				$('select[wtq_sour_name=fac_name]').val('');
+				$('select[wtq_sour_name=fac_name]').find('option').css('display','none');
+				$('option[show='+$('select[wtq_sour_name=ima06]').val()+'][show1='+$('select[wtq_sour_name=site_code]').val()+']').css('display','');
+				$('select[wtq_sour_name=fac_name]').find('option[show1]').removeAttr('disabled');
+				if(isFirefox=navigator.userAgent.indexOf("Firefox")>0){  
+					$('select[wtq_sour_name=fac_name]').find('option[show1]:hidden').attr('disabled','disabled');
+			    }else{  
+				   $('select[wtq_sour_name=fac_name]').find('option[show1][style="display: none;"]').attr('disabled','disabled');
+			    }
+				
+			}
+		</script>
+		<!-- 机台维护 -->
+		<script>
+			function eci_con(){
+				$.post('{:url("eci_con")}',sour,
+						function (data) {
+						layer.open({
+							  type: 1,
+							  skin: 'layui-layer-rim', //加上边框
+							  area: ['800px', '800px'], //宽高
+							  content: data,
+							  title:'机台信息维护',
+							});
+						}
+				,"json").error(
+		        		function() {mythisalert(0,'失败');}
+		        );
+			}
+		
+		</script>
+		<!-- 批量行内修改 -->
+		<script>
+			function all_change(name){
+				layer.open({
+					  type: 1,
+					  skin: 'layui-layer-rim', //加上边框
+					  area: ['300px', '200px'], //宽高
+					  content: '<div wtq_only_one>'+$("div[wtq_all_change=all_change]").html()+'</div>',
+					  title:'新数据',
+					});
+			}
+			function all_change_ok(){
+				var name=$('div[wtq_only_one]').find("[wtq_all_change_name]:visible:last").attr('wtq_all_change_name');
+				var this_name=$('div[wtq_only_one]').find("[wtq_all_change="+name+"]:last");
+				var valu=this_name.val();
+				$("div[tr_shu="+name+"]").children().val(valu);
+				$("div[tr_shu="+name+"]").children().attr("change","ok");
+				var this_name2=this_name.find('option[value='+valu+']')
+				if(name=='PMJ10'){
+					var val1=this_name2.attr('val');
+					var name=$("td[tr_shu=ECD02]").find("div[tr_shu=ECD02]").find("span");
+					name.html(val1);
+				}
+				if(name=='TA_PMJ33'){
+					var val1=this_name2.attr('val1');
+					var val2=this_name2.attr('val2');
+					var name1=$("td[tr_shu=TA_PMJ35]").find("div[tr_shu=TA_PMJ35]").find("span");
+					name1.html(val1);
+					//name1.attr("change","ok2");
+					var name2=$("td[tr_shu=TA_PMJ36]").find("div[tr_shu=TA_PMJ36]").find("span");
+					name2.html(val2);
+					//name2.attr("change","ok2");
+					
+					
+					var money=(val1/3600*val2);
+					var name3=$("td[tr_shu=MONEY]").find("div[tr_shu=MONEY]").find("span");
+					name3.html(money);
+				}
+			}
+		</script>
+		<!-- 行内编辑 -->
+		<script>
+			function td_change(id,name,pd,thi,val){
+				if(pd==1){
+					$(thi).find('div').html("<input style='width:100%' onchange='$(this).attr(\"change\",\"ok\")' onfocus='$(this).select();' wtqid='"+id+"' wtq_name='"+name+"' value='"+val+"'>");
+				}else if(pd==2){
+					$(thi).find('div').html($("div[wtq_index_name="+name+"]").html())
+					$(thi).find('div').find("select").val(val);
+					$(thi).find('div').find("select").attr('wtqid',id);
+				}
+				$(thi).removeAttr('ondblclick');
+			}
+			function save_all_change(oy){
+				var save_all={};
+				for(var i=0;i<$("[change=ok]").length;i++){
+					var feng=$("[change=ok]").eq(i);
+					if(!save_all[feng.attr('wtqid')]){save_all[feng.attr('wtqid')]={};}
+					save_all[feng.attr('wtqid')][feng.attr('wtq_name')]=feng.val();
+				}
+				for(var i=0;i<$("[change=ok2]").length;i++){
+					var feng=$("[change=ok2]").eq(i);
+					if(!save_all[feng.attr('wtqid')]){save_all[feng.attr('wtqid')]={};}
+					save_all[feng.attr('wtqid')][feng.parent('div').attr('tr_shu')]=feng.html();
+				}
+				$("[change=ok]").removeAttr("change");
+				$("[change=ok2]").removeAttr("change");
+				$.post('{:url("save_all_change")}?p_num='+sour['p_num']+'&site_code='+sour['site_code'],save_all,
+						function (data) {
+							if(oy=='change'){
+								index_ajax();
+							}else{
+								mythisalert(data[0],data[1]);
+							}
+							
+						}
+				,"json").error(
+		        		function() {mythisalert(0,'保存失败');endd();}
+		        );
+				
+			}
+		</script>
+		<!-- 修改 -->
+		<script>
+		setInterval(function(){
+			$("div[div_left]").css('min-height',$("body").height()-110);
+		},'50')
+		
+			function change(id){
+				return false;
+				layer.open({
+					  type: 1,
+					  skin: 'layui-layer-rim', //加上边框
+					  area: ['550px', '470px'], //宽高
+					  content: $("div[wtq_add=add]").html(),
+					  title:'新数据',
+					});
+				$("button[wtq_add=save_new_add]:last").attr('onclick','save_new_add('+id+')');
+				var len=$("tr[tr_color="+id+"]").find("td").length;
+				for(var i=0;i<len;i++){
+					var this_val=$("tr[tr_color="+id+"]").find("td").eq(i).find('div').find('span').html();
+					var name=$("tr[tr_color="+id+"]").find("td").eq(i).find('div').attr('tr_shu');
+					$("input[wtq_add_name="+name+"]:last").val(this_val);
+				}
+			}
+		</script>
+		<!-- 厂商信息维护 -->
+		<!--script>
+			function factory_flag(){
+				$.post('{:url("factory_con")}',sour,
+						function (data) {
+						layer.open({
+							  type: 1,
+							  skin: 'layui-layer-rim', //加上边框
+							  area: ['800px', '800px'], //宽高
+							  content: data,
+							  title:'厂商相关信息',
+							});
+						}
+				,"json").error(
+		        		function() {mythisalert(0,'失败');}
+		        );
+			}
+		</script-->
+		<!-- 最终权限:维护 -->
+		<script>
+			function config(){
+				$.post('{:url("index_config")}',sour,
+						function (data) {
+						layer.open({
+							  type: 1,
+							  skin: 'layui-layer-rim', //加上边框
+							  area: ['800px', '800px'], //宽高
+							  content: data,
+							  title:'维护',
+							});
+						}
+				,"json").error(
+		        		function() {mythisalert(0,'失败');}
+		        );
+			}
+		</script>
+		<!-- 一条新的 -->
+		<script>
+			function add_this(){
+				if($("div[wtq_add=add]").html()){
+					layer.open({
+						  type: 1,
+						  skin: 'layui-layer-rim', //加上边框
+						  area: ['550px', '470px'], //宽高
+						  content: $("div[wtq_add=add]").html(),
+						  title:'新数据',
+						});
+				}else{
+					mythisalert(0,'请搜索');
+				}
+			}
+			
+			function PMJ03_click(){
+				$("tr[ima01]").css('display','');
+				layer.open({
+					  type: 1,
+					  skin: 'layui-layer-rim', //加上边框
+					  area: ['770px', '450px'], //宽高
+					  content: $("div[wtq_add=ima]").html(),
+					  title:'作业编号',
+					});
+			}
+			function PMJ10_click(){
+				$("tr[ecd01]").css('display','');
+				layer.open({
+					  type: 1,
+					  skin: 'layui-layer-rim', //加上边框
+					  area: ['500px', '450px'], //宽高
+					  content: $("div[wtq_add=ecd]").html(),
+					  title:'作业编号',
+					});
+			}
+			function TA_PMJ33_click(){
+				$("tr[factory_val1]").css('display','');
+				layer.open({
+					  type: 1,
+					  skin: 'layui-layer-rim', //加上边框
+					  area: ['500px', '450px'], //宽高
+					  content: $("div[wtq_add=TA_PMJ33]").html(),
+					  title:'机台编号',
+					});
+			}
+			function PMJ07_change(thi){
+				$("input[wtq_add_name=PMJ07T]").val($(thi).val()*1.7)
+			}
+			function PMJ07T_change(thi){	 
+				$("input[wtq_add_name=PMJ07]").val((Number($(thi).val())/1.7).toFixed(4))
+			}
+		</script>
+		<!-- 数据 -->
+		<script>
+			//排序
+			function paixu(thi,ii,a){
+				sour['ii']=ii;
+				if(a==1){a=0;}else{a=1;}
+				sour['a']=a;
+				index_ajax();
+				$("div[tr_shu]").attr('class',"datagrid-sort");
+			}
+			function ok(page,show=$("select[wtq_id=shul]").val()){
+				sour['page']=page;
+				sour['show']=show;
+				index_ajax();
+			}
+			var sour={};
+			//index_ajax();
+			function index_ajax(){
+				$("<div class=\"datagrid-mask\"></div>").css({display:"block",width:"100%",height:$("[wtq=loading]").height()}).appendTo("[wtq=loading]"); 
+				$("<div class=\"datagrid-mask-msg\"></div>").html("正在处理，请稍候。。。").appendTo("[wtq=loading]").css({display:"block",left:($(document.body).outerWidth(true) - 190) / 2,top:($("[wtq=loading]").height() - 45) / 2});
+				if($("[change=ok]").val()){
+					if(confirm('存在修改数据未保存，要进行保存么')){
+						save_all_change('change');
+						return false;
+					}
+				}
+				
+				var site_code=$("select[wtq_sour_name=site_code]").val();
+				var ima06=$("select[wtq_sour_name=ima06]").val();
+				var fac_name=$("select[wtq_sour_name=fac_name]").val();
+				var p_num=$("span[site_code='"+site_code+"'][ima06='"+ima06+"'][fac_name='"+fac_name+"']").html();
+				sour['site_code']=site_code;
+				sour['fac_name']=fac_name;
+				
+				
+				sour['p_num']=p_num;
+				sour['ima06']=ima06;
+				
+				
+				$.post('{:url("index_ajax")}',sour,
+						function (data) {
+							$("#tableExcel").html(data[0]);
+							$("div[wtq_foot=foot]").html(data[1]);
+							endd();
+							var len=$("td[ondblclick]").length;
+							for(var i=0;i<len;i++){
+								$("td[ondblclick]").eq(0).trigger('dblclick');
+							}
+							table_width('散');
+						}
+				,"json").error(
+		        		function() {mythisalert(0,'失败');endd()}
+		        );
+			}
+		//隐藏覆盖层
+		function endd(){
+			$(".datagrid-mask").remove();
+			$(".datagrid-mask-msg").remove();
+		}
+		$(function(){
+			document.onkeypress = function(e){
+			    var ev = document.all ? window.event : e;
+			    if(ev.keyCode==13) {
+			    	if($("input[wtq_id=yeshu]:focus").length > 0){
+			    		//翻页
+			    		ok($("input[wtq_id=yeshu]").val());
+			    	}
+			    	if($("input[wtq=little_time]:focus").length > 0){
+			    		//翻页
+			    		factory_page($("input[wtq=little_time]").val());
+			    	}
+			    }
+		}})
+		</script>
+		<!-- 选中行 -->
+		<script>
+		//选中行
+		var tr_colors_del=1;var end_id='';
+		function tr_colors(id){
+			//0：按下ctrl状态1：正常状态2：shift状态
+			//标签为1选中
+			//标记为1和2 所有颜色转为败的
+			if(tr_colors_del==1 || tr_colors_del==2){
+				$('tr[tr_color]').removeAttr('no');
+				$('tr[tr_color]').css('background-color','white');
+			}
+			//标记为0并且标签为1取消选中
+			if(tr_colors_del==0 && $('tr[tr_color="'+id+'"]').attr('no')==1){
+				$('tr[tr_color="'+id+'"]').removeAttr('no');
+				$('tr[tr_color="'+id+'"]').css('background-color','white');
+			}else if(tr_colors_del==2){
+				//end_id按下shift是否有最后一次点击的存在，并且是否和当前点击的为同一个
+				if(end_id && $('tr[tr_color="'+end_id+'"]').attr("tr_color")==end_id){
+					
+				}else{
+					//如果没有点击过，那么迷人为第一个开始
+					end_id=$('tr:visible[tr_color]').eq(0).attr("tr_color");
+				}
+				//转化数字以避免判断出错
+				id=parseInt(id);
+				end_id=parseInt(end_id);
+				//判断是象前延伸还是向后延伸
+				if(id<end_id){
+					for(var id;id<=end_id;id++){
+						$('tr[tr_color="'+id+'"]').css('background-color','#FFE48D');
+						$('tr[tr_color="'+id+'"]').attr('no','1');
+					}
+					return false;
+				}
+				if(id>=end_id){
+					for(var id;id>=end_id;id--){
+						$('tr[tr_color="'+id+'"]').css('background-color','#FFE48D');
+						$('tr[tr_color="'+id+'"]').attr('no','1');
+					}
+					return false;
+				}
+				
+				
+			}else{
+				//正常情况下只显示当前点击的那一个
+				$('tr[tr_color="'+id+'"]').css('background-color','#FFE48D');
+				$('tr[tr_color="'+id+'"]').attr('no','1');
+			}
+			//在点下shift前end_id会变成你最后点击的哪一个tr
+			if(tr_colors_del!=2){
+				end_id=id;
+			}
+		}
+		</script>
+		<!-- 宽度 -->
+		<script>
+		//手动改变的宽度数组
+		var arr = {'PMJ10':100,'TA_PMJ33':120,'PMJ07':100};//定义一个数组
+			function table_width(a,thi){
+				//固定宽度
+				if(a=="定"){
+					//a_d=1;
+					//所有宽度固定为当前宽度
+					var tr=$("thead").find("[tr_shu]");
+					for(var i=0;i<tr.length;i++){
+						var tr_wid=tr.eq(i).parent("td").css('width');
+						var tr_wid=tr_wid.substring(0,tr_wid.length-2);
+						$("div[tr_shu='"+tr.eq(i).attr("tr_shu")+"']").css('width',tr_wid-8);
+					}
+					$(thi).css("background-color","#9fd3ff");
+					$(thi).attr("onclick","table_width('散',this)");
+					$(thi).children("span").children("span").html("散");
+				}else if(a=="散"){
+					//a_d=0;
+					//所有宽度释放为自动宽度
+					$("div[tr_shu]").css('width','');
+					//手动改变过的宽度不释放或者说在固定回去
+					$.each(arr, function (index, item) {
+						$("div[tr_shu='"+index+"']").css('width',item);
+					})
+					$(thi).css("background-color","#fcfcfc");
+					$(thi).attr("onclick","table_width('定',this)");
+					$(thi).children("span").children("span").html("定");
+				}else if(a=="全散"){
+					//所有宽度释放为自动宽度
+					$("div[tr_shu]").css('width','');
+				}
+				//宽度矫正
+				//wid_correct()
+			}
+			
+			$(function(){
+				document.onkeydown = function(e){
+				    var ev = document.all ? window.event : e;
+				    if(ev.keyCode==16){
+				    	//点下shift的时候转化为2
+				    	tr_colors_del=2;
+				    	//避免按下shift的时候选中文字
+						$("body").css('-moz-user-select','none');/*火狐*/
+						$("body").css('-webkit-user-select','none');/*webkit浏览器*/
+						$("body").css('-ms-user-select','none');/*IE10*/
+						$("body").css('-khtml-user-select','none');/*早期浏览器*/
+						$("body").css('-user-select','none');
+				    }
+				    if(ev.keyCode==17) {
+				    	//按下ctrl的时候转化为0
+				    	tr_colors_del=0;
+				    }
+				}
+				document.onkeyup = function(e){
+					//松开的时候还为1
+					var ev = document.all ? window.event : e;
+					if(ev.keyCode==16){
+						//同时去掉选中限制
+						$("body").attr('style','');
+				    	tr_colors_del=1;
+				    }
+				    if(ev.keyCode==17) {
+				    	tr_colors_del=1;
+				    }
+				}
+			});
+			
+			//改变宽度
+			var star='';var side='';var old_width='';var fu_w='';var change_click='';
+			function name_th_width_down(thi,fuu){
+				//获取当前点击的鼠标的位置
+				star=lastX;
+				//获取是那一列,是否为左侧的
+				side=thi;
+				fu_w=fuu;
+				//获取当前的宽度
+				old_width=$("div[tr_shu='"+side+"']").parent("td").css('width');
+				old_width=old_width.substring(0,old_width.length-2);
+				//避免选中文字
+				$("body").css("cursor"," e-resize");
+				$("body").css('-moz-user-select','none');/*火狐*/
+				$("body").css('-webkit-user-select','none');/*webkit浏览器*/
+				$("body").css('-ms-user-select','none');/*IE10*/
+				$("body").css('-khtml-user-select','none');/*早期浏览器*/
+				$("body").css('-user-select','none');
+				
+				change_click=$("div[tr_shu='"+side+"']").parent("td").attr('onclick');
+				$("div[tr_shu='"+side+"']").parent("td").attr('onclick','');
+			}
+			var fx;var lastX = 0;
+			$(document).ready(function() {
+				$("body").mouseup(function() {
+					if(star){
+						star='';
+						$("body").attr('style','');
+						setTimeout(function(){$("div[tr_shu='"+side+"']").parent("td").attr('onclick',change_click);},5);
+						
+						
+						arr[side]=$("div[tr_shu='"+side+"']").css('width');
+					}
+				 }
+				)
+			    $("body").mousemove(function(e) {
+			    	//在body里移动的时候开始改变宽度
+			    	//判断是左还是右
+			        if (lastX > e.pageX) {
+			        	fx='l';
+			        } else if (lastX < e.pageX) {
+			        	fx='r';
+			        } else {
+			           $("#dirSpan").text("—");
+			        }
+			        lastX = e.pageX;
+			    	//判断star存在的情况下在进行操作
+			        if(star){
+				        //根据移动的方向进行宽度变更
+		    			if(fx=='l'){
+		    				wid=star-lastX;
+		    				new_width=old_width-wid;
+		    			}else if(fx=='r'){
+		    				wid=lastX-star;
+		    				new_width=wid*1+old_width*1;
+		    			}
+		    			//进行最大和最小的范围限制
+			    		if(new_width<10){
+			    			new_width=10;
+			    		}else if(new_width>800){
+			    			//new_width=800;
+			    		}
+						//获取当前的宽度
+			    		now_div=$("div[tr_shu='"+side+"']").css('width');
+						//改为新的宽度
+			    		$("div[tr_shu='"+side+"']").css('width',new_width+'px');
+						
+						//如果移动的是左边的
+			    		if(fu_w=='fu'){
+			    			//左右table宽度矫正
+			    			var all_width=$("#tb").css("width");
+							var ta_1_width=$("[div_left]").css("width");
+							new_width=all_width.substring(0,all_width.length-2)-ta_1_width.substring(0,ta_1_width.length-2)-13;
+							if(new_width<100){
+								//$("div[rbq]").append(now_div+'<br>');
+								//$("div[tr_shu='"+side+"']").css('width',now_div);
+								$("div[tr_shu='"+side+"']").parent("td").css('width',now_div);
+							}else{
+								
+								$("[div_right]").css("width",new_width+"px");
+							}
+							
+			    		}
+			    	}
+			    });
+			});
+		</script>
+		<style>
+			/*body{background-color: cadetblue;padding:0}*/
+			td div{padding-right: 8px;}
+			td span{padding-left: 8px;}
+			td{word-break: keep-all;white-space:nowrap;border: dotted #CCCCCC;border-width: 0 1px 1px 0;height:25px;font-size:12px;}
+			#tableExcel2 tbody tr td input{border:0;}
+			.ts{
+				width:10px;
+				height:10px;
+				border-radius: 5px;
+				font-size: 10px;
+				display: inline-block;
+				margin-top: 4px;
+			}
+			.old_free{
+				border-collapse: collapse;
+				border-spacing: 0;
+				margin: 0 auto; 
+			}
+			.old_free td{
+				border: 1px solid black;
+			}
+			.old_free div{
+				margin: 2px 5px;
+			}
+			.old_free_config{
+				border-collapse: collapse;
+				border-spacing: 0;
+				margin: 0 auto; 
+			}
+			.old_free_config td{
+				border: 0px;
+				height:35px;
+			}
+			/*input{height:34px;border: solid 1px #00f;}*/
+		</style>
+		<style>
+	body .demo-class-error .layui-layer-title{background:#D15B47; color:#fff; border: none;}
+	body .demo-class-error .layui-layer-btn{border-top:1px solid #D15B47}
+	body .demo-class-error .layui-layer-btn a{background:#D15B47;}
+	body .demo-class-error .layui-layer-btn .layui-layer-btn1{background:#D15B47;}
+	
+	body .demo-class-success .layui-layer-title{background:#87B87F; color:#fff; border: none;}
+	body .demo-class-success .layui-layer-btn{border-top:1px solid #87B87F}
+	body .demo-class-success .layui-layer-btn a{background:#87B87F;}
+	body .demo-class-success .layui-layer-btn .layui-layer-btn1{background:#87B87F;}
+	</style>
+	</body>
+</html>

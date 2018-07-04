@@ -1,0 +1,395 @@
+<title>特殊价格代码</title>
+	<link rel="stylesheet" href="__PUBLIC__/static/assets/css/ace.min.css" />
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/demo.css">
+	<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.min.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/easyui-lang-zh_CN.js"></script>		
+	<script src="__PUBLIC__/static/assets/js/layer.js"></script>
+	<script src="__PUBLIC__/static/assets/js/laydate/laydate.js"></script>
+
+<script src="__PUBLIC__/static/assets/js/wtq.js"></script>
+
+
+<div style="z-index: -100;position: absolute;font-size: 20px;background-image: -webkit-gradient(linear,0 10, 0 20, from(#0000ff80), to(#ff080866));-webkit-background-clip: text;-webkit-text-fill-color: transparent;">
+	啊哈哈哈哈哈哈哈哈哈哈！！
+</div>
+<div class="panel datagrid" wtq="1">
+
+</div>
+<script>
+var arr = {};//定义一个数组
+/*var tr=$("thead").find("[tr_shu]")
+for(i=0;i<tr.length;i++){
+	arr[tr.eq(i).attr("tr_shu")]=tr.eq(i).css('width');
+}*/
+var no_dong=1;//mythisalert(0,'失败','no','5000');
+var sour={};
+	ajaxx(1);
+	function ajaxx(pag='',num=20,ii='id',a='',fuc='0'){
+		if(fuc=='sour'){
+			var so=$("[wtq=sour]")
+			for(var i=0;i<so.length;i++){
+				sour[so.eq(i).attr('name')]=so.eq(i).val();
+			}
+		}
+		$("<div class=\"datagrid-mask\"></div>").css({display:"block",width:"100%",height:$("[wtq=1]").height()}).appendTo("[wtq=loading]"); 
+		$("<div class=\"datagrid-mask-msg\"></div>").html("正在处理，请稍候。。。").appendTo("[wtq=loading]").css({display:"block",left:($(document.body).outerWidth(true) - 190) / 2,top:($("[wtq=1]").height() - 45) / 2}); 
+		no_dong=0;
+		var scrleft=$('div[div_right]').scrollLeft();
+		
+		$("span[loading]").attr("class","l-btn-icon pagination-loading");
+		$("span[loading]").attr("style","left: 0");
+		$.post('{:url("index_ajax")}',{page:pag,num:num,ii:ii,a:a,fuc:fuc,sour},
+                function (data) {
+					$("div[wtq=1]").html(data);
+					$("span[loading]").attr("class","l-btn-icon pagination-load");
+					$("span[loading]").attr("style"," ");
+					
+					$.each(arr, function (index, item) {
+						$("div[tr_shu="+index+"]").css('width',item);
+					})
+					$(".datagrid-mask").hide();
+					$(".datagrid-mask-msg").hide();
+					
+					var all_width=$("#tb").css("width");
+					var ta_1_width=$("[div_left]").css("width");
+					new_width=all_width.substring(0,all_width.length-2)-ta_1_width.substring(0,ta_1_width.length-2)-10;
+					$("[div_right]").css("width",new_width+"px");
+					
+					var ta_1_height=$("[div_right]").css("height");
+					var new_ta_1_height=ta_1_height.substring(0,ta_1_height.length-2)
+					$("[div_right]").css("height",new_ta_1_height*1+5);
+					
+					$("div[wtq=1]").css("width",$("div[wtq=1]").css("width"));
+					
+					 $(".ok").focus();
+					if(fuc==999){
+						var t=$('input[wtq_id=yeshu]').val();
+						$('input[wtq_id=yeshu]').focus();
+						$('input[wtq_id=yeshu]').val('');
+						$('input[wtq_id=yeshu]').val(t);
+					}
+					no_dong=1;
+					$('div[div_right]').scrollLeft(scrleft);
+					
+					if(a_d==1){
+						$("a[a_d]").css("background-color","#9fd3ff");
+						$("a[a_d]").attr("onclick","table_width('散',this)");
+						$("a[a_d]").children("span").children("span").html("散");
+					}
+                },"json").error(
+                		function() {
+                			mythisalert(0,'失败');
+                			$(".datagrid-mask").hide();
+        					$(".datagrid-mask-msg").hide();
+                		}
+               );
+	}
+	
+	var a_d=0;
+	function table_width(a,thi){
+		if(a=="定"){a_d=1;
+			var tr=$("thead").find("[tr_shu]");
+			for(i=0;i<tr.length;i++){
+				var tr_wid=tr.eq(i).parent("td").css('width');
+				var tr_wid=tr_wid.substring(0,tr_wid.length-2);
+				arr[tr.eq(i).attr("tr_shu")]=tr_wid-10;
+			}
+			$(thi).css("background-color","#9fd3ff");
+			$(thi).attr("onclick","table_width('散',this)");
+			$(thi).children("span").children("span").html("散");
+		}else if(a=="散"){a_d=0;
+			arr = {};
+			$(thi).css("background-color","#fcfcfc");
+			$(thi).attr("onclick","table_width('定',this)");
+			$(thi).children("span").children("span").html("定");
+		}
+		
+	}
+	
+	var tr_colors_del=1;var end_id='';
+	function tr_colors(id){
+		if(tr_colors_del==1 || tr_colors_del==2){
+			$('tr[tr_color]').removeAttr('no');
+			$('tr[tr_color]').css('background-color','white');
+		}
+		
+		if(tr_colors_del==0 && $('tr[tr_color='+id+']').attr('no')==1){
+			$('tr[tr_color='+id+']').removeAttr('no');
+			$('tr[tr_color='+id+']').css('background-color','white');
+		}else if(tr_colors_del==2){
+			if(end_id && $('tr[tr_color='+end_id+']').attr("tr_color")==end_id){
+				
+			}else{
+				end_id=$('tr[tr_color]').eq(0).attr("tr_color");
+			}
+			id=parseInt(id);
+			end_id=parseInt(end_id);
+			if(id<end_id){
+				for(id;id<=end_id;id++){
+					$('tr[tr_color='+id+']').css('background-color','#FFE48D');
+					$('tr[tr_color='+id+']').attr('no','1');
+				}
+				return false;
+			}
+			if(id>=end_id){
+				for(id;id>=end_id;id--){
+					$('tr[tr_color='+id+']').css('background-color','#FFE48D');
+					$('tr[tr_color='+id+']').attr('no','1');
+				}
+				return false;
+			}
+			
+			
+		}else{
+			$('tr[tr_color='+id+']').css('background-color','#FFE48D');
+			$('tr[tr_color='+id+']').attr('no','1');
+		}
+		if(tr_colors_del!=2){
+			end_id=id;
+		}
+	}
+	$(function(){
+		document.onkeydown = function(e){
+		    var ev = document.all ? window.event : e;
+		    if(ev.keyCode==16){
+		    	tr_colors_del=2;
+				$("body").css('-moz-user-select','none');/*火狐*/
+				$("body").css('-webkit-user-select','none');/*webkit浏览器*/
+				$("body").css('-ms-user-select','none');/*IE10*/
+				$("body").css('-khtml-user-select','none');/*早期浏览器*/
+				$("body").css('-user-select','none');
+		    }
+		    if(ev.keyCode==17) {
+		    	tr_colors_del=0;
+		    }
+		}
+		document.onkeyup = function(e){
+		    var ev = document.all ? window.event : e;
+			if(ev.keyCode==16){
+				$("body").attr('style','');
+		    	tr_colors_del=1;
+		    }
+		    if(ev.keyCode==17) {
+		    	tr_colors_del=1;
+		    }
+		}
+	});
+	
+	
+	var star='';var side='';var old_width='';var fu_w='';var change_click='';
+	function name_th_width_down(thi,fuu){
+		star=lastX;
+		side=thi;
+		fu_w=fuu;
+		old_width=$("div[tr_shu="+side+"]").parent("td").css('width');
+		old_width=old_width.substring(0,old_width.length-2);
+		$("body").css("cursor"," e-resize");
+		$("body").css('-moz-user-select','none');/*火狐*/
+		$("body").css('-webkit-user-select','none');/*webkit浏览器*/
+		$("body").css('-ms-user-select','none');/*IE10*/
+		$("body").css('-khtml-user-select','none');/*早期浏览器*/
+		$("body").css('-user-select','none');
+		
+		change_click=$("div[tr_shu="+side+"]").parent("td").attr('onclick');
+		$("div[tr_shu="+side+"]").parent("td").attr('onclick','');
+	}
+	var fx;var lastX = 0;
+	$(document).ready(function() {
+		$("body").mouseup(function() {
+			if(star){
+				star='';
+				$("body").attr('style','');
+				setTimeout(function(){$("div[tr_shu="+side+"]").parent("td").attr('onclick',change_click);},5);
+				
+				
+				arr[side]=$("div[tr_shu="+side+"]").css('width');
+			}
+		 }
+		)
+	    $("body").mousemove(function(e) {
+	        if (lastX > e.pageX) {
+	        	fx='l';
+	        } else if (lastX < e.pageX) {
+	        	fx='r';
+	        } else {
+	           $("#dirSpan").text("—");
+	        }
+	        lastX = e.pageX;
+	        
+	        if(star){
+    			if(fx=='l'){
+    				wid=star-lastX;
+    				new_width=old_width-wid;
+    			}else if(fx=='r'){
+    				wid=lastX-star;
+    				new_width=wid*1+old_width*1;
+    			}
+    			
+	    		if(new_width<10){
+	    			new_width=10;
+	    		}else if(new_width>800){
+	    			//new_width=800;
+	    		}
+
+	    		now_div=$("div[tr_shu="+side+"]").css('width');
+	    		$("div[tr_shu="+side+"]").css('width',new_width+'px');
+	    		if(fu_w=='fu'){
+	    			var all_width=$("#tb").css("width");
+					var ta_1_width=$("[div_left]").css("width");
+					new_width=all_width.substring(0,all_width.length-2)-ta_1_width.substring(0,ta_1_width.length-2)-10;
+					if(new_width<100){
+						//$("div[rbq]").append(now_div+'<br>');
+						$("div[tr_shu="+side+"]").css('width',now_div);
+					}else{
+						
+						$("[div_right]").css("width",new_width+"px");
+					}
+					
+	    		}
+	    	}
+	    });
+	});
+</script>
+<script>
+function go_excel(){
+	var so=$("[wtq=sour]");
+	var get='';
+	for(var i=0;i<so.length;i++){
+		get=get+"&"+so.eq(i).attr('name')+"="+so.eq(i).val();
+	}
+	window.open('{:url("index_ajax")}?excel=all'+get);
+}
+</script>
+<style>
+	body{background-color: cadetblue;padding:0}
+	td div{padding-right: 8px;}
+	td span{padding: 0 8px;}
+	td{word-break: keep-all;white-space:nowrap;border: dotted #CCCCCC;border-width: 0 1px 1px 0;height:25px;font-size:12px;}
+	/*input{height:34px;border: solid 1px #00f;}*/
+</style>
+<style>
+body .demo-class-error .layui-layer-title{background:#D15B47; color:#fff; border: none;}
+body .demo-class-error .layui-layer-btn{border-top:1px solid #D15B47}
+body .demo-class-error .layui-layer-btn a{background:#D15B47;}
+body .demo-class-error .layui-layer-btn .layui-layer-btn1{background:#D15B47;}
+
+body .demo-class-success .layui-layer-title{background:#87B87F; color:#fff; border: none;}
+body .demo-class-success .layui-layer-btn{border-top:1px solid #87B87F}
+body .demo-class-success .layui-layer-btn a{background:#87B87F;}
+body .demo-class-success .layui-layer-btn .layui-layer-btn1{background:#87B87F;}
+</style>
+
+
+<script language="JavaScript" type="text/javascript">  
+            //表格导出第五种方法  
+            var idTmr;  
+            function  getExplorer() {  
+                var explorer = window.navigator.userAgent ;  
+                //ie  
+                if (explorer.indexOf("MSIE") >= 0) {  
+                    return 'ie';  
+                }  
+                //firefox  
+                else if (explorer.indexOf("Firefox") >= 0) {  
+                    return 'Firefox';  
+                }  
+                //Chrome  
+                else if(explorer.indexOf("Chrome") >= 0){  
+                    return 'Chrome';  
+                }  
+                //Opera  
+                else if(explorer.indexOf("Opera") >= 0){  
+                    return 'Opera';  
+                }  
+                //Safari  
+                else if(explorer.indexOf("Safari") >= 0){  
+                    return 'Safari';  
+                }  
+            }  
+            function method5(tableid) {  
+                if(getExplorer()=='ie')  
+                {  
+                	mythisalert(0,'不支持ie');
+                	return false;
+                    var curTbl = document.getElementById(tableid);  
+                    var oXL = new ActiveXObject("Excel.Application");  
+                    var oWB = oXL.Workbooks.Add();  
+                    var xlsheet = oWB.Worksheets(1);  
+                    var sel = document.body.createTextRange();  
+                    sel.moveToElementText(curTbl);  
+                    sel.select();  
+                    sel.execCommand("Copy");  
+                    xlsheet.Paste();  
+                    oXL.Visible = true;  
+      
+                    try {  
+                        var fname = oXL.Application.GetSaveAsFilename("Excel.xls", "Excel Spreadsheets (*.xls), *.xls");  
+                    } catch (e) {  
+                        print("Nested catch caught " + e);  
+                    } finally {  
+                        oWB.SaveAs(fname);  
+                        oWB.Close(savechanges = false);  
+                        oXL.Quit();  
+                        oXL = null;  
+                        idTmr = window.setInterval("Cleanup();", 1);  
+                    }  
+      
+                }  
+                else  
+                {   
+                    tableToExcel(tableid) 
+                }  
+            }  
+            function Cleanup() {  
+                window.clearInterval(idTmr);  
+                CollectGarbage();  
+            }  
+            var tableToExcel = (function() {
+                var uri = 'data:application/vnd.ms-excel;base64,',  
+                        base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) },  
+                        format = function(s, c) {  
+                            return s.replace(/{(\w+)}/g,  
+                                    function(m, p) { return c[p]; }) }  
+                return function(table, name) { 
+                	var len=$("#tableExcel").find("tr[no=1]").length;
+                	var new_table='<tr>'+$("tr[exceltitle1]").html()+$("tr[exceltitle2]").html()+'</tr>';
+                	for(i=0;i<len;i++){
+                		new_table=new_table+'<tr>'+$("#tableExcel").find("tr[no=1]").eq(i).html()+$("tr[no=1][tr_color="+$("#tableExcel").find("tr[no=1]").eq(i).attr("tr_color")+"]").eq(1).html()+'</tr>';
+                	}
+
+                	template = '<html><head><meta charset="UTF-8"></head><body><table border="1">'+new_table+'</table></body></html>' ;
+					name='safsaf';
+                    if (!table.nodeType) table = document.getElementById(table)  
+                    var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
+					
+                    $("[rbq]").attr("href",uri + base64(format(template, ctx)));
+                    //$("[rbq]").click();
+                    //window.location.href = uri + base64(format(template, ctx))  
+                }  
+            })()  
+        </script>
+<!--div class="page-header col-xs-12">
+		<button onclick="return change()" class="btn btn-sm btn-primary">修改</button>
+		<label class="inline">
+			<input wtq_name='white' checked="checked" value="all" type="checkbox">
+		</label>
+		<button onclick="return ok()" class="btn btn-sm btn-primary">完成</button>
+		<button onclick="return check(this,'no')" class="btn btn-sm btn-primary">取消</button>
+		<label class="inline">
+			<input wtq_name='lie' checked="checked" value="all" type="checkbox">
+		</label>
+var confirm = layer.confirm('fuck you', {
+skin: 'danger-class', //样式类名
+btn: ['确定','关闭'] //按钮
+}, function(){	//点击确定
+	layer.close(confirm);
+	alert(1);
+}, function(){ //点击关闭
+	layer.close(confirm);
+	alert(2);
+	
+}); 
+	</div--><!-- /.page-header -->

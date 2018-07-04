@@ -1,0 +1,63 @@
+<meta charset="utf-8" />
+<form  id="rowForm">
+
+<div>你将要修改<span id='count' style="color:red">{$page_info.count}</span>条数据;</div>
+	<div style="margin-left:15%">
+	   	<table cellpadding="5" >
+	   	
+	   		<tr>
+	   			<td>选择要修改列：</td>
+	   			<td>
+	   				<select name="field">
+	   						<option value="">请选择</option>
+	   								
+							<option value="h_r">h_r</option>
+						
+	   				</select>
+	   			</td>
+	   		</tr>
+	   		<tr>
+	   			<td>修改为：</td>
+	   			<td name='jsSetText'>
+	   				<input type="text" name='content'/>
+	   			</td>
+	   		</tr>
+	   	</table>
+   </div>
+</form>
+	<div style="margin:0% 0 10% 40%">
+	   	<button onclick="rowSubmit()" type="button" style='cursor:pointer;'>提交</button>
+	   	<button class='closeLayer' style='cursor:pointer;'>关闭</button>
+   	</div>
+<script>
+   
+    function rowSubmit(){
+    	
+    	var cost_id = $.trim($('input[name=cost_id]').val());
+		var test_time_notice = $.trim($('input[name=test_time_notice]').val());
+		var type = $.trim($('select[name=type]').val());
+		var CP_factory = $.trim($('select[name=CP_factory]').val());
+		var field = $.trim($("select[name=field]").val());
+
+//		var field1 = $.trim($("select[name=field]").val());
+
+	
+		var content = $.trim($("input[name=content]").val());
+
+
+
+		var warning = "确定将"+$('#count').html()+"条数据的"+$("select[name=field]").find("option:selected").text()+"修改为"+content+"吗？";
+		var confirm = layer.confirm(warning, {
+			skin: 'danger-class', //样式类名
+			btn: ['确定','关闭'] //按钮
+		}, function(){	//点击确定
+			$.post("{:url('cost/CostTableCp/doEdits')}",{cost_id:cost_id,test_time_notice:test_time_notice,type:type,CP_factory:CP_factory,field:field,content:content},function(result){
+				showMsg(JSON.parse(result));
+			});
+		}, function(){ //点击关闭
+			layer.close(confirm);
+		}); 
+		
+    }
+</script>
+

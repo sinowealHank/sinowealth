@@ -1,0 +1,64 @@
+<form class="form-horizontal"  role="form" autocomplete="off"
+      xmlns="http://www.w3.org/1999/html">
+    <input type="hidden" name="id" value="{$page_info.id}">
+    <div class="modal-body">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">申请物品:</label>
+            <div class="col-sm-8">
+                <input type="text" name="apply_thing" value="{$page_info.apply_thing}" disabled="disabled">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">申请数量:</label>
+            <div class="col-sm-8">
+                <input type="text" name="thing_num" value="{$page_info.thing_num}" disabled="disabled">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">需求时间:</label>
+            <div class="col-sm-8">
+                <input disabled="disabled" value="{$page_info.require_time}" class="laydate-icon-molv dateControl" id="require_time" format='YYYY-MM-DD ' festival="" skin="molv" >
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">申请理由:</label>
+            <div class="col-sm-8">
+                <input type="text" value="{$page_info.apply_reason}">
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">不同意：</label>
+            <div class="col-sm-8">
+                 <input type="checkbox" class="agree">
+            </div>
+        </div>
+        <div class="form-group advice_input" style="display: none">
+            <label class="col-sm-3 control-label">意见:</label>
+            <div class="col-sm-8">
+                <input type="text" name="advice" >
+            </div>
+        </div>
+        <div class="pull-right">
+            <button type="button" class="btn btn-info check">审核</button>
+            <a class="btn btn-default closeLayer">取消</a>
+        </div>
+    </div>
+</form >
+<script>
+    $(".agree").click(function(){
+        if($(this).is(":checked")){
+            $(".advice_input").show();
+        }else{
+            $(".advice_input").hide();
+            $('input[name=advice]').val('');
+        }
+    });
+    $(".check").click(function(){
+        var id = $('input[name=id]').val();
+        var advice = $("input[name=advice]").val();
+        $.post("{:url('prop/dep/applycheck')}",{id:id,advice:advice},function(result){
+            showMsg(result);
+        },"JSON")
+    });
+</script>

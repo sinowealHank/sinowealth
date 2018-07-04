@@ -1,0 +1,125 @@
+{extend name="index@index/base" /}
+{block name="main"}
+	<div class="breadcrumbs" id="breadcrumbs">
+	    <script type="text/javascript">
+	        try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	    </script>
+	    <ul class="breadcrumb">
+	        <li>
+	            <i class="icon-home home-icon"></i>
+	            <a href="#">通知列表</a>
+	            <span wtq_zs_id="zs"></span>
+	            <span wtq_mem_id="mem"></span>
+	        </li>
+	    </ul>
+	</div>
+	<div class="col-md-12">
+	    <div class="box">
+	        <div class="box-header" style="height:40px;margin: 5px 0 0 5px;">
+	        	
+	        </div>
+		    <div class="box-body">
+		    	<div wtq_mulu_id="mulu" style="width:25%;direction:rtl;">
+					<div class="" style="width:100%;float:left;display:block;max-height:700px;overflow-y:scroll;">
+					    <div class="widget-body" style="min-width:100%;direction:ltr;display: inline-block;">
+							<div class="widget-main padding-8">
+								<div id="tree2" class="tree tree-unselectable">
+									<div class="tree-folder">
+										<div class="tree-folder-header" style="white-space: nowrap;">
+											<i class="icon-folder-close" style="color: #F8C600;"></i>
+											<div class="tree-folder-name">
+												<input sour="menyu_sour">
+												<button onclick="menu_sour()" class="btn btn-minier">确定</button>
+											</div>
+										</div>
+									</div>
+									{$div}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div onclick="$('button[wtq_mulu_btn=btn]').trigger('click');return false;" style="position:absolute;width:17px;height:38px;float:right;background-color:#BAE7E7;text-align: center;line-height: 2.8;">
+						<i wtq_id="mulu_i" class="icon-double-angle-left"></i>
+					</div>
+				</div>
+		    	<div wtq_mulu_id="mulux" class="" style="width:75%;float:right;">
+		    		<table wtq_tacle="table" class="table table-hover">
+				        <thead>
+				            <tr>
+				            	<th>IMAICD00</th>
+				            	<th>IMAICD01</th>
+				            	<th>IMAICD16</th>
+				            </tr>
+				        </thead>
+				        
+				    </table>
+		    	
+		    	</div>
+			</div>	
+		    <div class="box-footer">
+		    	
+		    </div>
+		</div>
+	</div>
+{/block}
+{block name="script"}
+<script>
+	function show(name,sort){
+		$("div[wtq_color]").css("background-color",'');
+		$("div[wtq_color='"+name+"']").css("background-color",'gainsboro');
+		$("tbody").css('display','none');
+		if($("div[wtq_add='"+name+"']").attr('wtq_ok')=='ok'){
+			$("tbody[wtq_dis='"+name+"']").css('display','');
+			if($("i[wtq_i='"+name+"']").attr('class')!='icon-folder-open' && $("i[wtq_i='"+name+"']").attr('class')!='icon-folder-close'){
+				
+			}else{
+				if($("div[wtq_add='"+name+"']").css('display')=='none'){
+					$("div[wtq_add='"+name+"']").css('display','');
+					
+					$("div[wtq_add='"+name+"']").children('div[class=tree-folder-content]').children('div[class=tree-folder]').css('display','');
+					
+					$("i[wtq_i='"+name+"']").attr('class','icon-folder-open');
+				}else{
+					$("div[wtq_add='"+name+"']").css('display','none');
+					$("i[wtq_i='"+name+"']").attr('class','icon-folder-close');
+				}
+			}
+		}else{
+			$.post('{:url("body")}',{name:name,sort:sort},
+		            function (data) {
+						$("div[wtq_add='"+name+"']").attr('wtq_ok','ok');
+						$("div[wtq_add='"+name+"']").html(data[0]);
+						var tbody='<tbody wtq_dis="'+name+'">';
+						$.each(data[1], function (index, item) {
+							tbody=tbody+'<tr>'+
+											'<td>'+item['IMAICD00']+'</td>'+
+											'<td>'+item['IMAICD01']+'</td>'+
+											'<td>'+item['IMAICD16']+'</td>'+
+										'</tr>';
+						})
+						var tbody=tbody+'</tbody>';
+						$("table[wtq_tacle=table]").append(tbody);
+						
+						$("div[wtq_name='"+name+"']").append('('+data[2]+')');
+		           },"json").error(function(){mythisalert(0,'失败');});
+		}
+	}
+	function menu_sour(){
+		var name=$("input[sour=menyu_sour]").val();
+		if(name==''){
+			$("div[wtq_color]").parent("div[class=tree-folder]").css('display','');
+		}else{
+			$("div[wtq_color]").parent("div[class=tree-folder]").css('display','none');
+			div_show(name);			
+		}
+	}
+	function div_show(name){
+		$("div[wtq_color='"+name+"']").parent("div[class=tree-folder]").css('display','');
+		if($("div[wtq_color='"+name+"']").attr('i')==0){
+			return false;
+		}else{
+			div_show($("div[wtq_color='"+name+"']").attr('i'));
+		}
+	}
+</script>
+{/block}

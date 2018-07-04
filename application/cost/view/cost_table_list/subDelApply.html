@@ -1,0 +1,36 @@
+<form name="applyForm">
+    <input type="hidden" value="{$page_info.id}" name="id">
+    <div>
+        <label>申请理由：</label>
+        <textarea name="apply_reason" style="width: 300px;">  </textarea>
+    </div>
+    <div style="float: right;">
+        <button type="button" class="btn btn-primary btn-xs add_apply">提交</button>
+        <button type="button" class="btn btn-primary btn-xs closeLayer">取消</button>
+    </div>
+</form>
+<script>
+    $(".add_apply").click(function () {
+
+
+        var fromData = $("form[name=applyForm]").serialize();
+//        $.post("{:url('cost/CostTableList/addSubApply')}",fromData,function(result){
+//            showMsg(result);
+//        },"JSON")
+        $.ajax({
+            type:"POST",
+            url:"{:url('cost/CostTableList/addSubApply')}",
+            beforeSend:function(){
+                $(".add_apply").attr({ disabled: "disabled" });
+            },//发送请求
+            data:fromData,
+            dataType:"json",//预期服务器返回的数据类型。
+            success:function(result){
+                showMsg(result);
+            }, //请求成功
+//            complete:function(){
+//                $(".add_apply").removeAttr("disabled");
+//            }//请求完成
+        })
+    })
+</script>

@@ -1,0 +1,105 @@
+{extend name="index@index/base" /}
+{block name="main"}
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<script type="text/javascript">
+		try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	</script>
+
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+				<a href="#">首页</a>
+		</li>
+
+		<li>
+			<a href="#">考勤管理</a>
+		</li>
+			<li class="active">考勤数据查看</li>
+	</ul><!-- .breadcrumb -->
+
+</div>
+
+<div class="page-content">
+	<div class="page-header col-xs-12">
+            <h1 class="col-xs-4">
+                考勤数据查看
+                <small>
+                    <i class="icon-double-angle-right"></i>
+                    {$page_info['user_info']['nickname']}
+                </small>
+            </h1>
+        <div class="pull-right  clearfix">
+        	<a href="{:url('UserMain/sub_user_list')}" class="btn btn-info btn-sm">返回</a>
+        </div>        
+	</div><!-- /.page-header -->
+
+	<div class="row"><!-- /.col -->
+    	<div class="col-xs-12"  id="pageContent">
+            <div id="calendar" class="calendar"></div>
+        </div>
+	</div><!-- /.row -->
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+
+var data = eval('('+'{$page_info.hr_json}'+')');
+
+$('#calendar').calendar({dragThenDrop:false,data:data,
+	clickNextBtn:function(e){
+		events_reset();
+		},
+	clickPrevBtn:function(e){
+		events_reset();
+		},
+	clickTodayBtn:function(e){
+		events_reset();
+		},
+	clickEvent:function(e){
+
+		hr_date=new Date($(e.element).parents('div[data-date]').attr('data-date'));
+		hr_date=hr_date.format('YYYY-MM-d')
+		
+		current_month=get_cur_date();	
+		
+		div_obj=$(e.element);
+			layerIframe(hr_date+'日考勤信息',"{:url('get_day_hr_cal')}/hr_date/"+hr_date+"/user_id/{$page_info.user_info.id}");
+		}
+
+});
+
+
+
+		
+//清理当前日期范围内的所有事件
+function clear_events(){
+	var calendar = $('#calendar').data('zui.calendar');
+	
+	events1=$('#calendar').find('td div[data-id]');
+	events1.each(function(index, element) {
+        calendar.removeEvents($(element).attr('data-id'));
+    });
+
+	}
+
+//当前月份事件重置
+function events_reset(){
+	clear_events()
+	$.post('/user/user_main/get_user_month_hr/date/'+get_cur_date()+'/user_id/{$page_info.user_info.id}',function(result){
+			if(result.length>0){
+				var calendar = $('#calendar').data('zui.calendar');
+				var newEvents = eval('('+result+')');
+				calendar.addEvents(newEvents);
+				}
+		});
+	}
+
+//获取当前日期
+function get_cur_date(){
+	return $('#calendar').find('.btn-toolbar').find('.calendar-caption').text();
+	}
+
+</script>
+{/block}

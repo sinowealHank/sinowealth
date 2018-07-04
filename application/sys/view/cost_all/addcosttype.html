@@ -1,0 +1,18 @@
+<style>
+    #
+</style>
+<form    class="form-horizontal"  role="form" autocomplete="off" action="{:url('sys/cost_all/addtype',0,false)}"
+       method="post" onsubmit="return validateCallback(this);" xmlns="http://www.w3.org/1999/html">
+    <div class="modal-body">
+        <div class="form-group">
+            <label class="col-sm-4 control-label">报销费用类型名称：</label>
+            <div class="col-sm-8">
+                <input type="text" name="free_type_select"><span style="color:red;top: -5px;position:relative;">*</span>
+            </div>
+        </div>
+        <div class="pull-right">
+            <button  class="btn btn-info">添加</button>
+            <a class="btn btn-default closeLayer">取消</a>
+        </div>
+    </div>
+</form >

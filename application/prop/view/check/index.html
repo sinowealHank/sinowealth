@@ -1,0 +1,80 @@
+{extend name="index@index/base" /}
+{block name="main"}
+<style>
+    .page-header span{ margin-left: 10px;}
+</style>
+<div class="breadcrumbs" id="breadcrumbs">
+    <script type="text/javascript">
+        try{ace.settings.check('breadcrumbs','fixed')}catch(e){}
+    </script>
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">首页</a>
+        </li>
+
+        <li>
+            <a href="#">后台管理</a>
+        </li>
+        <li class="active">采购单列表审核状况</li>
+    </ul><!-- .breadcrumb -->
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <!--<span><a href="{:url('prop/manage/index')}" class="btn btn-primary">返回</a></span>-->
+        <span><a href="{:url('prop/manage/index')}" class="btn btn-primary">验收单列表</a></span>
+    </div><!-- /.page-header -->
+    <div>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>ID:</th>
+                <th>采购物品信息：</th>
+                <th>使用人名称：</th>
+                <th>采购建议：</th>
+                <th>供应商1：</th>
+                <th>供应商2：</th>
+                <th>供应商3：</th>
+                <th>是否为公共：</th>
+                <th>审核状态:</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="$page_info.data" id="vo"}
+            <tr class="check_tr" check_id="{$vo.id}" >
+                <td>{$vo.id}</td>
+                <td>{$vo.pur_name}</td>
+                <td>{$vo.user_name}</td>
+                <td>{$vo.pur_advice}</td>
+                <td>{$vo.supplier_1}</td>
+                <td>{$vo.supplier_2}</td>
+                <td>{$vo.supplier_3}</td>
+                <th>
+                   {$vo.type|get_type}
+                </th>
+                <td>
+                    {switch name="$vo.pur_process"}
+                    {case value="2"}<button class="btn btn-info btn-xs">已验收</button>{/case}
+                    {case value="1"}<button class="btn btn-info btn-xs">主管已审核</button>{/case}
+                    {case value="0"}<button class="btn btn-xs btn-info" >未审核</button>{/case}
+                    {/switch}
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+        {$page_info.page}
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+    $(".check_tr").dblclick(function(){
+        var id = $(this).attr('check_id');
+
+        layerIframe('验收资产',"{:url('/prop/check/add/id/')}"+id,wid="650;", hig="600px;");
+
+
+    });
+</script>
+{/block}

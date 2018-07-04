@@ -1,0 +1,111 @@
+{extend name="index@index/base" /}
+{block name="main"}
+ 
+<style>
+    .page-header button{padding-right: 10px;}
+</style>
+<div class="breadcrumbs" id="breadcrumbs">
+    <script type="text/javascript">
+        try{ace.settings.check('breadcrumbs','fixed')}catch(e){}
+    </script>
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">首页</a>
+        </li>
+
+        <li>
+            <a href="#">后台管理</a>
+        </li>
+        <li class="active">权限设定</li>
+
+    </ul><!-- .breadcrumb -->
+</div>
+<div class="page-content">
+    <form id="priFrom">
+    <div class="page-header">
+        <label>权限组别：</label>
+        <select id="roleId" name="roleId">
+			<option value="0">请选择角色</option>
+            {$role}
+        </select>
+        <a class="btn btn-default" href="{:url('sys/access/add_person_auth')}">添加个人权限<a/>
+       <button type="button" max="true" class="pull-right btn btn-primary layerIframe" title="批量赋予权限" url="{:url('sys/access/addBatchPri',0,false)}">批量加权限</button>
+       <a class="btn btn-primary btn pull-right" href="checkRoleUser" style="margin:0 15px 0 0;">查看权限组别</a>
+       <button type="button" max="true" class="pull-right btn btn-primary layerIframe" title="导产品列表" url="{:url('sys/access/product_excel_out',0,false)}">导产品列表</button>
+    </div>
+    <div id="tree" style="height: 400px;overflow: auto;">
+        {$tree}
+    </div>
+    </form>
+    <!--<a class="btn btn-excel"  href="{:url('sys/access/addexcle')}">导出</a>-->
+    <!--<a class="btn btn-excel" href="{:url('sys/access/lead')}">导入数据库</a>-->
+    <div style="float: right;"><button id="addPrivile" class="btn btn-app btn-inverse btn-xs">保存</button></div>
+</div>
+{/block}
+
+
+{block name="script"}
+<script src="__PUBLIC__/static/assets/js/checktree/checktree.js"></script>
+<script>
+
+        /*调用复选框相关js函数*/
+//        make_tree('tree');
+        makeTree('tree');
+       /*selectchange事件*/
+
+        $("#addPrivile").click(function(){
+           var roleId = $("select[name=roleId]").val();
+            if(roleId == '0'){
+                layer.msg("请选择角色", {
+                    shade: 0.3,
+                    time: 500
+                });
+            }
+        });
+        $("select[name=roleId]").change(function(){
+		   var role_id = $(this).val();
+		    if(role_id == '0'){
+                layer.msg('请选择对应的角色',{
+                    shade:0.3,
+                    time: 500
+                });
+                $("input[name='pri_id']").each(function(){
+                    $(this).attr("checked", false);
+                }); return false;
+            }
+            layer.msg('加载中',{
+                shade:0.3,
+                time: 500
+            });
+           
+            $.post("{:url('Access/getPrivilege',0,false)}",{id:role_id},function(result){
+                /*显示表单数据*/
+                $("#tree").empty().html(result);
+                /*提交表单数据*/
+           $("#addPrivile").unbind('click').bind('click',function(){
+               var check_val = $("select[name=roleId]").find("option:selected").val();
+            if(check_val == '0' ){
+                layer.msg("请选择角色", {
+                    shade: 0.3,
+                    time: 500
+                });return false;
+            }
+
+            var idattr = $("input:checkbox[name='pri_id']:checked").map(function (index, elem) {
+                return $(elem).val();
+            }).get().join(',');
+            var roleid = $("#roleId").val();
+
+                $.post("{:url('sys/Access/addPrivilege',0,false)}", {roleid: roleid, idData: idattr},function(data) {
+                      showMsg(data);
+                },"JSON");
+
+        });
+                /*调用复选框的相关js函数*/
+//                make_tree('tree');
+                makeTree('tree');
+            },"JSON")
+        });
+</script>
+{/block}

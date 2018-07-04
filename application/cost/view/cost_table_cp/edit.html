@@ -1,0 +1,275 @@
+<meta charset="utf-8" />
+<form action="editRow" method="post" id="rowForm">
+<input type="hidden" name='id' value='{$page_info.list.id}'/>
+	<div style="margin-left:5%">
+	   	<table cellpadding="5" >
+	   		<tr>
+	   			<td>关联ID：</td>
+	   			<td><input type="text" name='cost_id' value='{$page_info.list.cost_id}' readonly style='background-color:#ddd'/></td>
+	   			<td>生效日期：</td>
+	   			<td><input type="text" name='effe_time' value='{$page_info.list.effe_time}'/></td>
+	   			<td>test time notice 編號：</td>
+	   			<td><input type="text" name='test_time_notice' value='{$page_info.list.test_time_notice}'/></td>
+	   			<td>Type No：</td>
+	   			<td><input type="text" name='type' value='{$page_info.list.type}'  readonly/></td>
+	   		</tr>
+	   		<tr>
+	   			<td>CP1 time：</td>
+	   			<td><input type="text" name='cp1_time' value='{$page_info.list.cp1_time}'/></td>
+	   			<td>CP2 time：</td>
+	   			<td><input type="text" name='cp2_time' value='{$page_info.list.cp2_time}'/></td>
+	   			<td>CP3 time：</td>
+	   			<td><input type="text" name='cp3_time' value='{$page_info.list.cp3_time}'/></td>
+	   			<td>CP4 time：</td>
+	   			<td><input type="text" name='cp4_time' value='{$page_info.list.cp4_time}'/></td>
+	   		</tr>
+	   		<tr>
+	   			<td>CP5 time：</td>
+	   			<td><input type="text" name='cp5_time' value='{$page_info.list.cp5_time}'/></td>
+	   			<td>CP6 time：</td>
+	   			<td><input type="text" name='cp6_time' value='{$page_info.list.cp6_time}'/></td>
+	   			<td>CP7 time：</td>
+	   			<td><input type="text" name='cp7_time' value='{$page_info.list.cp7_time}'/></td>
+	   			<td>index time：</td>
+	   			<td><input type="text" name='index_time' value='{$page_info.list.index_time}'/></td>
+	   		</tr>
+	   		<tr>
+	   			<td>flash site數：</td>
+	   			<td><input type="text" name='flash_site' value='{$page_info.list.flash_site}'/></td>
+	   			<td>logic site數：</td>
+	   			<td><input type="text" name='logic_site' value='{$page_info.list.logic_site}'/></td>
+	   			<td>cp1-cp3 touch down次數：</td>
+	   			<td><input type="text" name='cp1_cp3' value='{$page_info.list.cp1_cp3}'/></td>
+	   			<td>cp5 touch down次數：</td>
+	   			<td><input type="text" name='cp5_td' value='{$page_info.list.cp5_td}'/></td>
+	   		</tr>
+	   		<tr>
+	   			<td>等待時間：</td>
+	   			<td><input type="text" name='wait_time' value='{$page_info.list.wait_time}'/></td>
+	   			<td>test time公式：</td>
+	   			<td><select name="formula" style='width:100%'>
+	   				<option value="">请选择公式</option>
+			   			{volist name="page_info.formula" id="v"}
+			   			<option value="{$v}" {if condition="trim($page_info.list.formula) eq trim($v)"} selected="selected"{/if}>{$v}</option>
+			   			{/volist}
+	   				</select>
+	   			<!-- <input type="text" name='tt_pcs' value='{$page_info.list.tt_pcs}'/> -->
+	   			</td>
+	   			<td>test time/pcs：</td>
+	   			<td>
+	   				<input type="text" name='tt_pcs' value='{$page_info.list.tt_pcs}' readonly/>
+	   			</td>
+	   			<td>qty/d(pcs)：</td>
+	   			<td><input type="text" name='qd_pcs' value='{$page_info.list.qd_pcs}' readonly/></td>
+	   			
+	   		</tr>
+	   		<tr>
+	   			<td>cp廠：</td>
+	   			<td><input type="text" name='CP_factory' value='{$page_info.list.CP_factory}' readonly/></td>
+	   			<td>cp tester：</td>
+	   			<td><input type="text" name='Tester' value='{$page_info.list.Tester}'/></td>
+	   			<td>已跨机台数量：</td>
+	   			<td><input type="text" name='cross_plat_ct' value='{$page_info.list.cross_plat_ct}'/></td>
+	   			<td>已跨机台编号：</td>
+	   			<td><input type="text" name='cross_plat_nb' value='{$page_info.list.cross_plat_nb}'/></td>
+	   		</tr>
+	   		<tr>
+	   			<td>日最大产能：</td>
+	   			<td><input type="text" name='max_daily_output' value='{$page_info.list.max_daily_output}' readonly/></td>
+	   		
+	   			<td>cp測試程式：</td>
+	   			<td><input type="text" name='by61' value='{$page_info.list.by61}'/></td>
+	   			<td>qc 程式：</td>
+	   			<td><input type="text" name='qc' value='{$page_info.list.qc}'/></td>
+	   			<td>CP全/抽測：</td>
+	   			<td><input type="text" name='by59' value='{$page_info.list.by59}'/></td>
+	   			
+	   		</tr>	
+	   		<tr>
+	   			<td>cp cost/pcs：</td>
+	   			<td><input type="text" name='cp_cost' value='{$page_info.list.cp_cost}' readonly/></td>
+	   			<td>h/r：</td>
+	   			<td><input type="text" name='h_r' value='{$page_info.list.h_r}'/></td>
+	   			<td>bake：</td>
+	   			<td><input type="text" name='back' value='{$page_info.list.back}'/></td>
+	   			<td>uv：</td>
+	   			<td><input type="text" name='uv' value='{$page_info.list.uv}'/></td>
+	   			
+	   		</tr>
+	   		<tr>
+	   			<td>TRIM：</td>
+	   			<td><input type="text" name='trim' value='{$page_info.list.trim}'/></td>
+	   		</tr>
+	   	</table>
+   </div>
+    <div style="margin:3% 20% 2% 40%"><span>确认修改：</span><input type="checkbox" name="yes"/></div>
+</form>
+	<div style="margin:3% 0 10% 40%">
+	   	<button onclick="rowSubmit()" type="button" style='cursor:pointer;'>提交</button>
+	   	<button class='closeLayer' style='cursor:pointer;'>关闭</button>
+   	</div>
+<script>
+    function rowSubmit(){
+    	var $form = $('#rowForm');
+		var url = "{:url('cost/CostTableCp/editRow')}";
+		$.ajax({
+			type:$form.method || 'POST',
+//			url:$form.attr("action"),
+			url:url,
+			data:$form.serializeArray(),
+			dataType:"json",
+			success:function(result){
+				showMsg(result);
+//				if(result.statusCode == 1){
+//					reload_list();
+//				}
+			},
+		});
+    }
+    //qd_pcs = 20/tt_pcs;
+    //max_daily_output = cross_plat_ct*qd_pcs;
+    //cp_cost=tt_pcs*h_r+bake+uv+trim
+    $('select[name=formula]').change(function(){	
+  		var formula = $('select[name=formula]').val();
+  		$.post('ajaxFormula',{formula:formula},function(result){
+  			var cp1_time = Number($('input[name=cp1_time]').val());
+  			var cp2_time = Number($('input[name=cp2_time]').val());
+  			var cp3_time = Number($('input[name=cp3_time]').val());
+  			var cp4_time = Number($('input[name=cp4_time]').val());
+  			var cp5_time = Number($('input[name=cp5_time]').val());
+  			var cp6_time = Number($('input[name=cp6_time]').val());
+  			var cp7_time = Number($('input[name=cp7_time]').val());
+  			var index_time = Number($('input[name=index_time]').val());
+  			var flash_site = Number($('input[name=flash_site]').val());
+  			var logic_site = Number($('input[name=logic_site]').val());
+  			var cp1_cp3 = Number($('input[name=cp1_cp3]').val());
+  			var cp5_td = Number($('input[name=cp5_td]').val());
+  			var wait_time = Number($('input[name=wait_time]').val());
+  			var qd_pcs = Number($('input[name=qd_pcs]').val());
+  			var cross_plat_ct = Number($('input[name=cross_plat_ct]').val());
+  			var max_daily_output = Number($('input[name=max_daily_output]').val());
+  			var by59 = Number($('input[name=by59]').val());
+//			alert(result);
+  			var tt_pcs =  eval('('+result+')'); //如果此处得不到值，可能是公式格式错误，特别检查下公式字段有没有错
+//			alert(tt_pcs);
+			var tt_pcs_val = tt_pcs;
+			if(tt_pcs_val%1 === 0){
+				$('input[name=tt_pcs]').val(tt_pcs);
+			}else{
+				$('input[name=tt_pcs]').val(tt_pcs.toFixed(10));
+			}
+
+  			qd_pcs_val();
+  	  		max_daily_output_val();
+  	  		cp_cost_val();
+  		})
+	});
+  //	$('input[name=tt_pcs]').change(function(){
+  //		qd_pcs_val();
+  //		max_daily_output_val();
+  //		cp_cost_val();
+  //     });
+//  	$('input[name=cross_plat_ct]').change(function(){
+//  		max_daily_output_val();
+//	});
+//  	$('input[name=h_r],input[name=back],input[name=uv],input[name=trim]').change(function(){
+//  		cp_cost_val();
+//	});
+//    function qd_pcs_val(){
+//    	var qd_pcs = 20/Number($('input[name=tt_pcs]').val());
+//    	$('input[name=qd_pcs]').val(qd_pcs);
+//    }
+//    function max_daily_output_val(){
+//    	var max_daily_output = Number($('input[name=cross_plat_ct]').val())*Number($('input[name=qd_pcs]').val());
+//    	$('input[name=max_daily_output]').val(max_daily_output);
+//    }
+//    function cp_cost_val(){
+//    	var cp_cost = Number($('input[name=tt_pcs]').val())*Number($('input[name=h_r]').val())+Number($('input[name=back]').val())+Number($('input[name=uv]').val())+Number($('input[name=trim]').val());
+//
+//    	$('input[name=cp_cost]').val(cp_cost);
+//    }
+
+
+
+	$('input[name=cross_plat_ct]').change(function(){
+		max_daily_output_val();
+	});
+	$('input[name=h_r],input[name=back],input[name=uv],input[name=trim]').change(function(){
+		cp_cost_val();
+	});
+	function qd_pcs_val(){
+		var tt_pcs = '';
+		if(!$('input[name=tt_pcs]').val()){tt_pcs = 0;}else{ tt_pcs = Number($('input[name=tt_pcs]').val());}
+
+		var qd_pcs = 20/tt_pcs;
+//    	var qd_pcs = 20/Number($('input[name=tt_pcs]').val());
+		if(qd_pcs%1 === 0){
+			$('input[name=qd_pcs]').val(qd_pcs);
+		}else{
+			if(qd_pcs.toFixed(10) == "Infinity"){
+				layer.tips('当前计算公式导致 qty/d(pcs) 栏位数值无限大,计算值改为0', $('input[name=qd_pcs]'), {
+					tips: [1, '#3595CC'],
+					time: 3000
+				});
+				$('input[name=qd_pcs]').val(0);
+			}else{
+				$('input[name=qd_pcs]').val(qd_pcs.toFixed(10));
+			}
+
+		}
+
+	}
+	function max_daily_output_val(){
+		var cross_plat_ct = '';
+		var qd_pcs = '';
+
+		if(!$('input[name=cross_plat_ct]').val()){cross_plat_ct = 0;}else{ cross_plat_ct = Number($('input[name=cross_plat_ct]').val());}
+		if(!$('input[name=qd_pcs]').val()){qd_pcs = 0;}else{ qd_pcs = Number($('input[name=qd_pcs]').val());}
+
+		var max_daily_output = (cross_plat_ct*qd_pcs);
+//    	var max_daily_output = Number($('input[name=cross_plat_ct]').val())*Number($('input[name=qd_pcs]').val());
+		if(max_daily_output%1 === 0){
+			$('input[name=max_daily_output]').val(max_daily_output);
+		}else{
+			$('input[name=max_daily_output]').val(max_daily_output.toFixed(10));
+		}
+
+	}
+	function cp_cost_val(){
+		var tt_pcs = '';
+		var h_r = '';
+		var back = '';
+		var uv = '';
+		var trim = '';
+		if(!$('input[name=tt_pcs]').val()){tt_pcs = 0;}else{ tt_pcs = Number($('input[name=tt_pcs]').val());}
+
+		if(!$('input[name=h_r]').val()){h_r = 0;}else{ h_r = Number($('input[name=h_r]').val());}
+
+		if(!$('input[name=back]').val()){back = 0;}else{ back = Number($('input[name=back]').val());}
+
+		if(!$('input[name=uv]').val()){uv = 0;}else{ uv = Number($('input[name=uv]').val());}
+
+		if(!$('input[name=trim]').val()){trim = 0;}else{ trim = Number($('input[name=trim]').val());}
+
+		var cp_cost = (tt_pcs*h_r+back+uv+trim);
+
+//    	var cp_cost = Number($('input[name=tt_pcs]').val())*Number($('input[name=h_r]').val())+Number($('input[name=back]').val())+Number($('input[name=uv]').val())+Number($('input[name=trim]').val());
+        if(cp_cost == "Infinity"){
+			layer.tips('当前计算公式导致(cp cost/pcs)栏位数值无限大,计算值改为0', $('input[name=qd_pcs]'), {
+				tips: [1, '#3595CC'],
+				time: 3000
+			});
+			$('input[name=cp_cost]').val(0);
+		}else{
+			if(cp_cost%1 === 0){
+				$('input[name=cp_cost]').val(cp_cost);
+			}else{
+				$('input[name=cp_cost]').val(cp_cost.toFixed(10));
+			}
+		}
+
+
+
+	}
+</script>
+

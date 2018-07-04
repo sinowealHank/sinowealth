@@ -1,0 +1,379 @@
+{extend name="index@index/base" /}
+{block name="main"}
+	<div class="breadcrumbs" id="breadcrumbs">
+	    <script type="text/javascript">
+	        try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	    </script>
+	    <ul class="breadcrumb">
+	        <li>
+	            <i class="icon-home home-icon"></i>
+	            <a href="#">上传头像</a>
+	            <span wtq_zs_id="zs"></span>
+	            <span wtq_mem_id="mem"></span>
+	        </li>
+	    </ul>
+	</div>
+	<div class="col-md-12">
+	    <div class="box">
+	        <div class="box-header">
+	        	<div style="float: right;">
+				</div>
+				
+	        </div>
+		    <div class="box-body">
+					
+				<!-- 上传头像 -->
+				<div class="htmleaf-container">
+					<!-- Content -->
+					    <div class="container">
+					    	<div class="row">
+								<div class="col-md-9">
+								<!-- <h3 class="page-header">Demo:</h3> -->
+									<div class="img-container">
+										<img src="" alt="Picture">
+									</div>
+								</div>
+							</div>
+					    	<div class="row">
+		      					<div class="col-md-9 docs-buttons">
+		      						<button class="btn btn-primary" data-method="getCroppedCanvas" type="button">
+							            <span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="$().cropper(&quot;getCroppedCanvas&quot;)">
+							              预览
+							            </span>
+							        </button>
+							        <div class="modal fade docs-cropped" id="getCroppedCanvasModal" aria-hidden="true" aria-labelledby="getCroppedCanvasTitle" role="dialog" tabindex="-1" style="display: none;">
+							        	<div class="modal-dialog">
+								            <div class="modal-content">
+								            	<div class="modal-header">
+									                <button class="close" data-dismiss="modal" type="button" aria-hidden="true">×</button>
+									                <h4 class="modal-title" id="getCroppedCanvasTitle">预览</h4>
+								                </div>
+								                <div class="modal-body"><canvas width="1280" height="720"></canvas></div>
+								                <div class="modal-footer">
+								                	<button onclick="image()" data-dismiss="modal" class="btn btn-primary" type="button">确定</button>
+								                	<button class="btn btn-primary" data-dismiss="modal" type="button">Close</button>
+								                </div>
+								           </div>
+							            </div>
+							        </div>
+		      						
+		      						<!-- script -->
+		      						<div class="btn-group">
+										<button wtq_star="no_move" class="btn btn-primary" data-method="setDragMode" data-option="move" type="button" titl="Move">
+											<span class="docs-tooltip" data-toggle="tooltip" titl="$().cropper(&quot;setDragMode&quot;, &quot;move&quot;)">
+												<span class="icon icon-move"></span>
+											</span>
+										</button>
+										<button class="btn btn-primary" data-method="setDragMode" data-option="crop" type="button" titl="Crop">
+											<span class="docs-tooltip" data-toggle="tooltip" titl="$().cropper(&quot;setDragMode&quot;, &quot;crop&quot;)">
+										    	<span class="icon icon-crop"></span>
+											</span>
+										</button>
+										<button class="btn btn-primary" data-method="zoom" data-option="0.1" type="button" titl="Zoom In">
+										    <span class="docs-tooltip" data-toggle="tooltip" titl="$().cropper(&quot;zoom&quot;, 0.1)">
+										      <span class="icon icon-zoom-in"></span>
+										    </span>
+										</button>
+										<button class="btn btn-primary" data-method="zoom" data-option="-0.1" type="button" titl="Zoom Out">
+										    <span class="docs-tooltip" data-toggle="tooltip" titl="$().cropper(&quot;zoom&quot;, -0.1)">
+										      <span class="icon icon-zoom-out"></span>
+										    </span>
+										</button>
+										<button class="btn btn-primary" data-method="rotate" data-option="-45" type="button" titl="Rotate Left">
+										    <span class="docs-tooltip" data-toggle="tooltip" titl="$().cropper(&quot;rotate&quot;, -45)">
+										      <span class="icon icon-rotate-left"></span>
+										    </span>
+										</button>
+										<button class="btn btn-primary" data-method="rotate" data-option="45" type="button" titl="Rotate Right">
+										    <span class="docs-tooltip" data-toggle="tooltip" titl="$().cropper(&quot;rotate&quot;, 45)">
+										      <span class="icon icon-rotate-right"></span>
+										    </span>
+										</button>
+									</div>
+		      					
+		      						<div class="btn-group">
+								        <button style="display:none" class="btn btn-primary" data-method="disable" type="button" titl="Disable">
+								            <span class="docs-tooltip" data-toggle="tooltip" titl="$().cropper(&quot;disable&quot;)">
+								              <span class="icon icon-lock"></span>
+								            </span>
+								        </button>
+								        <button style="display:none" class="btn btn-primary" data-method="enable" type="button" titl="Enable">
+								            <span class="docs-tooltip" data-toggle="tooltip" titl="$().cropper(&quot;enable&quot;)">
+								              <span class="icon icon-unlock"></span>
+								            </span>
+								        </button>
+								        <button class="btn btn-primary" data-method="clear" type="button" titl="Clear">
+								            <span class="docs-tooltip" data-toggle="tooltip" titl="$().cropper(&quot;clear&quot;)">
+								              <span class="icon icon-remove"></span>
+								            </span>
+								        </button>
+								        <button class="btn btn-primary" data-method="reset" type="button" titl="Reset">
+								            <span class="docs-tooltip" data-toggle="tooltip" titl="$().cropper(&quot;reset&quot;)">
+								              <span class="icon icon-refresh"></span>
+								            </span>
+								        </button>
+								        <label onclick="image_go()" class="btn btn-primary btn-upload" for="inputImage" titl="Upload image file">
+								            <form wtq_id="image_up">
+								            	<input class="sr-only" id="inputImage" name="file" type="file" accept="image/*">
+								            </form>
+								            <span class="docs-tooltip" data-toggle="tooltip" titl="Import image with Blob URLs">
+								              选择图片
+								            </span>
+								        </label>
+								        <button class="btn btn-primary" data-method="destroy" type="button" titl="Destroy">
+								            <span class="docs-tooltip" data-toggle="tooltip" titl="$().cropper(&quot;destroy&quot;)">
+								              <span class="icon icon-off"></span>
+								            </span>
+								        </button>
+							        </div>
+							        {if condition="isset($img_head_name)"}
+							        <div class="btn-group">
+							        	<button onclick="old_image()" class="btn btn-primary">
+										    <span title="">
+										     	 历史头像
+										    </span>
+										</button>
+							        </div>
+		      						{/if}
+		      						<div class="btn-group btn-group-justified" data-toggle="buttons">
+								        <label style="display:none" wtq_star="1b1" class="btn btn-primary" data-method="setAspectRatio" data-option="1" titl="Set Aspect Ratio">
+								            <input class="sr-only" id="aspestRatio3" name="aspestRatio" value="1" type="radio">
+								            <span class="docs-tooltip" data-toggle="tooltip" titl="$().cropper(&quot;setAspectRatio&quot;, 1 / 1)">
+								              1:1
+								            </span>
+								        </label>
+							        </div>
+		      					</div>
+					    	</div>
+				    	</div>
+      				</div>
+      				{if condition="isset($img_head_name)"}
+	      				<div wtq_old_img style="display:none">
+		      				<div style="padding: 0 30px">
+								<div style="margin: 0 20px;height:510px;width:500px;overflow: hidden;">
+									<div style="margin-left: 0px;width:99999999999999px;">
+										<form wtq="old_img">
+											<img name="file_head" onclick="img_all(0)" wtq_img="open" width="500px" src="__PUBLIC__/{:config('user_img_url')}<?php echo get_user_id(); ?>/{$img_head_name}.0head.jpg">
+										</form>
+									</div>
+								</div>
+								
+								<span onclick="img_prev()" class="btn" style="border: 0;marcolor: #888 !important;background-color: #e7e7e7;border-color: #e7e7e7;padding: 0 5px;float:left;">
+									p<br>r<br>e<br>v
+								</span>
+								<div style="padding: 0 2px;height:80px;width:500px;overflow: hidden;float:left;">
+									<div wtq_img_show style="margin-left: 0px;width:9999999999999px;">
+										{for start="0" end="$img_head_s_end+1"}{if condition="$i eq 0"}<img wtq_img_num="{$i}" wtq_img="yes" onclick="img_open(this,{$i})" style="border: #f00 1px solid;" width="80px" src="__PUBLIC__/{:config('user_img_url')}<?php echo get_user_id(); ?>/{$img_head_name}.{$i}head.jpg">{else /}<img wtq_img_num="{$i}" wtq_img="no" onclick="img_open(this,{$i})" width="80px" src="__PUBLIC__/{:config('user_img_url')}<?php echo get_user_id(); ?>/{$img_head_name}.{$i}head.jpg">{/if}{/for}
+									</div>
+								</div>
+								<span onclick="img_next()" class="btn" style="border: 0;marcolor: #888 !important;background-color: #e7e7e7;border-color: #e7e7e7;padding: 0 5px;float:left;">
+									n<br>e<br>x<br>t
+								</span>
+							</div>
+							<hr>
+							<button onclick="image_old()" style="margin-left: 430px;" class="btn btn-sm btn-primary">选择当前</button>
+							<a class="btn btn-sm btn-primary layui-layer-close" style="position: initial;" wtq_up_index_alert_close="close">关闭</a>
+						</div>
+					{/if}
+		    </div>
+		    <div class="box-footer">
+		    	<div class="text-right">
+		    	</div>
+		    </div>
+		</div>
+	</div>
+{/block}
+{block name="script"}
+<link href="__PUBLIC__/image/dist/cropper.css" rel="stylesheet">
+<link href="__PUBLIC__/image/css/main.css" rel="stylesheet">
+<script src="__PUBLIC__/image/dist/cropper.js"></script>
+<script src="__PUBLIC__/image/js/main.js"></script>
+{if condition="isset($img_head_name)"}
+<script>
+	img_head_s_end={$img_head_s_end};
+	function img_next(){
+		if(img_head_s_end>5){
+			var left=$("div[wtq_img_show]").css("margin-left").replace("px","")*1-80*1;
+			var min=img_head_s_end-5;
+			if(left<-min*80){
+				left=-min*80;
+			}
+			
+			$("div[wtq_img_show]").css("margin-left",left);
+		}
+		
+	}
+	function img_prev(){
+		var left=$("div[wtq_img_show]").css("margin-left").replace("px","")*1+80*1;
+		if(left>0){
+			left=0;
+		}
+		$("div[wtq_img_show]").css("margin-left",left);
+	}
+
+	function img_open(thi,i){
+		$("img[wtq_img=yes]").attr("wtq_img","no");
+		$("img[wtq_img]").css("border","");
+		$(thi).attr("wtq_img","yes");
+		$(thi).css("border","#f00 1px solid");
+		$("img[wtq_img=open]").attr("src",$(thi).attr("src"));
+		$("img[wtq_img=open]").attr("onclick","img_all("+i+")");	
+	}
+	img_head_full={$img_head_full};
+	function img_all(ii){
+        if(!img_head_full[ii]){
+        	img_head_full[ii]='jpg';
+        }
+        img_src="__PUBLIC__/{:config('user_img_url')}<?php echo get_user_id(); ?>/{$img_head_name}."+ii+"."+img_head_full[ii]
+        div="<div style='text-align: center;'><img  onerror='img_error(this,"+ii+",0)' wtq_img='img_full' style='' alt='图片以损毁' rbq src='"+img_src+"'></div><a style='display:none' class='btn btn-sm btn-primary layui-layer-close' wtq_up_index_alert_close='close'>关闭</a>"
+		layer.open({
+	  		  type: 1,
+	  		  title:'全图',
+	  		  skin: 'layui-layer-rim', //加上边框
+	  		  area: ['80%', '80%'], //宽高
+	  		  content: div,
+	  		});
+	}
+	function img_error(thi,ii,i){
+		thi_i=i*1+1*1;
+		img_head_full={:json_encode(config('user_img_type'))};
+		if(!img_head_full[i]){
+			$(thi).attr('onerror','');
+			return false;
+		}
+		thi.src="__PUBLIC__/{:config('user_img_url')}<?php echo get_user_id(); ?>/{$img_head_name}."+ii+"."+img_head_full[i]
+		$(thi).attr('onerror','img_error(this,'+ii+','+thi_i+')');
+	}
+	function img_full(){
+		//$("div[class=cropper-canvas]").children("img[alt=Picture]").attr("src",$('img[wtq_img=img_full]').attr("src"));
+	}
+	function old_image(){
+		layer.open({
+  		  type: 1,
+  		  title: '历史头像',
+  		  skin: 'layui-layer-rim', //加上边框
+  		  area: ['620px', '740px'], //宽高
+  		  content: image_old_look(),
+  		});
+	}
+</script>
+<script>
+	function image_old_look(){
+		img='';
+		for(i=0;i<=img_head_s_end;i++){
+			if(i==0){
+				var img=img+'<img wtq_img_num="'+i+'" wtq_img="yes" onclick="img_open(this,'+i+')" style="border: #f00 1px solid;" width="80px" src="__PUBLIC__/{:config(\'user_img_url\')}<?php echo get_user_id(); ?>/{$img_head_name}.'+i+'head.jpg">';
+			}else{
+				var img=img+'<img wtq_img_num="'+i+'" wtq_img="no" onclick="img_open(this,'+i+')" width="80px" src="__PUBLIC__/{:config(\'user_img_url\')}<?php echo get_user_id(); ?>/{$img_head_name}.'+i+'head.jpg">';
+			}
+		}
+		return '<div style="padding: 0 30px">'+
+				'<div style="margin: 0 20px;height:510px;width:500px;overflow: hidden;">'+
+					'<div style="margin-left: 0px;width:99999999999999px;">'+
+						'<form wtq="old_img">'+
+							'<img name="file_head" onclick="img_all(0)" wtq_img="open" width="500px" src="__PUBLIC__/{:config(\'user_img_url\')}<?php echo get_user_id(); ?>/{$img_head_name}.0head.jpg">'+
+						'</form>'+
+					'</div>'+
+				'</div>'+
+				'<span onclick="img_prev()" class="btn" style="border: 0;marcolor: #888 !important;background-color: #e7e7e7;border-color: #e7e7e7;padding: 0 5px;float:left;">'+
+					'p<br>r<br>e<br>v'+
+				'</span>'+
+				'<div style="padding: 0 2px;height:80px;width:500px;overflow: hidden;float:left;">'+
+					'<div wtq_img_show style="margin-left: 0px;width:9999999999999px;">'+
+						
+					
+						img+
+						
+						
+					'</div>'+
+				'</div>'+
+				'<span onclick="img_next()" class="btn" style="border: 0;marcolor: #888 !important;background-color: #e7e7e7;border-color: #e7e7e7;padding: 0 5px;float:left;">'+
+					'n<br>e<br>x<br>t'+
+				'</span>'+
+			'</div>'+
+			'<hr>'+
+			'<button onclick="image_old()" style="margin-left: 430px;" class="btn btn-sm btn-primary">选择当前</button> '+
+			'<a class="btn btn-sm btn-primary layui-layer-close" style="position: initial;" wtq_up_index_alert_close="close">关闭</a>';
+	}
+</script>
+<script>
+	function image_old(){
+		var num=$("img[wtq_img=yes]").attr('wtq_img_num');
+		//组装formdata  
+		$.post('{:url("image_head_up")}',{old_num:"{$img_head_name}."+num},
+	            function (data) {
+					mythisalert(data[0],data[1]);
+					$('img[class=nav-user-photo]').attr('src','__PUBLIC__/{:config("user_img_url")}<?php echo get_user_id(); ?>/{$img_head_name}.'+num+'head.jpg')
+	           },"json").error(function(){mythisalert(0,'失败');});
+	}
+</script>
+{/if}
+<script>
+var ref;
+function image_go(){
+	clearInterval(ref);
+	var dd=$("div[class=cropper-crop-box]");
+	if(dd.css("width")==dd.css("height") && dd.css("height")){
+		return false;
+	}
+	ref = setInterval(function(){$(".ddd").html($(".ddd").html()*1+1*1)
+		var dd=$("div[class=cropper-crop-box]");
+		if(dd.css("width")!=dd.css("height") && dd.css("height")){
+			$("label[wtq_star=1b1]").trigger("click");
+			clearInterval(ref);
+		}
+	},50);
+}
+
+//clearInterval(ref);
+</script>
+<script>
+	function image(){
+		
+		
+		
+		//导出base64格式的图片数据  
+	    var mycanvas = document.getElementById("mycanvas");  
+	    var base64Data = mycanvas.toDataURL("image/jpeg", 1.0);  
+	    //封装blob对象  
+	    var blob = dataURItoBlob(base64Data);
+	    //组装formdata  
+	    var fd = new FormData($('form[wtq_id=image_up]')[0]);  
+	    fd.append("file_head", blob);//fileData为自定义  
+	    fd.append("fileName", "123.jpg");//fileName为自定义，名字随机生成或者写死，看需求  
+	    $.ajax({
+               type: "POST",
+               url:'{:url("image_head_up")}',
+               data:fd,// 你的formid
+               processData:false,
+               contentType:false,
+               dataType:'json',
+               error: function(request) {
+                   mythisalert(0,'失败')
+               },
+               success: function(data) {
+                   mythisalert(data[0],data[1]);
+                   $("img[class=nav-user-photo]").attr("src","__PUBLIC__/{:config('user_img_url')}<?php echo get_user_id(); ?>/"+data[2]+"head.jpg");
+                   img_head_full=data[3];
+                   if(img_head_full.length==1){
+                	   history.go();
+                   }
+                   img_head_s_end=img_head_s_end+1;
+               }
+            });
+	}
+	function dataURItoBlob (base64Data) {  
+		var byteString;  
+		if (base64Data.split(',')[0].indexOf('base64') >= 0)  
+		    byteString = atob(base64Data.split(',')[1]);  
+		else  
+		    byteString = unescape(base64Data.split(',')[1]);  
+		var mimeString = base64Data.split(',')[0].split(':')[1].split(';')[0];  
+		var ia = new Uint8Array(byteString.length);  
+		for (var i = 0; i < byteString.length; i++) {  
+		    ia[i] = byteString.charCodeAt(i);  
+		}  
+		return new Blob([ia], {type: mimeString});
+	}
+</script>
+{/block}

@@ -1,0 +1,28 @@
+<meta charset="utf-8" />
+<form action="editRow" method="post" id="rowForm">
+	<div style="margin-left:5%">
+	   	<table cellpadding="5" >
+	   		
+	   		{volist name="page_info.info" id="vo" key="k"}
+	   		<tr>	
+	   			<td  align="right">{$vo.field_show}:</td>
+	   			
+	   			<td><input class="easyui-textbox" type="text" name="{$vo.field}"  required></input></td>	
+	   		
+	   		</tr>
+			{/volist}
+	   		
+	   			
+	   	</table>
+   </div>
+</form>
+<div style="margin:3% 0 10% 40%">
+	   	<button onclick="rowSubmit()" type="button" style='cursor:pointer;'>搜索</button>
+	   	<button class='closeLayer' style='cursor:pointer;'>关闭</button>
+   	</div>
+<script>
+function rowSubmit(){
+	alert('功能未完成');
+}
+</script>
+

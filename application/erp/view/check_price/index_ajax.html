@@ -1,0 +1,47 @@
+<thead style="background: linear-gradient(to bottom,#F9F9F9 0,#efefef 100%);">
+	<tr>
+		{foreach $title as $k=>$key}
+			<td {if condition="$k!='MONEY'"}onclick="paixu(this,'{$k}','{$zorf}')"{/if} style="cursor: pointer; position: relative;">
+                 	<div tr_shu='{$k}' style="float:left;overflow: hidden;"  class="datagrid-sort {if condition="$k==$sort_name"}datagrid-sort-{if condition="$zorf==1"}asc{else /}desc{/if}{/if}">
+                  		<span>{$key}</span>
+                  		{if condition="$k!='MONEY'"}<span class="datagrid-sort-icon"></span>{/if}
+                 	</div>
+                 	<div onmousedown="name_th_width_down('{$k}','fu')" style="position: absolute;right: 0px;height:68%;cursor: e-resize;width:1px"></div>
+               </td>
+		{/foreach}
+          </tr>
+</thead>
+<tbody wtq_show="show">
+   {foreach $body as $key=>$b}
+       	<tr wtq_show="{$b['PMJ01']}"  ondblclickk="change({$b['ID']})" onclick="tr_colors({$b['ID']})" onmouseenter="if($('tr[tr_color='+$(this).attr('tr_color')+']').attr('no')!=1){$('tr[tr_color='+$(this).attr('tr_color')+']').css('background-color','#EAF2FF')}" onmouseleave="if($('tr[tr_color='+$(this).attr('tr_color')+']').attr('no')!=1){$('tr[tr_color='+$(this).attr('tr_color')+']').css('background-color','white')}" tr_color="{$b['ID']}">
+       		{foreach $title as $key=>$t}
+       			<td tr_shu="{$key}" {if condition="isset($inp_sel[$key])"}ondblclick="td_change({$b['ID']},'{$key}','{$inp_sel[$key]}',this,'{$b[$key]}')"{/if}><div tr_shu="{$key}" style="overflow: hidden;"><span wtqid="{$b['ID']}"	 style="overflow: hidden;">{$b[$key]}</span></div></td>
+       		{/foreach}
+       	</tr>
+   	{/foreach}
+</tbody>
+
+<tbody wtq_what="need_add" style="display:none">
+   {foreach $need as $key=>$b}
+       	<tr>
+       		{foreach $title as $key=>$t}
+       			<td tr_shu="{$key}">
+       				<div tr_shu="{$key}" style="overflow: hidden;">
+       					<span wtqid="" style="overflow: hidden;">
+       					{if condition="$key=='PMJ03'"}{$b['PMH01']}{/if}
+       					{if condition="$key=='PMJ07'"}
+							<input name="{$b['PMH01']}[]" style="width:50px" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9^.]/,'');}).call(this)" onblur="this.v();">
+						{/if}
+       					{if condition="$key=='PMJ05'"}
+							<select name="{$b['PMH01']}[]">
+								<option vlaue="RMB">RMB</option>
+								<option value="USD">USD</option>
+							</select>
+						{/if}
+       					</span>
+       				</div>
+       			</td>
+       		{/foreach}
+       	</tr>
+   	{/foreach}
+</tbody>

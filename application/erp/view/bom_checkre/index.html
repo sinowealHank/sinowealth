@@ -1,0 +1,389 @@
+{extend name="index@index/base" /}
+{block name="main"}
+	<div class="breadcrumbs" id="breadcrumbs">
+	    <script type="text/javascript">
+	        try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	    </script>
+	    <ul class="breadcrumb">
+	        <li>
+	            <i class="icon-home home-icon"></i>
+	            <a href="#">通知列表</a>
+	            <span wtq_zs_id="zs"></span>
+	            <span wtq_mem_id="mem"></span>
+	        </li>
+	    </ul>
+	</div>
+	<div class="col-md-12">
+	    <div class="box">
+	        <div class="box-header" style="height:40px;margin: 5px 0 0 5px;">
+	        	<button style="display:none" class="btn btn-xs" wtq_mulu_btn="btn" onclick="mulu('y')">隐藏</button>
+	<!--div style="font-size: 50px;margin: 20px 200px;background-image: -webkit-gradient(linear,0 10, 0 20, from(red), to(#54ec06));-webkit-background-clip: text;-webkit-text-fill-color: transparent;">
+						<p>施工ing......</p>
+					</div-->
+		        	<button class="btn btn-sm btn-primary" onclick="ajax(1)" type="button">show</button>
+        	<a class="btn btn-sm btn-primary" href="{:url("index_ajax")}?ex=ok" type="button">导出表格</a>
+	        </div>
+		    <div class="box-body">
+		    	<div wtq_mulu_id="mulu" style="width:60%;direction:rtl;">
+					<div class="" style="width:100%;float:left;display:block;max-height:700px;overflow-y:scroll;">
+					    <div class="widget-body" style="min-width:100%;direction:ltr;display: inline-block;">
+							<div wtq_id="tree2" class="widget-main padding-8">
+								<div wtq_ok="ok" wtq_one="999" wtq_two="999" wtq_three="" id="tree2" class="tree tree-unselectable">	
+									{:isset($div)?$div:''}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div onclick="$('button[wtq_mulu_btn=btn]').trigger('click');return false;" style="position:absolute;width:17px;height:38px;float:right;background-color:#BAE7E7;text-align: center;line-height: 2.8;">
+						<i wtq_id="mulu_i" class="icon-double-angle-left"></i>
+					</div>
+				</div>
+		    		
+		    	<div wtq_mulu_id="mulux" class="" style="width:40%;float:right;">	
+		    		<table class="table table-hover">
+				        <thead>
+				            <tr>
+				            	<?php
+				            		$add=array('GROSS_DIE','合格供应商','核价信息','PASS BIN','测试程序','图号','主件底数','主芯片','pass b','产品归属地');
+									foreach($add as $a){
+										echo '<th>'.$a.'</th>';
+									}
+				            	?>
+				            </tr>
+				        </thead>
+				        <tbody wtq_tacle="table">
+				        
+				        </tbody>
+				    </table>
+				    <table class="table table-hover">
+				        <thead>
+				            <tr>
+				            	<?php
+				            		$add=array('封装形式','光罩版本','光罩层次','生产REFER TO','最小发料');
+									foreach($add as $a){
+										echo '<th>'.$a.'</th>';
+									}
+
+				            	?>
+				            </tr>
+				        </thead>
+				        <tbody wtq_tacle="table2">
+				        
+				        </tbody>
+				    </table>
+				</div>
+			</div>	
+		    <div class="box-footer">
+		    	
+		    </div>
+		</div>
+	</div>
+{/block}
+{block name="script"}
+<script>
+var dataa
+ajax();oo='';
+	function ajax(ooo=''){
+		oo=ooo;
+		$("div[wtq_ok=ok]").html('');
+		$.ajax({
+	        type: "POST",
+	        url:'{:url("index_ajax")}',
+	        data:'',// 你的formid
+	        processData:false,
+	        contentType:false,
+	        dataType:'json',
+	        error: function(request) {
+	            mythisalert(0,'失败')
+	        },
+	        success: function(data) {
+	        	dataa=data;
+	        	//1上级2最上级3自己
+	        	$.each(data, function (inde, ite) {
+	        		$.each(ite, function (index, item) {
+	        			if(inde==0){
+	        				//body不要犹豫直接上
+	        				$("div[wtq_ok=ok]").append(item[0]);
+	        			}else if(inde=='no'){
+	        				
+	        			}else{
+	        				if(ooo!=1){
+	        					return false;
+	        				}
+	        				//找到上级
+	        				if($("div[wtq_color='"+item[1]+"']").html() && item[1]){
+	        					//是否被提前循环出来
+	        					if($("div[wtq_color='"+item[3]+"']").attr("wtq")=="bad"){
+	        						//删除标记
+	        						$("div[wtq_color='"+item[3]+"']").removeAttr("wtq");
+	        						//颜色更正
+	        						$("div[wtq_color='"+item[3]+"']").css("color","");
+	        						//添加上级
+	        						$("div[wtq_add='"+item[3]+"']").attr("wtq_prev",item[1]);
+	        						//自身等级更正
+	        						$("div[wtq_add='"+item[3]+"']").attr("wtq_lev",item[4]);
+	        						//下级颜色更正
+	        						for(i=0;i<$("div[wtq_add='"+item[3]+"']").children("div").length;i++){
+	        							//如果自己本身就不存在则不进行更正（这种情况应该不会存在不过还是加一个吧.....）
+	        							var a=$("div[wtq_add='"+item[3]+"']").children("div").eq(i).children("div").eq(0).children("div");
+	        							if(a.attr("wtq")!="bad"){
+	        								a.css("color","");
+	        							}
+	        						}
+	        						//把自己提取出来并删掉原来的
+	        						item[0]='<div class="tree-folder">'+$("div[wtq_color="+item[3]+"]").parent("div").parent("div[class=tree-folder]").html()+'</div>';
+	        						$("div[wtq_color='"+item[3]+"']").parent("div").parent("div[class=tree-folder]").remove();
+	        						
+	        						//错误数减一
+	        						var shu=$("span[wtq_bad='"+item[2]+"']").attr("shu");
+		        					shu=shu*1-1*1;
+		        					$("span[wtq_bad='"+item[2]+"']").attr("shu",shu);
+		        					$("span[wtq_bad='"+item[2]+"']").html("("+shu+")");
+	        					}
+	        					
+	        					//把div放在该去的地方
+	        					$("div[wtq_add='"+item[1]+"']").append(item[0]);
+	        					//正确数+1s
+	        					var shu=$("span[wtq_good='"+item[1]+"']").attr("shu");
+	        					shu=shu*1+1*1;
+	        					$("span[wtq_good='"+item[1]+"']").attr("shu",shu);
+	        					$("span[wtq_good='"+item[1]+"']").html("("+shu+")");
+
+	        					//如果上级是不存在的则变为红色
+	        					if($("div[wtq_color='"+item[1]+"']").attr("wtq")=="bad"){
+	        						$("div[wtq_color='"+item[3]+"']").css("color","red");
+	        					}
+	        				}else{
+	        					//如果上级不存在且有上级则自己循环一个上级出来并用wtq="bad"做标记
+	        					if(item[1]){
+	        						item[4]=item[4]-1;
+	        						item[0]='<div class="tree-folder">'+
+									'<div class="tree-folder-header" onclick="show(\''+item[1]+'\')" style="white-space: nowrap;">'+
+										'<i wtq_i="'+item[1]+'" class="icon-folder-close" style="color: #F8C600;"></i>'+
+										'<div style="color:red" wtq_color="'+item[1]+'" wtq="bad" class="tree-folder-name">'+item[1].split('__')[0]+'<span shu="1" wtq_good="'+item[1]+'">(1)</span><span shu="0" style="color:red" wtq_bad="'+item[1]+'">(0)</span><span shu="0" style="color:blue" wtq_bad_x="'+item[1]+'">(0)</span></div>'+
+									'</div>'+
+									'<div wtq_add="'+item[1]+'" wtq_lev="'+item[4]+'" wtq_zero="'+item[2]+'" wtq_prev="'+item[2]+'" class="tree-folder-content" style="display: none;">'+
+									item[0]+
+									'</div>'+
+								   '</div>';
+	        					}
+	        					if($("div[wtq_add='"+item[2]+"']").attr('wtq_add')){
+	        						//因为找不到上级所以放在最上级的下侧并标记为红色index=item[3],,,卧槽都等于了我为什么还要在传一次失策失策...
+		        					$("div[wtq_add='"+item[2]+"']").append(item[0]);
+		        					//$("div[wtq_color='"+index+"']").css("color","red");
+		        					//错误数+1
+		        					var shu=$("span[wtq_bad='"+item[2]+"']").attr("shu");
+		        					shu=shu*1+1*1;
+		        					$("span[wtq_bad='"+item[2]+"']").attr("shu",shu);
+		        					$("span[wtq_bad='"+item[2]+"']").html("("+shu+")");
+	        					}else{
+	        						if(item[2]){
+	        							item[4]=0;
+		        						item[0]='<div class="tree-folder">'+
+										'<div class="tree-folder-header" onclick="show(\''+item[2]+'\')" style="white-space: nowrap;">'+
+											'<i wtq_i="'+item[2]+'" class="icon-folder-close" style="color: #F8C600;"></i>'+
+											'<div style="color:red" wtq_color="'+item[2]+'" wtq="bad" class="tree-folder-name">'+item[2]+'<span shu="1" wtq_good="'+item[2]+'">(1)</span><span shu="0" style="color:red" wtq_bad="'+item[2]+'">(0)</span><span shu="0" style="color:blue" wtq_bad_x="'+item[2]+'">(0)</span></div>'+
+										'</div>'+
+										'<div wtq_add="'+item[2]+'" wtq_lev="'+item[4]+'" wtq_zero="'+item[2]+'" wtq_prev="'+item[2]+'" class="tree-folder-content" style="display: none;">'+
+										item[0]+
+										'</div>'+
+									   '</div>';
+	        						}
+	        						//body不要犹豫直接上
+	    	        				$("div[wtq_ok=ok]").append(item[0]);
+	        					}
+	        					
+	        				}
+	        			}
+					})
+				})
+				if(ooo==1){
+					//循环判断没有下级的标记为蓝色（第四级除外），无上无下的标记为渐变态色
+					for(i=0;i<$("div[wtq_add]").length;i++){
+						if($("div[wtq_add]").eq(i).html()=='' && $("div[wtq_add]").eq(i).attr("wtq_lev")!=4){
+							var a=$("div[wtq_color='"+$("div[wtq_add]").eq(i).attr("wtq_add")+"']");
+							if(a.css("color")=='rgb(255, 0, 0)'){
+								a.attr("style","background-image: -webkit-gradient(linear,0 10, 0 20, from(#ff080899), to(blue));-webkit-background-clip: text;-webkit-text-fill-color: transparent;");
+							}else{
+								a.css("color","blue");
+							}
+							
+							wtq_bad_x($("div[wtq_add]").eq(i).attr("wtq_prev"));
+							
+							/*//错误数+1
+							var shu_a=$("div[wtq_add]").eq(i).attr("wtq_zero");
+	    					var shu=$("span[wtq_bad_x='"+shu_a+"']").attr("shu");
+	    					shu=shu*1+1*1;
+	    					$("span[wtq_bad_x='"+shu_a+"']").attr("shu",shu);
+	    					$("span[wtq_bad_x='"+shu_a+"']").html("("+shu+")");
+	    					
+	    					var shu_a_2=$("div[wtq_add]").eq(i).attr("wtq_prev");
+	    					if(shu_a_2==shu_a){}else{
+	    						//错误数+1
+	        					var shu=$("span[wtq_bad_x='"+shu_a_2+"']").attr("shu");
+	        					shu=shu*1+1*1;
+	        					$("span[wtq_bad_x='"+shu_a_2+"']").attr("shu",shu);
+	        					$("span[wtq_bad_x='"+shu_a_2+"']").html("("+shu+")");
+	    					}*/
+	    					
+						}
+					}alert(123);
+		        	$("span[shu=0]").remove();
+	        	}else{
+	        		$("span[shu=0]").remove();
+	        	}
+	        }
+	    });
+	}
+	function wtq_bad_x(shu_a){
+		if(shu_a){
+			var shu=$("span[wtq_bad_x='"+shu_a+"']").attr("shu");
+			shu=shu*1+1*1;
+			$("span[wtq_bad_x='"+shu_a+"']").attr("shu",shu);
+			$("span[wtq_bad_x='"+shu_a+"']").html("("+shu+")");
+			var dd=$("div[wtq_add="+shu_a+"]");
+			if(dd.attr("wtq_add")!=dd.attr("wtq_prev")){
+				wtq_bad_x(dd.attr("wtq_prev"));
+			}
+		}
+		
+	}
+	function show(bmb){
+		//隐藏显示
+		if($("div[wtq_add='"+bmb+"']").css('display')=='none'){
+			$("div[wtq_add='"+bmb+"']").css('display','');
+			
+			$("div[wtq_add='"+bmb+"']").children('div[class=tree-folder-content]').children('div[class=tree-folder]').css('display','');
+			
+			$("i[wtq_i='"+bmb+"']").attr('class','icon-folder-open');
+		}else{
+			$("div[wtq_add='"+bmb+"']").css('display','none');
+			$("i[wtq_i='"+bmb+"']").attr('class','icon-folder-close');
+		}
+		
+		
+		$("tbody[wtq_tacle=table]").html("<tr><td colspan='10' style='color:red'>oh，这个东西不存在哦！！！</td></tr>");
+		$("tbody[wtq_tacle=table2]").html("<tr><td colspan='5'>请换一个观看</td></tr>");
+		var i=0;
+		var div='<tr><td>';
+    	$.each(dataa[$("div[wtq_add='"+bmb+"']").attr("wtq_lev")][bmb], function (index, item) {
+    		i++;
+    		if(i>9){
+    			//alert(i+"___"+index+"___"+item);
+    			if(item=='ok_t'){
+    				item='';
+    			}
+    			div=div+item+"</td><td>"
+    			if(i==19){
+    				$("tbody[wtq_tacle=table]").html(div);
+    				div='<tr><td>';
+    			}
+    		}
+    	})
+    	div=div+"</td></tr>";
+    	$("tbody[wtq_tacle=table2]").html(div);
+	}
+</script>
+<script>
+	function ojbk(aaa,bbb,thi){
+		if(oo==1){return false;}
+		$(thi).attr("onclick","show('"+aaa+"')");
+		var bbb=bbb*1+1*1;
+		if(dataa['no'][bbb][aaa]){
+		}else{
+			for(var i=1;i<5;i++){
+				if(dataa['no'][i][aaa]){
+					var bbb=i;
+				}
+			}
+		}
+		$.each(dataa['no'][bbb][aaa], function (index, item){
+			//找到上级
+			if($("div[wtq_color='"+item[1]+"']").html() && item[1]){
+				//是否被提前循环出来
+				if($("div[wtq_color='"+item[3]+"']").attr("wtq")=="bad"){
+					//删除标记
+					$("div[wtq_color='"+item[3]+"']").removeAttr("wtq");
+					//颜色更正
+					$("div[wtq_color='"+item[3]+"']").css("color","");
+					//添加上级
+					$("div[wtq_add='"+item[3]+"']").attr("wtq_prev",item[1]);
+					//自身等级更正
+					$("div[wtq_add='"+item[3]+"']").attr("wtq_lev",item[4]);
+					//下级颜色更正
+					for(i=0;i<$("div[wtq_add='"+item[3]+"']").children("div").length;i++){
+						//如果自己本身就不存在则不进行更正（这种情况应该不会存在不过还是加一个吧.....）
+						var a=$("div[wtq_add='"+item[3]+"']").children("div").eq(i).children("div").eq(0).children("div");
+						if(a.attr("wtq")!="bad"){
+							a.css("color","");
+						}
+					}
+					//把自己提取出来并删掉原来的
+					item[0]='<div class="tree-folder">'+$("div[wtq_color="+item[3]+"]").parent("div").parent("div[class=tree-folder]").html()+'</div>';
+					$("div[wtq_color='"+item[3]+"']").parent("div").parent("div[class=tree-folder]").remove();
+					
+					//错误数减一
+					var shu=$("span[wtq_bad='"+item[2]+"']").attr("shu");
+					shu=shu*1-1*1;
+					$("span[wtq_bad='"+item[2]+"']").attr("shu",shu);
+					$("span[wtq_bad='"+item[2]+"']").html("("+shu+")");
+				}
+				
+				//把div放在该去的地方
+				$("div[wtq_add='"+item[1]+"']").append(item[0]);
+				//正确数+1s
+				var shu=$("span[wtq_good='"+item[1]+"']").attr("shu");
+				shu=shu*1+1*1;
+				$("span[wtq_good='"+item[1]+"']").attr("shu",shu);
+				$("span[wtq_good='"+item[1]+"']").html("("+shu+")");
+
+				//如果上级是不存在的则变为红色
+				if($("div[wtq_color='"+item[1]+"']").attr("wtq")=="bad"){
+					$("div[wtq_color='"+item[3]+"']").css("color","red");
+				}
+			}else{
+				//如果上级不存在且有上级则自己循环一个上级出来并用wtq="bad"做标记
+				if(item[1]){
+					item[4]=item[4]-1;
+					item[0]='<div class="tree-folder">'+
+					'<div class="tree-folder-header" onclick="show(\''+item[1]+'\')" style="white-space: nowrap;">'+
+						'<i wtq_i="'+item[1]+'" class="icon-folder-close" style="color: #F8C600;"></i>'+
+						'<div style="color:red" wtq_color="'+item[1]+'" wtq="bad" class="tree-folder-name">'+item[1].split('__')[0]+'<span shu="1" wtq_good="'+item[1]+'">(1)</span><span shu="0" style="color:red" wtq_bad="'+item[1]+'">(0)</span><span shu="0" style="color:blue" wtq_bad_x="'+item[1]+'">(0)</span></div>'+
+					'</div>'+
+					'<div wtq_add="'+item[1]+'" wtq_lev="'+item[4]+'" wtq_zero="'+item[2]+'" wtq_prev="'+item[2]+'" class="tree-folder-content" style="display: none;">'+
+					item[0]+
+					'</div>'+
+				   '</div>';
+				}
+				if($("div[wtq_add='"+item[2]+"']").attr('wtq_add')){
+					//因为找不到上级所以放在最上级的下侧并标记为红色index=item[3],,,卧槽都等于了我为什么还要在传一次失策失策...
+					$("div[wtq_add='"+item[2]+"']").append(item[0]);
+					//$("div[wtq_color='"+index+"']").css("color","red");
+					//错误数+1
+					var shu=$("span[wtq_bad='"+item[2]+"']").attr("shu");
+					shu=shu*1+1*1;
+					$("span[wtq_bad='"+item[2]+"']").attr("shu",shu);
+					$("span[wtq_bad='"+item[2]+"']").html("("+shu+")");
+				}else{
+					if(item[2]){
+						item[4]=0;
+						item[0]='<div class="tree-folder">'+
+						'<div class="tree-folder-header" onclick="show(\''+item[2]+'\')" style="white-space: nowrap;">'+
+							'<i wtq_i="'+item[2]+'" class="icon-folder-close" style="color: #F8C600;"></i>'+
+							'<div style="color:red" wtq_color="'+item[2]+'" wtq="bad" class="tree-folder-name">'+item[2]+'<span shu="1" wtq_good="'+item[2]+'">(1)</span><span shu="0" style="color:red" wtq_bad="'+item[2]+'">(0)</span><span shu="0" style="color:blue" wtq_bad_x="'+item[2]+'">(0)</span></div>'+
+						'</div>'+
+						'<div wtq_add="'+item[2]+'" wtq_lev="'+item[4]+'" wtq_zero="'+item[2]+'" wtq_prev="'+item[2]+'" class="tree-folder-content" style="display: none;">'+
+						item[0]+
+						'</div>'+
+					   '</div>';
+					}
+					//body不要犹豫直接上
+    				$("div[wtq_ok=ok]").append(item[0]);
+				}
+				
+			}
+		})
+		$("span[shu=0]").remove();
+	}
+</script>
+{/block}

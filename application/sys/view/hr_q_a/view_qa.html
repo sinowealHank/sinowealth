@@ -1,0 +1,135 @@
+<div class="row">
+	<div class="col-xs-12">
+            <div class="col-sm-11 form-group">
+	        	<h4 class=" header green" style="margin-top: -10px;">问题描述:</h4>
+	                    	
+	        	<div style="height:65px;">
+	        		<div class="well">
+						<h4 class="green smaller lighter">
+		                {:get_cache_data('user_info',$page_info.qa_info.user_id,'nickname')}
+		                (工号:{:get_cache_data('user_info',$page_info.qa_info.user_id,'user_gh')} ID:{$page_info.qa_info.user_id})
+		                	提交的
+		                <span class="orange">{:get_q_a_type($page_info['qa_info']['q_type'])}</span>                
+		               		 问题</h4>
+		                {$page_info.qa_info.q_val} 
+		                <br /><br />
+	                </div>
+                </div>
+	        </div>
+            
+			<div class="col-sm-11 form-group">
+	        	<h4 class=" header green">答复:</h4>
+	                    	
+	        	<div style="height:50px;">
+            	<textarea name="a_val" style="width:539px; height:80px;" placeholder="管理部答复" disabled="disabled">&nbsp;&nbsp;{$page_info.qa_info.a_val}</textarea>
+	        	</div>
+	        </div>
+	        {if condition="$page_info.pd_time"}
+			<div class="col-sm-11 form-group">
+	        	<h4 class=" header green">{$page_info['qa_info']['q_time']} 打卡记录：</h4>
+	                    	
+	        	<div style="min-height:180px;max-height:350px;overflow-y: scroll;">
+	        	本日考勤时长{$page_info.card_time}s，本日应该考勤时长{$page_info.ok_time}s,差了{$page_info.ok_time-$page_info.card_time}s
+	        	<table class="layui-table">
+					<thead>
+						<tr>
+					    	<th>日期</th>
+					    	<th>打卡点</th>
+					    	<th>打卡时间</th>
+					    	<th>是否有效</th>
+					    	<th>考勤结果</th>
+					    </tr> 
+					</thead>
+				<tbody>
+					<?php $s_entry_date='';$ii=0;$ai=0;$rowspan=''; ?>
+					{volist name="$page_info.card_info" id="vo" empty="<tr><td style='text-align: center;' colspan='5'>本时间段无打卡!</td></tr>"}
+						<tr>
+					    	<?php $a_card_info=isset($page_info['card_info'][$key]['entry_date'])?$page_info['card_info'][$key]['entry_date']:''; ?>
+				        	{if condition="$vo.entry_date==$s_entry_date"}
+				          		<?php $ai=$ai+1; ?>
+				          	{else/}
+				          		<td wtq_pd_id="{$ii+1}">{$vo.entry_date}</td>
+				          	{/if}
+					          
+					        <td>{$vo.card_site}</td>
+					        <td>{$vo.entry_dt}</td>
+					        <td>{$vo.card_status}</td>
+					          							          
+					        {if condition="$vo.entry_date==$s_entry_date"}
+					        {else/}
+					        	<td wtq_pd_id="{$ii+1}" style="width: 50%;word-wrap: break-word;word-break: break-all;white-space: pre-wrap">{$vo.hr_status_remark}</td>
+					        {if condition="$ai!=0"}
+					         	<?php $rowspan[$ii]=$ai; ?>
+					        {/if}
+					        	<?php $ai=1;$ii++; ?>
+					        {/if}
+					          <?php $s_entry_date=$vo['entry_date']; ?>
+					        </tr>
+					    {/volist}
+					    <?php $rowspan[$ii]=$ai; ?>
+					  </tbody>
+					</table>
+				</div>
+			</div>
+            
+       		<div class="col-sm-11 form-group">
+           	   	<h4 class=" header green">包含{$page_info['qa_info']['q_time']} 申请单记录:</h4>
+               	<div style="min-height:180px;max-height:350px;overflow-y: scroll;">
+                    <table class="layui-table">
+				    <thead>
+		               	<tr>
+		                   <th>序号</th>
+	                       <th>申请人</th>
+	                       <th>请假类型</th>
+	                       <th>申请时间</th>
+	                       <th>时间范围</th>
+	                       <th>代理人</th>
+	                       <th>申请单类型</th>
+	                       <th>状态</th>
+		            	</tr>
+		               </thead>
+		  		<tbody>
+					{volist name="page_info.note_info" id="vo"  empty="<tr><td style='text-align: center;' colspan='9'>暂无数据！</td></tr>"}
+                       <tr {eq name="$vo.cur_user_id" value="$page_info.user_id"} class="danger" {/eq}>
+                           <td>{$vo.id}</td>
+                           <td>{:get_cache_data('user_info',$vo.user_id,'nickname')}</td>
+                           <td>{:get_note_type_name($vo.note_type)}({:config('hr_note_type')[$vo.hr_note_id]})</td>
+                           <td>{$vo.note_hour}</td>
+                           <td>{$vo.begin_time} ~ {$vo.end_time}</td>
+                           <td>{:get_cache_data('user_info',$vo.age_user_id,'nickname')}</td>
+                           <td>
+                               {if condition="$vo.age_user_id eq $vo.hr_user_id"}
+                               	代理人&考勤申请单
+                               {else /}
+                               	{eq name="$vo.age_user_id" value="$page_info.user_id"}代理人申请单{else/}考勤申请单{/eq}
+                               {/if}
+                           </td>
+                           <td>
+                           	{eq name="$vo.note_step" value="4"}
+                           		{if condition="$vo.note_check_status eq 1"}审核通过{else/}审核未通过{/if},
+                               {/eq}
+                               {:get_note_step($vo.note_step)}
+                           </td>
+                       </tr>
+                  	{/volist}
+				  </tbody>
+				</table>
+			</div>
+		</div>
+    		{/if}
+    	<hr>
+	    <div style="float:right;padding-top:10px;">
+			<a class="btn btn-sm btn-primary layui-layer-close" style="margin:0 60px 10px 0;position: initial;" wtq_up_index_alert_close="close">关闭</a>
+		</div>
+    </div>
+</div>
+{if condition="$page_info.pd_time"}
+<script>
+	td_rowspan()
+	function td_rowspan(){
+		$.each({:json_encode($rowspan)},function(item,index){
+			$("td[wtq_pd_id="+item+"]").attr('rowspan',index);
+		})
+	}
+</script>
+{/if}

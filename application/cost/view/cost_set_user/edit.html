@@ -1,0 +1,57 @@
+<meta charset="utf-8" />
+<div>
+	<div class="col-xs-11">
+        <form class="form-horizontal" role="form" method="post" name="add_note_form" action="{:url('userEdit')}"  onsubmit="return validateCallback(this)">
+        	<input type="hidden" name='id' value="{$page_info.list.id}"/>
+        	<input type="hidden" value="" name="from" />
+				<div class="form-group" style="margin:10px -12px 10px -12px;">
+                     <label class="col-sm-3 control-label no-padding-right">用户工号：</label>
+                     <div class="col-sm-5">
+                         <div class="input-group">
+                            <input type="text" name='job_nb' value='{$page_info.list.job_nb}' readonly/>                            
+                         </div>
+                     </div>
+                    
+                 </div>
+                 <div class="form-group" style="margin:10px -12px 10px -12px;">
+                     <label class="col-sm-3 control-label no-padding-right">用户部门：</label>
+                     <div class="col-sm-5">
+                         <div class="input-group">
+                             <select name="power_1">
+                             <!-- 1:pp查看 2:pp编辑 3:pe查看 4:pe编辑 5:te查看 6te编辑 7:qa查看 8:qa编辑 9:mt查看 -->
+                            
+                             	 <option value="1" {in name="$page_info['list']['power']" value="1,2"}selected="selected"{/in}>PP</option>
+                                
+                                 <option value="3" {in name="$page_info['list']['power']" value="3,4"}selected="selected"{/in}>PE</option>
+                               
+                                 <option value="5" {in name="$page_info['list']['power']" value="5,6"}selected="selected"{/in}>TE</option>
+                                 
+                                 <option value="7" {in name="$page_info['list']['power']" value="7,8"}selected="selected"{/in}>QA</option>
+                                 
+                                 <option value="9" {in name="$page_info['list']['power']" value="9"}selected="selected"{/in}>FD</option>
+                             </select>
+                             
+                    
+                         </div>
+                     </div>
+                    
+                 </div>
+     			<div class="form-group" style="margin:10px -12px 10px -12px;">
+                     <label class="col-sm-3 control-label no-padding-right">用户权限：</label>
+                     <div class="col-sm-5">
+                         <div class="input-group">
+                             <select name="power_2">                           
+                             	<option value="1" {in name="$page_info['list']['power']" value="1,3,5,7,9"}selected="selected"{/in}>查看</option>
+                                <option value="2" {in name="$page_info['list']['power']" value="2,4,6,8"}selected="selected"{/in}>编辑</option>                               
+                             </select>                                               
+                         </div>
+                     </div>
+                    
+                 </div>
+                 <div style="margin:30% 0 0 35%">
+                 	<button class='btn btn-info btn-sm'>提交</button>
+                 	<button class='btn btn-info btn-sm closeLayer' type='button'>关闭</button>
+                 </div>
+            </form>
+    </div>
+</div>

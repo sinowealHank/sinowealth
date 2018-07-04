@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <link href="__PUBLIC__/static/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="__PUBLIC__/static/assets/css/font-awesome.min.css" />
+
+<!--<script src="__PUBLIC__/static/assets/js/layer.js"></script> -->
+<!--<script src="__PUBLIC__/static/assets/js/zrj.js"></script>-->
+<!--<script type="text/javascript" src="__PUBLIC__/static/assets/js/sw_ajax.js"></script>-->
+    <link rel="stylesheet" href="__PUBLIC__/static/assets/css/ace.min.css" />
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/demo.css">
+    <script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/easyui-lang-zh_CN.js"></script>    
+    <script src="__PUBLIC__/static/assets/js/layer.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/assets/layer/use.js"></script>
+<style>
+	.datagrid-cell{ font-size:14px;}
+	.datagrid-header,.datagrid-cell span{ font-size:20px;}
+</style>
+
+<title>申请单列表</title>
+</head>
+    <body class="easyui-layout">
+    	<div region="center" style="padding:5px; border:#000 solid 1px;" border="true">  
+            <table class="easyui-datagrid" id="tt" title="申请单列表" style="width:100%;" 
+            	data-options="
+                	iconCls: 'icon-man',
+                	singleSelect:true,
+                    fit:true,
+                    fitcolumns:true,
+                    showFooter: true,
+                    toolbar:'#tb'                
+                    ">
+                <thead data-options="frozen:true">
+                    <tr>
+                    	<th data-options="field:'id',sortable:true,">ID</th>
+                        <th data-options="field:'dep_name',width:80">部门</th>
+                        <th data-options="field:'user_gh',sortable:true,width:80">工号</th>
+                        <th data-options="field:'nickname',sortable:true,width:80">用户名</th>
+                    </tr>
+                </thead>
+                <thead>
+                    <tr>
+                        <th data-options="field:'note_type',width:140,formatter:flow" title="申请单类型">申请单类型</th>
+                        <th data-options="field:'age_name',width:120" title="代理人">代理人</th>
+                        <th data-options="field:'note_hour',width:120" title="申请单时数">申请单时数</th>
+                        <th data-options="field:'c_time',width:120" title="申请单填写日期">申请单填写日期</th>
+                        <th data-options="field:'u_time',width:120" title="最后审批生效日期">最后审批生效日期</th>
+
+                        <th data-options="field:'note_title',width:120" title="标题">申请单标题</th>
+                        <th data-options="field:'note_desc',width:240" title="说明">申请单说明</th>
+                        <th data-options="field:'cur_user',width:120" title="当前操作人">当前操作人</th>
+                        <th data-options="field:'note_step',width:120" title="步骤">申请单步骤</th>
+                        <th data-options="field:'note_check_status',width:120" title="申请单状态" >申请单状态</th>
+                        <th data-options="field:'begin_time',sortable:true,width:240" title="开始时间">开始时间</th>
+                        <th data-options="field:'end_time',width:240," title="结束时间">结束时间</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div id="tb">
+            <form id="form1" name="search_form" >
+            	&nbsp;
+            	站点:
+                <select name="site_id">
+                    {volist name="$page_info.site_info" id="vo"}
+                        <option value="{$vo.id}"  >{$vo.site}</option>
+                    {/volist}
+                </select>
+                &nbsp;
+                部门: <select name="dep_id">
+                    <option value="0">ALL</option>
+                    {volist name="$page_info.dep_info" id="vo"}
+                        <option value="{$vo.id}">{$vo.zh_name}</option>
+                    {/volist}
+                </select>    			
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                
+                假单类型:
+                <select name="note_type">
+                	<option value="0">全部</option>
+                    <option value="1">请假单</option>
+                    <option value="2">晚餐预订</option>
+                    <option value="3">晚到</option>
+                </select>
+                
+                <span name="note_type_span" style="display:none;">
+                请假单类型:
+                <select name="hr_note_id">
+                		<option value="0">全部</option>
+                    {volist name="$page_info.note_type_info" id="vo"}
+                        <option value="{$i}">{$vo}</option>                                        
+                    {/volist}
+                </select>
+                </span>
+                
+                <input class="easyui-datebox" value="{$page_info['month_range'][0]}" style="width:100px;" name="begin_date"></input>
+                
+                <input class="easyui-datebox" value="{$page_info['month_range'][1]}" style="width:100px;" name="end_date"></input>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                状态:
+                <select name="note_step">
+                	<option value="0">全部</option>
+                    <option value="1" selected="selected">审核完成</option>
+                    <option value="2">审核中</option>
+                </select>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                审核单是否通过：
+                <select name="note_check_status">
+                    <option value="">全部</option>
+                    <option value="1" selected="selected">审核通过</option>
+                    <option value="0">审核未通过</option>
+                </select>
+                &nbsp;&nbsp;
+                关键字: <input type="text" name="key" value="" style="width:80px;" />
+                <button type="button" onclick="search_info()">提交</button>
+              
+              <div style="float:right; width:80px"> 
+                <a href="#" class="easyui-linkbutton" iconCls="icon-clear" plain="true" name="delete_note">删除</a> 
+            </div>
+        </form>
+        </div>
+    </body>
+</html>
+
+<script>
+
+	var data_url = "{:url('sys/note_list/get_note_data')}";
+    $(function (){
+        $('#tt').datagrid({
+                iconCls: 'icon-edit',
+                singleSelect:true,
+    //			url: '/sys/note_list/get_note_data/',
+                url: 'get_note_data',
+                pagination:true,//显示分页
+                pageSize:30,//分页大小
+                pageList:[30,40,50],
+                fit:true,
+                fitcolumns:true,
+                showFooter: true,
+                toolbar:'#tb',
+                onDblClickRow :function(rowIndex,rowData){
+                    layerIframe('申请单详情',"{:url('user/Note_check/check_note')}/flag/note_view/id/"+rowData.id,wid='550px',hig='550px',shade='0.3',max='true');
+              }
+            });
+    });
+
+    function search_info(){
+        var formdata = $("form[name=search_form]").serializeArray();
+        $('#tt').datagrid('reload',{data:formdata});
+    }
+
+    function flow(value,rowData,rowIndex)
+    {
+
+        if(value === '晚到')
+        {
+           return value+"--"+rowData.fist_entry;
+        }else
+        {
+            return value;
+        }
+
+    }
+
+//    function toFlow(value,rowData,rowIndex){
+//        if(value == '1'){
+//            return '审核通过 ';
+//        }
+//        if(value == '0'){
+//            return '<span style="font-size:14px;color: red">审核未通过</span>';
+//        }
+//
+//    }
+
+	//console.log(str);
+	//json_obj=eval('('+str+')');
+	//console.log(json_obj);
+	
+	//$('#tt').datagrid({data:json_obj});
+	//$('#tt').datagrid('reloadFooter',json_obj.footer);
+	
+	$('select[name=note_type]').change(function(){
+		if($(this).val()==1){
+				$('span[name=note_type_span]').show();
+			}else{
+				$('span[name=note_type_span]').hide();
+				}
+		});	
+	
+	//删除某笔申请单 如果删除的申请单是已经做考勤结算的申请单,则系统不予以操作	
+	$('a[name=delete_note]').click(function(){
+			if(confirm('确定删除此申请单?')){
+				//获取当前选中的行数据
+				row_data=$('#tt').datagrid('getSelected');
+                $.post("{:url('sys/note_list/delete_note')}",{id:row_data.id},function(result){
+                      showMsg(result);
+                    $('#tt').datagrid('reload');
+                },"JSON")
+            }
+		});
+</script>

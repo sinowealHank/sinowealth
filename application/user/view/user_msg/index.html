@@ -1,0 +1,222 @@
+{extend name="index@index/base" /}
+{block name="main"}
+	<div class="breadcrumbs" id="breadcrumbs">
+	    <script type="text/javascript">
+	        try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	    </script>
+	    <ul class="breadcrumb">
+	        <li>
+	            <i class="icon-home home-icon"></i>
+	            <a href="#">通知列表</a>
+	            <span wtq_zs_id="zs"></span>
+	            <span wtq_mem_id="mem"></span>
+	        </li>
+	    </ul>
+	</div>
+	<div class="col-md-12">
+	    <div class="box">
+	        <div class="box-header" style="height:40px;margin: 5px 0 0 5px;">
+	        	<div style="float: right;">
+	        		<select wtq_select="one_sour" style="">
+						<option value="">全部</option>
+						<option value="0">未读</option>
+						<option value="1">已读</option>
+					</select>
+					<select wtq_select="two_sour" style="">
+						<option value="">全部</option>
+						{$type_flagg}
+					</select>
+					<button onclick="msg_index_ajax()" class="btn btn-sm btn-primary" style="margin-right: 100px;">搜索</button>
+				</div>
+	        </div>
+		    <div class="box-body">
+			    <table align="center" class="table table-striped table-bordered table-hover" style="/*width:auto*/">
+			        <thead>
+			            <tr>
+							<td onclick="paixu(this,'id')" width="40" style="cursor:pointer;">id<i wtq_id='id' wtq_up_index_i="i"  class="icon-level-up"  style="color:red;"></td>
+							<td onclick="paixu(this,'msg_tit')" width="110" style="cursor:pointer;">标题<i wtq_up_index_i="i" style="color:red;"></td>
+							<td onclick="paixu(this,'type_flag')" width="100" style="cursor:pointer;">日期<i wtq_up_index_i="i" style="color:red;"></td>
+							<td onclick="paixu(this,'create_time')" width="100" style="cursor:pointer;">类型<i wtq_up_index_i="i" style="color:red;"></td>							
+							<td width="76">操作</td>
+						</tr>
+			        </thead>
+			        <tbody msg_add="add" style="">
+
+			        </tbody>
+			    </table>
+			    
+			    
+			    
+			    
+			    
+		    </div>
+		    <div class="box-footer">
+		    	<div class="text-right" footer='footer' style="float: right;">
+					
+		    	</div>
+		    	<div this_vip="this_vip" class="text-right" style="float: left;padding-top: 20px;padding-right: 5px;">
+		    		每页显示 <input onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9]/,'');}).call(this)" onblur="this.v();" this_page_size="this_page_size" style="width:35px;height: 25px;border: solid 1px;font-size:20px;"> 条&nbsp&nbsp&nbsp
+		    		第 <input onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9]/,'');}).call(this)" onblur="this.v();" this_page="this_page" style="width:35px;height: 25px;border: solid 1px;font-size:20px;"> 页 <button onclick="msg_index_go($('input[this_page=this_page]').val())" class="btn btn-xs">跳转</button>
+		    	</div>
+		    </div>
+		</div>
+	</div>
+{/block}
+{block name="script"}
+<script>
+	//点击表头排序
+	function paixu(thi,ii){
+		if($(thi).children('i').attr('class')=='icon-level-down'){var a='&a=1';var clas='icon-level-up';}else{var a='&a=';var clas='icon-level-down';}
+		var this_i="?ii="+ii+a;
+		
+		msg_index_ajax(this_i,clas,thi)
+	}
+	//调用循环输出内容
+	$(document).ready(function(){
+		msg_flag=<?php echo json_encode($type_flag) ?>;
+		dat={$user_msg};
+		msg_index_go()
+	})
+	//修改内容后调用异步修改显示数据
+	function msg_index_ajax(this_i='',clas="icon-level-up",thi="i[wtq_up_index_i=i][wtq_id=id]"){
+		var view_flag=$("select[wtq_select=one_sour]").val();
+		var type_flag=$("select[wtq_select=two_sour]").val();
+		$.post('{:url("index_ajax")}'+this_i,{type_flag:type_flag,view_flag:view_flag},
+	            function (data) {
+					$('i[wtq_up_index_i=i]').attr('class',' ')
+					if(this_i==''){
+						$(thi).attr('class',clas)
+					}else{
+						$(thi).children('i').attr('class',clas)
+					}
+			
+					dat=data
+					var page=$("div[class=box-footer]").find("li[class=active]").find("a").html();
+					msg_index_go(page)
+	           },"json").error(function(){mythisalert(0,'失败');});
+	}
+	//调用循环函数
+	tr=['id','msg_tit','create_time','type_flag'];
+	function msg_index_go(page,shu='10'){
+		if(!isNaN(page)){}else{
+			page=1;
+		}
+		if(!isNaN(shu)){
+		}else{
+			shu=10;
+		}
+		if($('input[this_page_size=this_page_size]').val()){
+			shu=$('input[this_page_size=this_page_size]').val();
+		}
+		if(shu<=0){shu=10}
+		wtq_ajax_index_paging(dat,tr,page,'msg_index_go','tbody[msg_add=add]','div[footer=footer]',shu,'','')
+	}
+</script>
+<script>
+	//循环函数
+	function wtq_ajax_index_paging(data,name,page=1,click,index_name,foot_name,num=10,button,special=''){
+		var text='';
+		var len=data.length;
+		//获取总分页数
+		zy = len/num;
+		zy = Math.ceil(zy);
+		//判断页码正确性
+		if(page>zy){page=zy;}
+		if(page<=0){page=1;}
+		star=page*num-num;
+		end=star*1+num*1;
+		for(i=star;i<end;i++){
+			if(i>=len){
+				break;//continue;
+			}
+			
+			text=text+'<tr>'
+			
+			$.each(name, function (index, item) {
+				if($.inArray(item, special)=='-1'){
+					if(item=='type_flag'){
+						text=text+'<td>'+msg_flag[data[i][item]]+'</td>'
+					}else if(item=='msg_tit'){
+						if(data[i]['action_url']){
+							text=text+'<td style="overflow: hidden;text-overflow: ellipsis;max-width: 300px;"><a href="'+data[i]['action_url']+'">'+data[i][item]+'</a></td>'
+						}else{
+							text=text+'<td style="overflow: hidden;text-overflow: ellipsis;max-width: 300px;">'+data[i][item]+'</td>'
+						}
+						
+					}else{
+						text=text+'<td>'+data[i][item]+'</td>'
+					}
+				}else{
+					text=text+'<td>'+special_pd(item,data[i][item])+'</td>'
+				}
+			})
+			
+			if(data[i]['view_flag']==0){
+				var button_2='<button onclick="msg_ok('+data[i]['id']+',1,this)" title="标记为已读" class="btn btn-xs btn-info"><i class="icon-envelope"></i></button>'
+			}else{var button_2='';}
+			if(data[i]['action_url']==null || data[i]['action_url']==''){
+				var button=button_2;
+			}else{
+				var button='<a onclick="msg_ok('+data[i]['id']+',0,this)" href="'+data[i]['action_url']+'" title="处理" class="btn btn-xs btn-info " ><i class="icon-desktop"></i></a> '+button_2;
+			}
+			
+			//button='<button onclick="Msg_details(\''+data[i]['msg_tit']+'\',\''+data[i]['msg_desc']+'\',\''+data[i]['action_url']+'\',\''+data[i]['type_flag']+'\')" title="详情" class="btn btn-xs btn-warning"><i class="icon-edit"></i></button> '+button
+			button='<button wid="80%" hig="auto" url="{:url("user_msg_detail")}?id='+data[i]['id']+'" title="详情" class="btn btn-xs btn-info layerIframe"><i class="icon-edit"></i></button> '+button
+			
+			if(button){
+				text=text+'<td>'+button+'</td>';
+			}else{
+				text=text+'<td></td>';
+			}
+			text=text+'</tr>';
+			
+		}
+		
+	    $(index_name).html(text);
+	    
+		//如果超过一页拼接底部分页
+		if(zy>1){
+			s=page-1;
+			clas='';
+			if(s<=0){clas='disabled';}
+
+				$("div[this_vip=this_vip]").css("display","")
+				
+				margin_num=(page-5)*41;
+	       		if(margin_num<=0){
+	       			margin_num=0
+	       		}else if(margin_num>41*(zy-8)){
+	       			margin_num=-41*(zy-8);
+	       		}else{
+	       			margin_num=-margin_num;
+	       		}
+	       		if(zy<8){
+	       			var page_width=41.125*zy
+	       		}else{
+	       			var page_width=329
+	       		}
+	       		page_num='<ul class="pagination" style="float:left;"><li class="'+clas+'"><a href="javascript:void(expression)" onclick="'+click+'(\'1\')">s</a></li>'+
+	       				'<li class="'+clas+'"><a page_prev="page_prev" href="javascript:void(expression)" onclick="'+click+'(\''+s+'\')">&laquo;</a></li></ul><div style="height:54px;width:'+page_width+'px;overflow: hidden;float:left;"><ul class="pagination" style="margin-left: '+margin_num+'px;width:99999999999999px;">';
+	       		clas='';
+	       		for (i = 1; i <= zy; i++) {
+	       			if(i==page){clas='active';}
+	       			page_num=page_num+'<li class="'+clas+'"><a style="width:42px;text-align: center;" href="javascript:void(expression)" onclick="'+click+'(\''+i+'\')">'+i+'</a></li>';
+	       			clas='';
+	       		}
+	       		x=page*1+1*1;
+	       		clas='';
+	       		if(x>zy){clas='disabled';}
+	       		page_num=page_num+'</ul></div><ul class="pagination"><li class="'+clas+'"><a page_next="page_next" href="javascript:void(expression)" onclick="'+click+'(\''+x+'\')">&raquo;</a></li>'+
+	       						'<li class="'+clas+'"><a href="javascript:void(expression)" onclick="'+click+'(\''+zy+'\')">e</a></li></ul>';
+			
+		
+		}else{page_num='';}
+		$(foot_name).html(page_num)
+	}
+</script>
+<script>
+	$(document).ready(function(){
+		$.ajaxSetup({cache : false });
+	})
+</script>
+{/block}

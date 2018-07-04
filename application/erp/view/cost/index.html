@@ -1,0 +1,139 @@
+{extend name="index@index/base" /}
+{block name="main"}
+<div class="breadcrumbs" id="breadcrumbs">
+    <script type="text/javascript">
+        try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+    </script>
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">首页</a>
+        </li>
+        <li>
+            <a href="#">ERP</a>
+        </li>
+        <li class="active">Cost</li>
+    </ul><!-- .breadcrumb -->
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <!-- 按钮触发模态框 -->
+        <!--<button  class="btn btn-info" id="ADD"><i class="icon-plus"></i>添加权限</button>-->
+        <!--<button  class="btn btn-info " ><i class="icon-plus"></i>Cost</button>-->
+        <h1 class="btn btn-info">BPM关系列表</h1>
+
+    </div><!-- /.page-header -->
+    <div>
+        <div style="overflow: auto;height: 600px;width: 420px;float: left">
+            <ul id="cost"></ul>
+        </div>
+
+        <div style="float: left;margin-left:20px;height: 300px;width: 600px;overflow-x:scroll">
+            <label>料号：</label><span style="color: red;font-size: 14px;" class="prd_no"></span>
+            &nbsp;&nbsp;&nbsp;层级关系： <span class="flow"></span>
+            <table class="table table-striped table-hover bom-table">
+                <thead>
+                <tr>
+                    <td>合格供应商</td>
+                    <td>产品线</td>
+                    <td>FAB PROCES</td>
+                    <td>GROSS DIE</td>
+                    <td>PM</td>
+                    <td>UM</td>
+                    <td>光罩总层数</td>
+                    <td>每层工时</td>
+                    <td>LT DAY</td>
+                    <td>产能</td>
+                    <td>打线图号</td>
+                    <td>GOOD DIE</td>
+                </tr>
+                </thead>
+                <tbody class="bom">
+                </tbody>
+            </table>
+
+        </div>
+        <!--<button class="btn btn-primary pull-right edit-bom">修改</button>-->
+    </div>
+</div><!-- /.page-content -->
+
+{/block}
+{block name="script"}
+<script>
+    var json = '{$body}';
+    json = JSON.parse(json);
+    layui.use('tree', function(){
+        layui.tree({
+            elem: '#cost' //传入元素选择器
+            ,skin: 'shihuang'
+            ,nodes: json
+            ,click: function(node){
+                //取出所有的td
+//                var td = $(".bom td");
+                var name = node.name;
+                var level = node.level;
+//                alert(level);
+                $(".prd_no").text(name);
+
+                //指定对应的level
+                $(".bom").attr('level',level);
+                $(".bom").attr('prd',name);
+
+                //改变边框的颜色
+                if(level == 1){
+                    $(".bom-table thead tr").css('color','#FF0000');
+                }else if(level == 2)
+                {
+                    $(".bom-table thead tr").css('color','#00FF00');
+                }else if(level == 3)
+                {
+                    $(".bom-table thead tr").css('color','green');
+                }else if(level == 4)
+                {
+                    $(".bom-table thead tr").css('color','#00FFFF');
+                }else if(level == 5)
+                {
+                    $(".bom-table thead tr").css('color','#CC33FF');
+                }else if(level == 6)
+                {
+                    $(".bom-table thead tr").css('color','black');
+                }
+
+                //请求后台中的供应商信息；
+                $.post("{:url('erp/cost/get_agent')}",{level:level,name:name},function(result){
+                    if(result == 'null')
+                    {
+                        $(".bom").empty();return false;
+                    }
+         
+                    result = JSON.parse(result);
+                    var cp_flow = result.flow;
+                    $(".flow").text(cp_flow);
+
+                    var bom = '';
+//                    $.each(result,function(k,v){
+//                        bom += '<tr class="click_tr" prd_no="'+v.name+'" level="'+ v.level+'" fac_name="'+ v.fab_name+'"><td>'+v.fab_name+'</td><td>'+ v.fab_release+'</td><td>'+ v.fab_proces+'</td>' +
+//                                '<td>'+v.PM+'</td><td>'+ v.UM+'</td><td>'+ v.wf_price+'</td><td>'+ v.work_num+'</td><td>'+ v.wf_price_die+'</td>' +
+//                                '<td>'+ v.groces_die+'</td><td>'+ v.good_die+'</td><td>'+ v.layer_num+'</td><td>'+ v.layer_day+'</td><td>'+ v.lt_day+'</td><td>'+ v.p_day+'</td><td>'+ v.yld+'</td><td>'+ v.wire_stock+'</td><td>'+ v.drawing+'</td><td>'+ v.line+'</td></tr>';
+//                    });
+                    $.each(result.data,function(k,v){
+                        bom += '<tr class="click_tr" prd_no="'+v.name+'" level="'+ v.level+'" fac_name="'+ v.fab_name+'"><td>'+v.fab_name+'</td><td>'+ v.line+'</td><td>'+ v.fab_proces+'</td><td>'+ v.groces_die+'</td>' +
+                                '<td>'+v.ta_pmh09+'</td><td>'+ v.ta_pmh11+'</td><td>'+ v.ta_pmh12+'</td><td>'+ v.ta_pmh13+'</td><td>'+ v.ta_pmh14+'</td><td>'+ v.ta_pmh16+'</td>' +
+                                '<td>'+v.pmh20+'</td><td>'+ v.ta_pmh15+'</td></tr>';
+                    });
+                    $(".bom").empty().html(bom);
+                    //修改数据
+                    $(".click_tr").dblclick(function(){
+                        var name = $(this).attr('prd_no');
+                        var fac_name = $(this).attr('fac_name');
+                        var level = $(this).attr('level');
+                        var url = '{:url("erp/cost/edit_bom")}'+"?name="+name+"&fac_name="+fac_name+"&level="+level;
+                        layerIframe('编辑数据',url,'','','','true');
+                    });
+                },"JSON");
+            }
+        });
+    });
+</script>
+{/block}
+

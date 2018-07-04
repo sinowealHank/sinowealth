@@ -1,0 +1,59 @@
+<div style="text-align:center">
+	<form wtq_add_id="grant_add">
+		<div class="new_user_add">
+			<p style="font-size:20px;"><?php echo isset($user['nickname'])?$user['nickname']:''; ?>的公司相关信息</p>
+			<hr>
+			<table style="margin:0 auto">
+				<tr>
+					<td style="float:right;">分机：</td>
+					<td><input value="<?php echo isset($user['ext_tel'])?$user['ext_tel']:''; ?>" name="ext_tel"></td>
+					<td style="float:right;">邮箱：</td>
+					<td><input value="<?php echo isset($user['email'])?$user['email']:''; ?>" name="email"></td>
+				</tr>
+			</table>
+		</div>
+	</form>
+</div>
+<div style="float:right;">
+	<button onclick="grant_add()" class="btn btn-sm btn-primary" style="margin:0 5px 10px 0;">保存</button>
+	<a onclick="" class="btn btn-sm btn-primary layui-layer-close" style="margin:0 60px 10px 0;position: initial;" wtq_up_index_alert_close="close">关闭</a>
+</div>
+<script>
+	//保存内容
+	function grant_add(){
+		var id='{$id}';
+		//判断id没有值的话终止
+		if(id){}else{
+			mythisalert(0,'缺少id');
+			return false;
+		}
+		var form = new FormData($('form[wtq_add_id=grant_add]')[0]);
+		$.ajax({
+	        type: "POST",
+	        url: '{:url("goods_grant_star")}?id='+id,
+	        data:form,// 你的formid
+	        processData:false,
+	        contentType:false,
+	        dataType:'json',
+	        error: function(request) {
+	            mythisalert(0,'失败')
+	        },
+	        success: function(data) {
+	        	mythisalert(data[0],data[1]);
+	        }
+	    })
+	}
+</script>
+<style>
+	.new_user_add{
+		padding:10px;
+	}
+	.new_user_add tr{
+		height:27px;
+	}
+	.new_user_add input{
+		margin-right:10px;
+		padding: 2px;
+		border: 1px solid #D5D5D5;
+	}
+</style>

@@ -1,0 +1,170 @@
+{extend name="index@index/base" /}
+{block name="main"}
+	<div class="breadcrumbs" id="breadcrumbs">
+	    <script type="text/javascript">
+	        try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	    </script>
+	    <ul class="breadcrumb">
+	        <li>
+	            <i class="icon-home home-icon"></i>
+	            <a href="#">通知列表</a>
+	            <span wtq_zs_id="zs"></span>
+	            <span wtq_mem_id="mem"></span>
+	        </li>
+	    </ul>
+	</div>
+	<div class="col-md-12">
+	    <div class="box">
+	        <div class="box-header" style="height:40px;margin: 5px 0 0 5px;">
+	        	<form gogogo="go">
+		        	<select name="lev">
+		        		<option value="999">全段检索</option>
+		        		<option value="0">BODY</option>
+		        		<option value="1">WF</option>
+		        		<option value="2">CP</option>
+		        		<option value="3">PKG</option>
+		        		<option value="4">FT</option>
+		        	</select>
+		        	<input name="name">
+		        	<select name="sour">
+		        		<option value="999">正序</option>
+		        		<option value="0">精确搜索</option>
+		        		<!--option value="1">模糊搜索</option-->
+		        		<option value="2">only bad</option>
+		        		<!--option value="3">only bad all</option-->
+		        		<!--option value="4">only good all</option-->
+		        	</select>
+		        	<button class="btn btn-sm btn-primary" onclick="go()" type="button">go</button>
+	        	</form>
+	        </div>
+		    <div class="box-body">
+		    	<div wtq_mulu_id="mulu" style="width:25%;direction:rtl;">
+					<div class="" style="width:100%;float:left;display:block;max-height:700px;overflow-y:scroll;">
+					    <div class="widget-body" style="min-width:100%;direction:ltr;display: inline-block;">
+							<div wtq_id="tree2" class="widget-main padding-8">
+								<div wtq_ok="ok" wtq_one="999" wtq_two="999" id="tree2" class="tree tree-unselectable">	
+									{:isset($div)?$div:''}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div onclick="$('button[wtq_mulu_btn=btn]').trigger('click');return false;" style="position:absolute;width:17px;height:38px;float:right;background-color:#BAE7E7;text-align: center;line-height: 2.8;">
+						<i wtq_id="mulu_i" class="icon-double-angle-left"></i>
+					</div>
+				</div>
+		    		
+		    	<div wtq_mulu_id="mulux" class="" style="width:75%;float:right;">	
+		    		<table wtq_tacle="table" class="table table-hover">
+				        <thead>
+				            <tr>
+				            	<th>IMAICD00</th>
+				            	<th>IMAICD01</th>
+				            	<th>IMAICD16</th>
+				            </tr>
+				        </thead>
+				    </table>
+				</div>
+				<table wtq_mulu_id="all">
+					<thead>
+					 	<tr>
+					 		<th style='border: solid 1px #00f6;'>段</th>
+			            	<th style='border: solid 1px #00f6;'>上级</th>
+			            	<th style='border: solid 1px #00f6;'>最上级</th>
+			            </tr>
+					</thead>
+				</table>
+			</div>	
+		    <div class="box-footer">
+		    	
+		    </div>
+		</div>
+	</div>
+{/block}
+{block name="script"}
+<script>
+var lev=999;var sour=999;
+	function go(){
+		$("div[wtq_del]").remove();
+		
+		var form = new FormData($('form[gogogo=go]')[0]);
+		lev=$("select[name=lev]").val();
+		sour=$("select[name=sour]").val();
+		$("div[wtq_one][wtq_two]").css('display','none');
+		if($("div[wtq_one="+lev+"][wtq_two="+sour+"]").attr("wtq_ok")=="ok"){
+			$("div[wtq_one="+lev+"][wtq_two="+sour+"]").css('display','');
+		}else{
+			$.ajax({
+		        type: "POST",
+		        url:'{:url("index_one_sour_ajax")}',
+		        data:form,// 你的formid
+		        processData:false,
+		        contentType:false,
+		        dataType:'json',
+		        error: function(request) {
+		            mythisalert(0,'失败')
+		        },
+		        success: function(data) {
+		        	//$("#tree2").append(data[1]);
+		        	if(data[0]==2){
+		        		$("div[wtq_id=tree2]").append('<div wtq_ok="ok" wtq_one="'+lev+'" wtq_two="'+sour+'" id="tree2" class="tree tree-unselectable">'+data[1]+'</div>');
+					}else{
+						$("div[wtq_id=tree2]").append(data[1]);
+					}
+		        	
+		        }
+		    });
+		}
+	}
+</script>
+<script>
+	function show(name,sort,pd){
+		var now=$("div[wtq_one="+lev+"][wtq_two="+sour+"]");
+		
+		now.find("div[wtq_color]").css("background-color",'');
+		$("div[wtq_color='"+name+"']").css("background-color",'gainsboro');
+		$("tbody").css('display','none');
+		$("tr[wtq_dis]").css('display','none');
+		if(now.find("div[wtq_add='"+name+"']").attr('wtq_ok')=='ok'){
+			$("tbody[wtq_dis='"+name+"']").eq(0).css('display','');
+			$("tr[wtq_dis='"+name+"']").css('display','');
+			if(now.find("i[wtq_i='"+name+"']").attr('class')!='icon-folder-open' && now.find("i[wtq_i='"+name+"']").attr('class')!='icon-folder-close'){
+				
+			}else{
+				if(now.find("div[wtq_add='"+name+"']").css('display')=='none'){
+					now.find("div[wtq_add='"+name+"']").css('display','');
+					
+					now.find("div[wtq_add='"+name+"']").children('div[class=tree-folder-content]').children('div[class=tree-folder]').css('display','');
+					
+					now.find("i[wtq_i='"+name+"']").attr('class','icon-folder-open');
+				}else{
+					now.find("div[wtq_add='"+name+"']").css('display','none');
+					now.find("i[wtq_i='"+name+"']").attr('class','icon-folder-close');
+				}
+			}
+		}else{
+			$.post('{:url("body")}',{name:name,sort:sort,pd:pd},
+		            function (data) {
+						now.find("div[wtq_add='"+name+"']").attr('wtq_ok','ok');
+						now.find("div[wtq_add='"+name+"']").html(data[0]);
+						var tbody='<tbody wtq_dis="'+name+'">';
+						$.each(data[1], function (index, item) {
+							tbody=tbody+'<tr>'+
+											'<td>'+item['IMAICD00']+'</td>'+
+											'<td>'+item['IMAICD01']+'</td>'+
+											'<td>'+item['IMAICD16']+'</td>'+
+										'</tr>';
+						})
+						var tbody=tbody+'</tbody>';
+						$("table[wtq_tacle=table]").append(tbody);
+						if(pd=='red' || pd=='blue'){
+							div="<tr wtq_dis='"+name+"'><td style='border: solid 1px #00f6;'>"+data[3][2]+"</td><td style='border: solid 1px #00f6;'>"+data[3][0]+"</td><td style='border: solid 1px #00f6;'>"+data[3][1]+"</td></tr>";
+							$("table[wtq_mulu_id=all]").find("thead").append(div);
+						}
+						
+						
+						now.find("div[wtq_name='"+name+"']").append('('+data[2]+')');
+		           },"json").error(function(){mythisalert(0,'失败');});
+		}
+	}
+</script>
+{/block}

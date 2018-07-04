@@ -1,0 +1,63 @@
+{extend name="index@index/base" /}
+{block name="main"}
+<meta charset="utf-8">
+<div class="breadcrumbs" id="breadcrumbs">
+    <script type="text/javascript">
+        try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+    </script>
+
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">首页</a>
+        </li>
+        <li class="active">IP维护</li>
+    </ul><!-- .breadcrumb -->
+</div>
+
+<div class="page-content">
+    <div class="page-header col-xs-12">
+        <div class="pull-left  clearfix">
+            <a style='display:block;float:left' hig="300px" url="{:url('ip/add_ip')}" class="btn btn-info btn-sm layerIframe" title="添加IP">添加</a>
+        </div>
+    </div><!-- /.page-header -->
+    <div class="row"><!-- /.col -->
+        <div class="col-xs-12">
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th style="width: 200px;">IP</th>
+                    <th>类型</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {foreach name="$data" id="vo"}
+                    <tr style="text-align: center">
+                        <td>{$vo['id']} </td>
+                        <td>{$vo['ip']} </td>
+                        <td>{if condition="$vo['ip_type'] eq 0"}IP地址 {else /}IP段{/if}</td>
+                        <td class="text-center">
+                            <a url="edit_ip?id={$vo['id']}" class="btn btn-xs btn-info layerIframe"  hig="300px"  title="编辑IP" name="pay_view_month">
+                                <i class="icon-edit  bigger-120"></i>
+                            </a>
+                            <button url="delete_ip?id={$vo['id']}" class="btn btn-xs btn-danger layerSubmit" name="pay_view_month" confirm="是否要删除此IP？">
+                                <i class="icon-trash  bigger-120"></i>
+                            </button>
+                        </td>
+                    </tr>
+                {/foreach}
+                </tbody>
+            </table>
+            {$page}
+        </div>
+    </div><!-- /.row -->
+</div>
+<div style="float:right;margin-right:200px">
+
+</div>
+{/block}
+
+{block name="script"}
+{/block}

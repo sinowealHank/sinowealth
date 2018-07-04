@@ -1,0 +1,253 @@
+{extend name="index@index/base" /}
+{block name="main"}
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<script type="text/javascript">
+		try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	</script>
+
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+				<a href="#">首页</a>
+		</li>
+
+		<li>
+			<a href="#">后台管理</a>
+		</li>
+			<li class="active">人事数据统计</li>
+	</ul><!-- .breadcrumb -->
+</div>
+
+<div class="page-content">
+	<div class="page-header col-xs-12">
+            <h1 class="col-xs-8">
+                人事数据统计
+                <small>
+                    <i class="icon-double-angle-right"></i>
+                    {$page_info.year_month}(
+                    	{eq name="$page_info.lock_flag" value="1"}
+                        	已锁定
+                        {else/}
+                        	未锁定
+                        {/eq}
+                    )
+                </small>
+            </h1>
+        <div class="pull-right  clearfix">
+        	
+            <a href="javascript:void(0)" class="btn btn-info btn-sm layerSubmit" url="{:url('re_cal_hr_count')}" confirm="确认重新生成?"><span class="icon expand-icon glyphicon glyphicon-plus"></span>重新统计</a>
+        </div>        
+	</div><!-- /.page-header -->
+
+	<div class="row"><!-- /.col -->
+    <!--顶部统计行-->
+    <div class="table-responsive">
+    	<table class="table">
+        	<tr>
+            	<td>
+                	
+                </td>
+                <td>部门</td>
+                {volist name="$page_info.dep_tt" id="vo"}
+                	<td>{$vo.dep_name}</td>
+                {/volist}
+            </tr>
+            <tr style="border-bottom:#CCC solid 1px;">
+            	<td>总计:</td>
+                <td style="font-weight:bold;" class="red">{$page_info.user_tt}</td>
+                {volist name="$page_info.dep_tt" id="vo"}
+                	<td>{$vo.tt}</td>
+                {/volist}
+            </tr>
+        </table>
+        
+        <div class="col-sm-12">
+        	<ul>
+            	<li style="width:50%; float:left; overflow:auto; border:#CCC solid 1px;">
+                
+                	 <!--左边部门,区域,人数,人员详细列表-->
+                    <table class="table-condensed">
+                    	<thead>                        	
+                            <tr>
+                                <th>部门</th>
+                                <th>部门</th>
+                                <th><nobr>地区</nobr></th>
+                                <th><nobr>人数</nobr></th>
+                                <th>人员</th>
+                            </tr>
+                        </thead>
+                        {volist name="page_info.dep_user_arr" id="vo"}
+                        {eq name="$vo.sub_flag" value="0"}
+                        <tr>
+                            <td id="{$vo.dep_name}">{$vo.dep_name}(<span class="red" style=" font-weight:bold;">{$vo.dep_user_count}</span>)</td>
+                            <td></td>
+                            <td>{:strtoupper(get_site_code($vo['dep_manage'][0]['site_id']))}</td>
+                            <td>{$vo['dep_manage_count']}</td>
+                            <td>
+                                {volist name="$vo.dep_manage" id="v"}
+                                    <dd style="width:50px; float:left;" title="{$v.user_gh}">{$v.nickname}</dd>
+                                {/volist}
+                            </td>
+                        </tr>
+                        {else/}
+                        <tr>
+                            <td></td>
+                            <td id="{$vo.dep_name}">{$vo.dep_name_s}(<span class="red" style=" font-weight:bold;">{$vo.dep_user_count}</span>)</td>
+                            <td>{:strtoupper(get_site_code($vo['dep_manage'][0]['site_id']))}</td>
+                            <td>{$vo['dep_manage_count']}</td>
+                            <td>
+                                {volist name="$vo.dep_manage" id="v"}
+                                    <dd style="width:50px; float:left;" title="{$v.user_gh}">{$v.nickname}</dd>
+                                {/volist}
+                            </td>
+                        </tr>
+                        {/eq}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>SH</td>
+                            <td>{:count($vo['sh_user'])}</td>
+                            <td>
+                                {volist name="$vo.sh_user" id="v"}
+                                    <dd style="width:50px; float:left;" title="{$v.user_gh}">{$v.nickname}</dd>
+                                {/volist}
+                            </td>
+                        </tr>
+                        {eq name="$vo.mcu_flag" value="0"}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>SZ</td>
+                            <td>{:count($vo['sz_user'])}</td>
+                            <td>
+                                {volist name="$vo.sz_user" id="v"}
+                                    <dd style="width:50px; float:left;" title="{$v.user_gh}">{$v.nickname}</dd>
+                                {/volist}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>HK</td>
+                            <td>{:count($vo['hk_user'])}</td>
+                            <td>
+                                {volist name="$vo.hk_user" id="v"}
+                                    <dd style="width:50px; float:left;" title="{$v.user_gh}">{$v.nickname}</dd>
+                                {/volist}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>TW</td>
+                            <td>{:count($vo['tw_user'])}</td>
+                            <td>
+                                {volist name="$vo.tw_user" id="v"}
+                                    <dd style="width:50px; float:left;" title="{$v.user_gh}">{$v.nickname}</dd>
+                                {/volist}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>XA</td>
+                            <td>{:count($vo['xa_user'])}</td>
+                            <td>
+                                {volist name="$vo.xa_user" id="v"}
+                                    <dd style="width:50px; float:left;" title="{$v.user_gh}">{$v.nickname}</dd>
+                                {/volist}
+                            </td>
+                        </tr> 
+                        {/eq}
+                            {eq name="$vo.sub_flag" value="1"}       
+                                <tr><td></td><td colspan="4" style="height:1px; border-bottom:#CCC solid 1px;"></td></tr>
+                            {else/}
+                                {eq name="$vo.mcu_flag" value="1"}
+                                    <tr><td></td><td colspan="4" style="height:1px; border-bottom:#CCC solid 1px;"></td></tr>
+                                {else/}
+                                    <tr><td colspan="5" style="height:1px; border-bottom:#CCC solid 1px;"></td></tr>
+                                {/eq}
+                            {/eq}
+                        
+                        {/volist}
+                    </table>
+                	
+                
+                </li>
+                <li style="width:50%; float:left; overflow:auto; border:#CCC solid 1px;">                
+                	<table class="table">
+                    	<thead>
+                        	<tr>
+                            	<th></th>
+                                <th>上海</th>
+                                <th>深圳</th>
+                                <th>香港</th>
+                                <th>台湾</th>
+                                <th>西安</th>
+                                <th>总数</th>
+                            </tr>
+                            <tbody>
+                            	{volist name="$page_info.dep_arr" id="vo"}
+                            	<tr>
+                                	<td>&nbsp;&nbsp;<a href="#{$vo.dep_name_full}">{$vo.dep_name_full}</a></td>
+                                    <td>{$vo.sh_count}</td>
+                                    <td>{$vo.sz_count}</td>
+                                    <td>{$vo.hk_count}</td>
+                                    <td>{$vo.tw_count}</td>
+                                    <td>{$vo.xa_count}</td>
+                                    <td>{$vo.tt_count}</td>
+                                </tr>
+                                {/volist}
+                            </tbody>
+                        </thead>
+                    </table>
+                    <br /><br />
+                     <table class="table">
+                    	<thead>
+                        	<tr>
+                            	<th></th>
+                                <th>入职</th>
+                                <th>离职</th>
+                                <th>入职名单</th>                                
+                                <th>离职名单</th>
+                            </tr>
+                            <tbody>
+                            	{volist name="$page_info.in_out_arr" id="vo"}
+                            	<tr>
+                                	<td>&nbsp;&nbsp;<a href="#{$vo.dep_name_full}">{$vo.dep_name_full}</a></td>
+                                    <td>
+                                    	{gt name="$vo.in_num" value="0"}
+                                        	{$vo.in_num}
+                                        {/gt}
+                                    </td>
+                                    <td class="red">
+                                    	{gt name="$vo.out_num" value="0"}
+                                        	-{$vo.out_num}
+                                        {/gt}
+                                    </td>
+                                    <td>{$vo.in_str}</td>
+                                    <td class="red">{$vo.out_str}</td>
+                                </tr>
+                                {/volist}
+                            </tbody>
+                        </thead>
+                    </table>             
+                </li>
+            </ul>
+        </div>
+       
+        
+      </div>
+      
+      
+      
+      
+        	
+	</div><!-- /.row -->
+</div>
+<script type="text/javascript">
+
+</script>
+
+{/block}

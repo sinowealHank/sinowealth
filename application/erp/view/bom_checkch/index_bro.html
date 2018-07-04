@@ -1,0 +1,69 @@
+			<div div_left style="/*position: absolute;*/float:left;">
+				<table id="tableExcel" class="datagrid-htable" cellpadding="0" cellspacing="0">
+					<thead style="background: linear-gradient(to bottom,#F9F9F9 0,#efefef 100%);">
+						<tr exceltitle1>
+							{foreach $title['left'] as $k=>$key}
+				               <td onclick="paixu(this)" style="cursor: pointer; position: relative;" {if condition="$title['ii']==$key"}now_order='me'{/if}>
+				                  	<div tr_shu='{$key}' style="float:left;overflow: hidden;" class="datagrid-sort {if condition="$title['ii']==$key"}datagrid-sort-asc{/if}">
+				                   	<span>{$name[$key]}</span>
+				                   	<span class="datagrid-sort-icon"></span>
+				                  	</div>
+				                  	<div onmousedown="name_th_width_down('{$key}','fu')" style="position: absolute;right: 0px;height:68%;cursor: e-resize;width:1px"></div>
+				                </td>
+				            {/foreach}
+			            </tr>
+					</thead>
+					<tbody>
+			            <?php $i=1; ?>
+			            {foreach $body as $ke=>$vo}
+							<tr show_or_hide="{$i}" style="display:none" onclick="tr_colors('{$vo['ROWNUM']}')" onmouseenter="if($('tr[tr_color='+$(this).attr('tr_color')+']').attr('no')!=1){$('tr[tr_color='+$(this).attr('tr_color')+']').css('background-color','#EAF2FF')}" onmouseleave="if($('tr[tr_color='+$(this).attr('tr_color')+']').attr('no')!=1){$('tr[tr_color='+$(this).attr('tr_color')+']').css('background-color','white')}" tr_color="{$vo['ROWNUM']}" {foreach $title['right'] as $k=>$key}{$key}="{:isset($vo[$key.'_PD'])?$vo[$key.'_PD']:$vo[$key]}"{/foreach}{foreach $title['left'] as $k=>$key}{$key}="{$vo[$key]}"{/foreach}>
+								{foreach $title['left'] as $k=>$key}
+			                     	<td><div tr_shu='{$key}' style="overflow: hidden;"><span style="overflow: hidden;">{$vo[$key]}</span></div></td>
+			                 	{/foreach}
+			                 </tr>
+			                 <?php $i++; ?>
+			            {/foreach}
+					</tbody>
+				</table>
+				<div wtq="no_td_show" style="display:none;background-color: #d7d7d7;color: #1d90a8;font-size: 38px;"></div>
+			</div>
+			<div div_right style="/*position: absolute;right: 0;max-width:70%;*/float:left;display:block;overflow-x:auto;">
+				<table id="tableExcel2" class="datagrid-btable" cellpadding="0" cellspacing="0">
+					<thead style="background: linear-gradient(to bottom,#F9F9F9 0,#efefef 100%);">
+						<tr exceltitle2>
+							{foreach $title['right'] as $k=>$key}
+				                <td onclick="paixu(this)" style="cursor:pointer; position: relative;{if condition="in_array($key,$change)"}background:#f9ff004d;{/if}" {if condition="$title['ii']==$key"}now_order='me'{/if}>
+				                   	<div tr_shu='{$key}' style="float:left;overflow: hidden;" class="datagrid-sort {if condition="$title['ii']==$key"}datagrid-sort-asc{/if}">
+				                    	<span>{$name[$key]}</span>
+				                    	<span class="datagrid-sort-icon"></span>
+				                   	</div>
+				                   	<div onmousedown="name_th_width_down('{$key}','fu')" style="position: absolute;right: 0px;height:68%;cursor: e-resize;width:1px"></div>
+				                 </td>
+				             {/foreach}
+			             </tr>
+					</thead>
+					<tbody>
+						 <?php $i=1; ?>
+			            {foreach $body as $ke=>$vo}
+							<tr show_or_hider="{$i}" style="display:none" onclick="tr_colors('{$vo['ROWNUM']}')" onmouseenter="if($('tr[tr_color='+$(this).attr('tr_color')+']').attr('no')!=1){$('tr[tr_color='+$(this).attr('tr_color')+']').css('background-color','#EAF2FF')}" onmouseleave="if($('tr[tr_color='+$(this).attr('tr_color')+']').attr('no')!=1){$('tr[tr_color='+$(this).attr('tr_color')+']').css('background-color','white')}" tr_color="{$vo['ROWNUM']}" {foreach $title['right'] as $k=>$key}{$key}="{:isset($vo[$key.'_PD'])?$vo[$key.'_PD']:$vo[$key]}"{/foreach}{foreach $title['left'] as $k=>$key}{$key}="{$vo[$key]}"{/foreach}>
+								{foreach $title['right'] as $k=>$key}
+			                     	<td {if condition="in_array($key,$change)"}change='ok'{/if} style="{if condition="isset($vo[$key.'_PD'])"}
+					                     			{if condition="$vo[$key.'_PD']=='no'"}{if condition="in_array($key,$change)"}border:red 1px solid;{/if}background:#d813134d{elseif condition="$vo[$key.'_PD']=='no judge'" /}background:#6e6b6bb3{/if}
+					                     		{else /}
+					                     			{if condition="$vo[$key]=='no'"}{if condition="in_array($key,$change)"}border:red 1px solid;{/if}background:#2f2fa84d{elseif condition="$vo[$key]=='no judge'" /}background:#6e6b6bb3{/if}
+					                     		{/if}">
+			                     		<div {if condition="in_array($key,$change)"}
+			                     				{if condition="isset($vo[$key.'_PD'])"}
+					                     			{if condition="$vo[$key.'_PD']=='no'"}ondblclick="input_cli_2(this)"{/if}
+					                     		{else /}
+					                     			{if condition="$vo[$key]=='no'"}ondblclick="input_cli_2(this)"{/if}
+					                     		{/if}
+			                     			{/if} tr_shu='{$key}' style="overflow: hidden;"><span style="overflow: hidden;">{$vo[$key]}</span></div>
+			                     	</td>
+			                 	{/foreach}
+			                 </tr>
+			                 <?php $i++; ?>
+			            {/foreach}
+					</tbody>
+				</table>
+			</div>

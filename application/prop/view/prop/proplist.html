@@ -1,0 +1,179 @@
+<!DOCTYPE html><head>
+    <link rel="stylesheet" href="__PUBLIC__/static/assets/layui/css/layui.css"/>
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/easy-ui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/easy-ui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/easy-ui/demo.css">
+    <script type="text/javascript" src="__PUBLIC__/easy-ui/jquery.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/easy-ui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/easy-ui/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/extend/extend.js"></script>
+    <script src="__PUBLIC__/static/assets/js/layer.js"></script>
+    <script src="__PUBLIC__/static/assets/js/lds.js"></script>
+    <script src="__PUBLIC__/static/assets/layui/layui.js"></script>
+    <script src="__PUBLIC__/laydate/laydate.js"></script>
+
+</head>
+
+<style>
+    body{background-color: #ccc;padding: 5px;}
+    #tb span{padding-left: 5px;}
+    #tb input{width: 100px;height: 20px;}
+</style>
+<script>
+    function search(){
+       alert('21');
+    }
+</script>
+<body>
+<div>
+    <div id="tb">
+        <form name="search_prop">
+        <div>
+            <a class="easyui-linkbutton layerIframe" title="管理员->添加资产" wid="900px;" hig="400px;" iconCls="icon-add" url="{:url('prop/prop/add')}"><strong>添加资产</strong></a>
+            <span>资产编号：<input type="text" name="reg_prop_num"></span>
+            <span>资产名称：<input type="text" name="reg_prop_name"></span>
+            <span>规格型号：<input type="text" name="product_model"></span>
+            <span>使用部门：<input type="text" name="use_dep"></span>
+            <span>所在部门：</span><select name="dep"><option value="">部门架构</option>{$page_info.user_dep}</select>
+            <span>负责部门：</span><select name="respon_dep"><option value="">部门架构</option>{$page_info.user_dep}</select>
+        </div>
+        <div>
+            <a href="javascript:void(0)" id="seacrh" class="easyui-linkbutton" iconCls="icon-save" onclick="search_info();"><strong>确认查询</strong></a>
+            <span>使用人名：<input type="text" name="prop_user"></span>
+            <span>申请人名：<input type="text" name="propuser"></span>
+            <span>购买日期：<input class="laydate-icon-molv dateControl" id="buy_time" format='YYYY-MM-DD ' festival="" skin="molv" name="buy_time"></span>
+
+            <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="dele()">删除</a>
+
+        </div>
+        </form>
+    </div>
+<table class="easyui-datagrid" id="tt" title="{$page_info.title}" style="width:auto;height:250px">
+    <thead data-options="frozen:true">
+        <tr>
+            <th data-options="field:'id',width:80,sortable:true,">Id编号</th>
+            <th data-options="field:'reg_prop_num',width:100,">资产编号</th>
+            <th data-options="field:'reg_prop_name',width:80,align:'right'">资产名称</th>
+            <th data-options="field:'product_model',width:80">规格型号</th>
+            <th data-options="field:'start_use_time',width:100">开始使用时间</th>
+            <th data-options="field:'buy_time',width:100">购买时间</th>
+            <th data-options="field:'use_dep',width:80,align:'right'">使用部门</th>
+            <th data-options="field:'prop_user',width:80">使用人</th>
+            <th data-options="field:'propuser',width:80">申请人</th>
+            <th data-options="field:'dep',width:100,formatter:show_color">所在部门</th>
+            <th data-options="field:'prop_remark',width:80,align:'right'">备注</th>
+            <th data-options="field:'respon_dep',width:100">负责部门</th>
+            <th data-options="field:'logoff_time',width:80,align:'right'">注销日期</th>
+            <th data-options="field:'orginal_val',width:80">原值</th>
+            <th data-options="field:'net_val',width:100">净值</th>
+        </tr>
+    </thead>
+
+</table>
+</div>
+</body>
+<script src="__PUBLIC__/laydate/laydate.js"></script>
+
+<script>
+    $(function(){
+        $("#tt").datagrid('enableCellEditing');
+
+    });
+     //搜索相应条件的信息
+     function search_info(){
+         //获取表单的所有参数
+        var formdata =  $("form[name=search_prop]").serializeArray();
+         $('#tt').datagrid('reload',{data:formdata});
+     }
+
+     function dele(){
+         var row = $('#tt').datagrid('getSelected');
+         var id = row.id;
+         layer.confirm('确认删除？', {
+             btn: ['确定删除','取消'] //按钮
+         }, function(){
+             $.post("{:url('prop/prop/deleteprop')}",{id:id},function(result){
+                 showMsg(result);
+                 $("#tt").datagrid('reload');
+             },"JSON");
+         });
+
+     }
+
+
+    $("#tt").datagrid({
+        singleSelect:true,
+        url: "{:url('prop/prop/prop_list')}",
+        toolbar:'#tb',
+        iconCls: 'icon-edit',
+        pagination: true,
+        height:'620px',
+        pageSize:20,
+        pageList:[20],
+        showFooter: true,
+        rowStyler: showcolor,
+        onDblClickRow :function(rowIndex,rowData){
+            layerIframe('修改资产',"{:url('/prop/prop/edit/id/')}"+rowData.id,wid="900px;",hig="400px;");
+        }
+    });
+
+    function show_color(val,row,index){
+
+        if(val == 'ST'){
+            return "<span style='color: red'>库存</span>";
+        }else{
+            return val;
+        }
+    }
+
+        $("tbody tr").each(function(k,v){
+            console.log(v)
+
+        });
+
+     function showcolor(index,row){
+          if(row.dep == 'ST'){
+              return 'background-color:pink;';
+          }
+     }
+
+
+
+
+//    var editIndex = undefined;
+//    function endEditing(){
+//        if (editIndex == undefined){return true}
+//        if ($('#tt').datagrid('validateRow', editIndex)){
+//            $('#tt').datagrid('endEdit', editIndex);
+//            editIndex = undefined;
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
+//    function onClickRow(index){
+//        if (editIndex != index){
+//            if (endEditing()){
+//                $('#tt').datagrid('selectRow', index)
+//                        .datagrid('beginEdit', index);
+//                editIndex = index;
+//            } else {
+//                $('#tt').datagrid('selectRow', editIndex);
+//            }
+//        }
+//    }
+    //资产的几种状况
+    function showStatus(val,row){
+        if(row.prop_status == 1){
+            return '<span>个人资产</span>';
+        }else if(row.prop_status == 2){
+            return '<span>部门资产</span>';
+        }else if(row.prop_status == 3){
+            return '<span>公司公共资产</span>';
+        }else if(row.prop_status == 4){
+            return '<span>库存状态</span>';
+        }
+    }
+
+
+</script>

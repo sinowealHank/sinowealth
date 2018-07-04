@@ -1,0 +1,73 @@
+<meta charset="utf-8" />
+<form  id="rowForm">
+
+<div>你将要修改<span id='count' style="color:red">{$page_info.count}</span>条数据;</div>
+	<div style="margin-left:15%">
+	   	<table cellpadding="5" >
+	   	
+	   		<tr>
+	   			<td>选择要修改列：</td>
+	   			<td>
+	   				<select name="field"  onchange="gradeChange(this[selectedIndex].value)">
+	   						<option value="">请选择</option>
+	   					{volist name="page_info.field" id="vo"}				
+							<option value="{$vo.field}">{$vo.field_show}</option>
+						{/volist}
+	   				</select>
+	   			</td>
+	   		</tr>
+	   		<tr>
+	   			<td>修改为：</td>
+	   			<td name='jsSetText'>
+	   				<input type="text" name='content'/>
+	   			</td>
+	   		</tr>
+	   	</table>
+   </div>
+</form>
+<div><span style='color:red'>批量修改只对流程全部走完的数据有效</span></div>
+	<div style="margin:0% 0 10% 40%">
+	   	<button onclick="rowSubmit()" type="button" style='cursor:pointer;'>提交</button>
+	   	<button class='closeLayer' style='cursor:pointer;'>关闭</button>
+   	</div>
+<script>
+    function gradeChange(value){
+    	 $.post("ajaxSetField",{field:value},function(result){
+    		   if(result == '1'){
+    			   $('td[name=jsSetText]').html('<input type="text" name="content"/>');
+    		   }else{
+    			   $('td[name=jsSetText]').html(result);
+    		   }
+    	 });
+    }
+   
+    function rowSubmit(){
+    	
+    	var prdno = $.trim($('input[name=prdno]').val());
+		var type = $.trim($('input[name=type]').val());
+		var line = $.trim($('select[name=line]').val());
+		var key = $.trim($('input[name=key]').val());
+		var key_field = $.trim($('select[name=key_field]').val());
+		var key1 = $.trim($('input[name=key1]').val());
+		var key_field1 = $.trim($('select[name=key_field1]').val());
+		var field = $.trim($("select[name=field]").val());
+
+		var content = $.trim($("select[name=content]").val());
+		if(!content){
+			var content = $.trim($("input[name=content]").val());
+		}
+		var warning = "确定将"+$('#count').html()+"条数据的"+$("select[name=field]").find("option:selected").text()+"修改为"+content+"吗？";
+		var confirm = layer.confirm(warning, {
+			skin: 'danger-class', //样式类名
+			btn: ['确定','关闭'] //按钮
+		}, function(){	//点击确定
+			$.post("doEdits",{prdno:prdno,type:type,line:line,key:key,key_field:key_field,key1:key1,key_field1:key_field1,field:field,content:content},function(result){
+				showMsg(JSON.parse(result));
+			});
+		}, function(){ //点击关闭
+			layer.close(confirm);
+		}); 
+		
+    }
+</script>
+

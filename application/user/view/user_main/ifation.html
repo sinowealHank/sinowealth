@@ -1,0 +1,41 @@
+<div class="row">
+	<div class="col-xs-12">
+	            <div class="col-sm-12">
+	                <label class="col-sm-3 control-label no-padding-right">问题描述:</label>
+	                <div class="col-sm-9">
+	                    <textarea style="width:80%; height:200px;" name="q_val" placeholder="提交问题到管理部"></textarea>
+	                 </div>
+	             </div>
+	             <div class="col-sm-12" style="padding-top:5px;">
+	                 <label class="col-sm-3 control-label no-padding-right">回复邮件通知:</label>
+	                 <div class="col-sm-9">
+	                 	<label class="pull-left inline mail_flag_switch">
+	                         <input onclick="if($(this).is(':checked')){$('input[name=mail_flag]').val(1);}else{$('input[name=mail_flag]').val(0);}" class="ace ace-switch ace-switch-5" checked="checked" type="checkbox">
+	                         <span class="lbl"></span>
+	                         <input name="mail_flag" value="1" type="hidden">
+						</label>
+	                 </div>
+	             </div>
+    </div>
+</div>
+<hr>
+<div style="float:right;padding-top:10px;">
+	<button onclick="ifation_go()" class="btn btn-sm btn-primary" style="margin:0 5px 10px 0;">发送</button>
+	<a onclick="" class="btn btn-sm btn-primary layui-layer-close" style="margin:0 60px 10px 0;position: initial;" wtq_up_index_alert_close="close">关闭</a>
+</div>
+<script>
+	function ifation_go(){
+		var q_val=$("textarea[name=q_val]").val();
+		var mail_flag=$("input[name=mail_flag]").val();
+		if(q_val==''){
+			mythisalert(0,'请描述');
+			return false;
+		}
+		$.post('{:url("ifation_go")}',{q_val:q_val,mail_flag:mail_flag,data_time:"{$data_time}"},
+	            function (data) {
+					mythisalert(data[0],data[1]);
+					var le=$('a[wtq_up_index_alert_close=close]').length;
+					$('a[wtq_up_index_alert_close=close]').eq(le-1).trigger('click');
+	           },"json").error(function(){mythisalert(0,'失败');});
+	}
+</script>

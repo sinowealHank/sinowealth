@@ -1,0 +1,111 @@
+<form class="form-horizontal"  role="form" autocomplete="off" action="{:url('prop/apply/applyprop',0,false)}"
+      method="post" onsubmit="return validateCallback(this);" xmlns="http://www.w3.org/1999/html">
+    <div class="modal-body">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">是否为新人:</label>
+            <div class="col-sm-8">
+                <input type="checkbox"  name="is_new">
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">是否为公共:</label>
+            <div class="col-sm-8">
+                 <input type="checkbox"  name="is_common">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">使用人名称:</label>
+            <div class="col-sm-8" id="use_prop_name">
+                <!--<input type="text"  name="use_prop" placeholder="必填" >-->
+                <select name="user_id">
+                    <option value="0">请选择负责部门</option>
+                </select><span style="color:red;top: -5px;position:relative;">*</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">负责部门：</label>
+            <div class="col-sm-8">
+                <select name="use_dep_id">
+                  {$page_info.dep}
+                </select><span style="color:red;top: -5px;position:relative;">*</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">申请物品:</label>
+            <div class="col-sm-8">
+                <input type="text" name="apply_thing"><span style="color:red;top: -5px;position:relative;">*</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">申请数量:</label>
+            <div class="col-sm-8">
+                <input type="text" name="thing_num"><span style="color:red;top: -5px;position:relative;">*</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">需求时间:</label>
+            <div class="col-sm-8">
+                <input class="laydate-icon-molv dateControl" id="require_time" format='YYYY-MM-DD ' festival="" skin="molv" name="require_time">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">申请理由:</label>
+            <div class="col-sm-8">
+                <textarea name="apply_reason" style="width: 250px;height: 60px;">
+                </textarea><span style="color:red;top: -5px;position:relative;">*</span>
+            </div>
+        </div>
+        <div class="pull-right">
+            <button  class="btn btn-info">申请</button>
+            <a class="btn btn-default closeLayer">取消</a>
+        </div>
+    </div>
+</form >
+<script>
+    $("select[name=use_dep_id]").click(function(){
+      var id = $(this).find("option:selected").val();
+        $.post("{:url('prop/apply/getuser',0,false)}",{id:id},function(result){
+              $("select[name=user_id]").html(result);
+        });
+    });
+    //如果为新人没有录入内管系统中时
+    $("input[name=is_new]").click(function(){
+        if($(this).is(":checked")){
+            $("#use_prop_name").empty();
+            var input = '<input type="text"  name="use_prop_name"><span style="color:red;top: -5px;position:relative;">*</span>';
+            $("#use_prop_name").html(input);
+        }else{
+            var str = '<select name="user_id"><option value="0">请选择负责部门</option></select><span style="color:red;top: -5px;position:relative;">*</span>';
+            $("#use_prop_name").html(str);
+        }
+    });
+    //如果为公共使用对象的话
+    $("select[name=type]").change(function(){
+        var val = $(this).find("option:selected").val();
+        if(val == 2|| val == 3){
+            $("#use_prop_name").empty();
+            var input = '<input type="text"  name="use_prop_name"><span style="color:red;top: -5px;position:relative;">*</span>';
+            $("#use_prop_name").html(input);
+        }else{
+            $("#use_prop_name").empty();
+            var str = '<select name="user_id"><option value="0">请选择负责部门</option></select><span style="color:red;top: -5px;position:relative;">*</span>';
+            $("#use_prop_name").html(str);
+        }
+    });
+
+    //如果为新人没有录入内管系统中时
+    $("input[name=is_common]").click(function(){
+        if($(this).is(":checked")){
+            $("#use_prop_name").empty();
+            var input = '<input type="text"  name="use_prop_name"><span style="color:red;top: -5px;position:relative;">*</span>';
+            $("#use_prop_name").html(input);
+        }else{
+            var str = '<select name="user_id"><option value="0">请选择负责部门</option></select><span style="color:red;top: -5px;position:relative;">*</span>';
+            $("#use_prop_name").html(str);
+        }
+    });
+
+</script>

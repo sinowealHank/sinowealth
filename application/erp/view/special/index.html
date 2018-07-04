@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/demo.css">
+
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/js/ajaxselect/css/jquery.bigautocomplete.css">
+    
+    <script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/assets/js/sw.js"></script>
+    <script src="__PUBLIC__/static/assets/js/layer.js"></script>
+    <script src="__PUBLIC__/static/assets/js/zrj.js"></script>
+    <script src="__PUBLIC__/static/assets/js/ajaxselect/js/jquery.bigautocomplete.js"></script>
+
+    <style>
+        .datagrid-cell{ font-size:14px;}
+        .datagrid-header,.datagrid-cell span{ font-size:20px;}
+    </style>
+    <title>特殊正印</title>
+</head>
+<body class="easyui-layout">
+<div region="center" style="padding:5px; border:#000 solid 1px;" border="true">
+    <table class="easyui-datagrid" id="tt" title="" style="width:100%;">
+        <thead data-options="frozen:true">
+        <tr>
+            <th data-options="field:'id'">序号</th>
+            <th data-options="field:'icl01',width:200,sortable:true">产品名称</th>
+            <th data-options="field:'icl02',width:70">类型</th>
+            <th data-options="field:'icl03',width:85,sortable:true">序号</th>
+            <!--<th data-options="field:'icl04',width:185">icl04</th>-->
+            <th data-options="field:'icl05',width:250,sortable:true">特殊正印码</th>
+            <th data-options="field:'ta_icl01',width:185,sortable:true">客户简称</th>
+            <th data-options="field:'name',width:185,sortable:true">客户全称</th>
+
+
+        </tr>
+        </thead>
+    </table>
+    <div id='tb'>
+        产品名称：<input type="text" name="icl01"  value="" style="width:200px;" />
+        &nbsp;&nbsp;特殊正义码：<input type="text" name="icl05"  value="" style="width:200px;" />
+        &nbsp;&nbsp;客户名称：<input type="text" name="name"  value="" style="width:200px;" />
+        &nbsp;&nbsp;  <a target="_blank" url="add_icl" wid="600px" hig="450px" title="添加特殊正印"   class="easyui-linkbutton layerIframe" data-options="iconCls:'icon-add',plain:true" >新增</a>
+        <!--&nbsp;&nbsp;  <a target="_blank" href="{:url('erp/special/add_icl')}"  title="添加特殊正印"   class="easyui-linkbutton " data-options="iconCls:'icon-add',plain:true" >新增</a>-->
+
+        &nbsp;&nbsp;<a href="#" class="easyui-linkbutton" iconCls="icon-search"  onclick="reload()">查询</a>
+        <!--&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" onclick="editBySearch()" data-options="iconCls:'icon-edit',plain:true">批量修改</a>-->
+
+    </div>
+</div>
+</body>
+</html>
+
+<script>
+
+    $('#tt').datagrid({
+        iconCls: 'icon-edit',
+        singleSelect:true,
+        url: '/erp/special/get_icl_data/',
+        method:'post',
+        pagination:true,//显示分页
+        pageSize:20,//分页大小
+        pageList:[10,20,30],
+        fit:true,
+        fitcolumns:true,
+        showFooter: true,
+        toolbar:'#tb',
+        onDblClickRow:function(rowIndex,rowData){
+             var url = 'edit_icl?id='+rowData.id+'&'+'key='+rowData.key;
+             layerIframe('修改特殊正印数据',url,'600px','400px');
+        }
+    });
+
+    //实时加载
+    $("input[name=icl01]").keyup(function () {
+        var icl01 = $("input[name=icl01]").val();
+        $('#tt').datagrid('reload',{param:icl01});//重新加载datagrid
+    });
+    $("input[name=icl05]").keyup(function () {
+        var icl05 = $("input[name=icl05]").val();
+        $('#tt').datagrid('reload',{icl05:icl05});//重新加载datagrid
+    });
+    $("input[name=name]").keyup(function () {
+        var name = $("input[name=name]").val();
+        $('#tt').datagrid('reload',{name:name});//重新加载datagrid
+    });
+
+
+
+    //点击搜索触发此方法
+    function reload(){
+        var icl01 = $("input[name=icl01]").val();
+        var name = $("input[name=name]").val();
+        var icl05 = $("input[name=icl05]").val();
+        $('#tt').datagrid('reload',{param:icl01,name:name,icl05:icl05});//重新加载datagrid
+    }
+
+</script>
+
+<script src="__PUBLIC__/static/assets/js/lds.js"></script>

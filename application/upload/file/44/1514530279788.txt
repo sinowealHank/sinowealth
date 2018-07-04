@@ -1,0 +1,25 @@
+防百度糯米列表搜索页(此分类为二级分类)
+
+ 1.首先要取出分类下的一级栏目(通过实例化model(Category)进行取出parent_id=0)的值。
+ 2.把所有的一级分类下的id赋值给一个数组。
+ 3.获得当前页面的id,并且取出判断当前是否是否属于一级分类id还是属于二级分类id.
+   代码如以下所示：
+           $id = input('id','','intval');
+		   if(in_array($id,$firstCatIds){
+		      $categoryParentId = $id;
+			  $data['category_id'] = $id; 
+		   }elseif($id){
+		      //如果是二级分类应该取出上级parent_id
+			  $category = model('Category')->get($id);
+			  if(!$category || $category->status !=1) {
+                $this->error('数据不合法');
+              }
+			  $categoryParentId = $category->parent_id;
+			  $data['se_category_id'] = $id;
+		   }else{
+		       $categoryParentId = 0;
+		   }
+  4.根据判断所得的父级id取出当前下所有的二级分类。
+  5.把对应的值赋给模板。  
+		   
+		   

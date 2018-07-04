@@ -1,0 +1,74 @@
+{extend name="index@index/base" /}
+{block name="main"}
+<div class="breadcrumbs" id="breadcrumbs">
+    <script type="text/javascript">
+        try{ace.settings.check('breadcrumbs','fixed')}catch(e){}
+    </script>
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">首页</a>
+        </li>
+
+        <li>
+            <a href="#">资产管理</a>
+        </li>
+        <li class="active">指定签呈</li>
+    </ul><!-- .breadcrumb -->
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <!--<a href="{:url('prop/common/pursignlist')}" class="btn btn-primary ">统购长审核完列表</a>-->
+        <a href="{:url('prop/dep/index')}" class="btn btn-primary">返回</a>
+
+    </div><!-- /.page-header -->
+    <div>
+
+        <table class="table table-hover">
+            <h1  style="text-align: center;">申请部门审核完列表</h1>
+            <thead>
+            <tr>
+                <th>ID:</th>
+                <th>申请人：</th>
+                <th>使用人名称：</th>
+                <th>需求时间：</th>
+                <th>申请物品：</th>
+                <th>申请理由：</th>
+                <th>资产所属</th>
+                <th>添加签呈</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="$page_info.data" id="vo"}
+            <tr>
+                <td>{$vo.id}</td>
+                <td>{$vo.apply_use_id}</td>
+                <td>{$vo.user_name}</td>
+                <td>{$vo.require_time}</td>
+                <td>{$vo.pur_name}</td>
+                <td>{$vo.apply_reason}</td>
+                <td>
+                     {switch name="$vo.type"}
+                        {case value="1"}个人资产{/case}
+                        {case value="2"}部门资产{/case}
+                        {case value="3"}公司资产{/case}
+                     {/switch}
+                </td>
+                <td>
+                    <button class="btn btn-primary btn-xs layerIframe" title="添加签呈" max="true" url="addsign?id={$vo.id}"><i class="icon-edit"></i></button>
+                </td>
+            </tr>
+            {/volist}
+
+            </tbody>
+        </table>
+
+    </div>
+</div>
+{/block}
+{block name="script"}
+
+<script>
+
+</script>
+{/block}

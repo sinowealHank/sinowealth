@@ -1,0 +1,148 @@
+{extend name="index@index/base" /}
+{block name="main"}
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<script type="text/javascript">
+		try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	</script>
+
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+				<a href="#">首页</a>
+		</li>
+
+		<li>
+			<a href="#">用户首页</a>
+		</li>
+			<li class="active">申请单列表</li>
+	</ul><!-- .breadcrumb -->
+
+</div>
+
+<div class="page-content">
+	<div class="page-header col-xs-12">
+            <h1 class="col-xs-8">
+                {:session('cur_user_info')['nickname']}
+                <small>
+                    <i class="icon-double-angle-right"></i>
+                    申请单列表
+                </small>
+            </h1>
+        <div class="pull-right  clearfix">
+        	<button type="button" class="btn btn-info btn-sm" id="add_note">新增申请单</button>
+            <a href="{:url('UserMain/index')}" class="btn btn-info btn-sm">返回日历</a>
+        </div>        
+	</div><!-- /.page-header -->
+
+	<div class="row"><!-- /.col -->
+    	<div class="col-xs-12">
+            <table class="table table-striped table-bordered table-hover">
+            	<thead>
+                	<tr>
+                    	<th>ID</th>
+                        <th>类型</th>
+                        <th>时间</th>
+                        <th>时间范围</th>
+                        <th>标题</th>
+                        <th>代理人</th>
+                        <th>状态</th>
+                        <th>创建时间</th>                        
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                	{if condition="empty($page_info.list)"}						
+						<tr>
+							<td colspan="9" align="center">暂无数据！</td>
+						</tr>
+						{else/}
+						{volist name="page_info.list" id="vo"}
+                            <tr>
+                                <td>{$vo.id}</td>
+                                <td>{:get_note_type_name($vo.note_type)} 
+                                	{eq name="$vo['note_type']" value="1"} ({:config('hr_note_type')[$vo.hr_note_id]}) {/eq}
+                                    {if condition="($vo['note_type']==2) and ($vo['note_type_2_flag']==1)"}
+                                    	(管理部代购)
+                                    {/if}
+                                </td>
+                                <td>{$vo.note_hour}</td>
+                                <td>
+                                    {if condition="($vo['note_type'] eq 2) or ($vo['note_type'] eq 3)"}
+                                    	{:s_date($vo.begin_time)}
+                                    {else/}
+                                    	{$vo.begin_time} ~ {$vo.end_time}		
+                                    {/if}
+                                	
+                                </td>
+                                <td>{:s_str($vo.note_title,20)}</td>   
+                                <td>{:get_cache_data('user_info',$vo.age_user_id,'nickname')}</td>
+                                <td>
+                                	{eq name="$vo.note_step" value="4"}
+                                		{if condition="$vo.note_check_status eq 1"}审核通过{else/}审核未通过{/if},
+                                    {/eq}
+                                    {:get_note_step($vo.note_step)}
+                                </td>                             
+                                <td>{$vo.c_time}</td>
+                                <td class="text-center">                                		
+                                    <div class="visible-md visible-lg btn-group">
+                                    	<button class="btn btn-xs btn-info" name="note_view" note_id="{$vo.id}" title="查看申请单">
+                                            <i class="icon-eye-open    bigger-120"></i>
+                                         </button>
+                                         {lt name="$vo.note_step" value="3"}
+                                    		{if condition="(($vo.note_hour gt $page_info.age_time_val) and ($vo.note_step eq 1)) or (( $vo.note_hour elt $page_info.age_time_val) and ($vo.note_step eq 2))"}
+                                            <button class="btn btn-xs btn-info" name="note_edit" note_id="{$vo.id}" title="编辑">
+                                                <i class="icon-edit bigger-120"></i>
+                                            </button>
+                                            <button class="btn btn-xs btn-info" name="note_delete" note_id="{$vo.id}" title="删除申请单">
+                                                <i class="icon-trash    bigger-120"></i>
+                                             </button>
+                                         	{/if}
+                                   	 {/lt}
+                                    </div>
+                                    
+                                </td>
+                            </tr>
+                    	{/volist}
+                    {/if}
+                </tbody>
+            </table>
+            {$page_info.page}
+        </div>
+	</div><!-- /.row -->
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+
+
+	//查看按钮
+	$('button[name=note_view]').click(function(){
+		//m_dialog('/user/user_main/check_note/flag/note_view/id/'+$(this).attr('note_id'),$(this).attr('title'),'max','','index','hideSave');
+		layerIframe($(this).attr('title'),"{:url('/user/user_main/check_note/flag/note_view/id/')}"+$(this).attr('note_id'),'','','','true');
+	});
+	
+	$('button[name=note_edit]').click(function(){
+		//m_dialog('edit_note/id/'+$(this).attr('note_id'),'编辑申请单','max','max');
+		layerIframe('编辑申请单',"{:url('/user/user_main/edit_note/id/')}"+$(this).attr('note_id'),'','','','true');
+		});
+	
+//新增申请单	
+$('#add_note').click(function(){
+	//m_dialog('add_note/from/note_list','新增申请单','max','','index');
+	layerIframe('新增申请单',"{:url('/user/user_main/add_note/from/index')}",'','','','true');
+});
+
+//删除申请单
+$('button[name=note_delete]').click(function(){
+	if(confirm('确定删除此申请单?')){
+			$.post('/user/user_main/note_delete/id/'+$(this).attr('note_id'),function(result){
+					alert(result);
+					location.reload()
+				});
+		}
+	});
+
+</script>
+{/block}

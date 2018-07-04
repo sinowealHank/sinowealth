@@ -1,0 +1,88 @@
+{extend name="index@index/base" /}
+{block name="main"}
+<style>
+    .search_form input{margin-left: 10px;}
+    .search_form span{margin-left: 10px;}
+    .page-header a {margin-left:10px;width: 100px; }
+</style>
+<div class="breadcrumbs" id="breadcrumbs">
+    <script type="text/javascript">
+        try{ace.settings.check('breadcrumbs','fixed')}catch(e){}
+    </script>
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">首页</a>
+        </li>
+
+        <li>
+            <a href="#">资产管理</a>
+        </li>
+        <li class="active">用户申请资产</li>
+    </ul><!-- .breadcrumb -->
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <a class="btn btn-primary layerIframe btn-xs" hig="550px;" title="申请资产表单" url="{:url('prop/apply/add',0,false)}"><i class="icon-plus"></i>申请资产</a>
+        <!--<a href="{:url('prop/accept/index')}" class="btn btn-primary btn-xs">查看验收表</a>-->
+        <!--<a href="{:url('prop/apply/applylist')}" class="btn btn-primary pull-right btn-xs">查看申请表</a>-->
+        <!--<a href="{:url('prop/apply/depsignlist')}" class="btn btn-primary pull-right btn-xs">递交签呈</a>-->
+    </div><!-- /.page-header -->
+    <div>
+        <form class="search_form" method="get">
+            <span>资产编号:</span><input type="text" name="reg_prop_num" value="{$page_info.reg_prop_num?$page_info.reg_prop_num:'';}">
+            <span>资产名称:</span><input type="text" name="reg_prop_name" value="{$page_info.reg_prop_name?$page_info.reg_prop_name:'';}">
+            <span>规格型号:</span><input type="text" name="product_model" value="{$page_info.product_model?$page_info.product_model:'';}">
+            <span><button type="submit" class="btn btn-primary btn-xs">查询</button></span>
+        </form>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>ID:</th>
+                <th>资产编号：</th>
+                <th>资产名称：</th>
+                <th>规格型号：</th>
+
+                <th>开始使用时间：</th>
+                <th>使用部门：</th>
+
+                <th>申请人：</th>
+
+                <th>备注：</th>
+                <th>负责部门：</th>
+                <th>注销日期：</th>
+                <!--<th>原值：</th>-->
+                <!--<th>净值：</th>-->
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="$page_info.per_prop" id="vo"}
+            <tr>
+                <td>{$vo.id}</td>
+                <td>{$vo.reg_prop_num}</td>
+                <td>{$vo.reg_prop_name,20 |s_str}</td>
+                <td>{$vo.product_model}</td>
+
+                <td>{$vo.start_use_time}</td>
+                <td>{$vo.use_dep,20|s_str}</td>
+                <td>{$vo.prop_user}</td>
+
+                <td>{$vo.prop_remark}</td>
+                <td>{$vo.respon_dep}</td>
+                <td>{$vo.logoff_time}</td>
+                <!--<td>{$vo.orginal_val}</td>-->
+                <!--<td>{$vo.net_val}</td>-->
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+        {$page_info.page}
+    </div>
+</div>
+{/block}
+{block name="script"}
+
+<script>
+
+</script>
+{/block}

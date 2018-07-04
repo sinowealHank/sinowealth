@@ -1,0 +1,41 @@
+<form class="form-horizontal" id="editFrom" style=" "  role="form" autocomplete="off"  action="{:url('sys/Role/roleEdit',0,false)}"  method="post" onsubmit="return validateCallback(this);" >
+    <input type="hidden" name="id" id="role_id" value="{$page_info.role_data.id}">
+    <div class="modal-body">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">角色名称:</label>
+            <div class="col-sm-8">
+                <input type="text" name="r_name" id="g_name" placeholder="必填"  value="{$page_info.role_data.role_name}"><span style="color:red;top: -5px;position:relative;">*</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">角色中文名称:</label>
+            <div class="col-sm-8" >
+                <input type="text" name="c_g_name" id="c_g_name" placeholder="必填" value="{$page_info.role_data.c_group_name}" > <span style="color:red;top: -5px;position:relative;">*</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">所属角色:</label>
+            <div class="col-sm-8">
+                <select name="p_id" id="p_id">
+                    <option value="0">顶级角色</option>
+                    {$page_info.role}
+                </select>
+            </div>
+        </div>
+        <div class="pull-right">
+            <button class="btn btn-info" RBAC_flag="roleedit">编辑</button>
+            <a class="btn btn-info layerSubmit" confirm='是否确认删除角色' RBAC_flag="deleterole"  role_id ="{$page_info.role_data.id}">删除</a>
+            <a class="btn btn-default closeLayer" >取消</a>
+        </div>
+    </div>
+</form>
+
+<script>
+        var id = $("a[RBAC_flag='deleterole']").attr('role_id');
+        var url = "{:url('/sys/role/deleteRole/id/')}"+id;
+        $("a[RBAC_flag='deleterole']").attr('url',url);
+
+        /*上级权限的赋值*/
+        var parent_id = '{$page_info.role_data.parent_id}';
+        $('select[name=p_id]').val(parent_id);
+</script>

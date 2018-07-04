@@ -1,0 +1,101 @@
+<style type="text/css">
+    body{font-size: 14px;}
+    label{padding-left: 1.5em}
+    .form{margin-top: 10px;}
+    .form input{height: 15px;width: 160px;padding-left: 5px;}
+    .formdata{width: 380px;float: left}
+    .left{display:block;position:absolute;width:160px}
+    .right{display:block;margin-left:160px}
+</style>
+<form  name="price_list"  >
+    <input type="hidden" name="id" value="{$price_data->id}">
+    <div>
+        <div class="formdata">
+            <div class="form">
+                <span class="left" ><label>价格条件编号：</label></span>
+                <span class='right'><input disabled="disabled" type="text" name="xmf01" value="{$price_data->xmf01}">
+            </div>
+            <div class="form">
+                <span class="left" ><label>币种：</label></span>
+                <span class='right'><input disabled="disabled"   type="text" name="xmf02" value="{$price_data->xmf02}">
+            </div>
+            <div class="form">
+                <span class="left"><label>料件编号：</label></span>
+                <span class='right'><input disabled="disabled" type="text" name="xmf03" value="{$price_data->xmf03}">
+            </div>
+            <div class="form">
+                <span class="left"><label>单位：</label></span>
+                <span class='right'><input disabled="disabled" type="text" name="xmf04" value="{$price_data->xmf04}">
+            </div>
+            <div class="form">
+                <span class="left"><label>生效日期：</label></span>
+                <span class='right'><input disabled="disabled" type="text" name="xmf05" value="{$price_data->xmf05}">
+            </div>
+            <div class="form">
+                <span class="left"><label>No Use：</label></span>
+                <span class='right'><input  type="text" name="xmf06" value="{$price_data->xmf06}">
+            </div>
+            <div class="form">
+                <span class="left"><label>订价：</label></span>
+                <span class='right'><input disabled="disabled"  type="text" name="xmf07" value="{$price_data->xmf07}">
+            </div>
+            <div class="form">
+                <span class="left"><label>折扣：</label></span>
+                <span class='right'><input disabled="disabled" type="text" name="xmf08" value="{$price_data->xmf08}">
+            </div>
+        </div>
+        <div class="formdata">
+            <div class="form">
+                <span class="left"> <label>L/T Days：</label></span>
+                <span class="right"><input  {if condition="$user_type eq 2"}disabled="disabled"{/if} type="text" name="ta_xmf01" value="{$price_data->ta_xmf01}">
+            </div>
+            <div class="form">
+                <span class="left"> <label>定下单MOQ：</label></span>
+                <span class="right"><input {if condition="$user_type eq 2"}disabled="disabled"{/if} type="text" name="ta_xmf02" value="{$price_data->ta_xmf02}">
+            </div>
+            <div class="form">
+                <span class="left"> <label>Pack 最小包装数量：</label></span>
+                <span class="right"><input {if condition="$user_type eq 2"}disabled="disabled"{/if} type="text" name="ta_xmf03" value="{$price_data->ta_xmf03}">
+            </div>
+            <div class="form">
+                <span class="left"> <label>Marke Price_内：</label></span>
+                <span class="right"><input {if condition="$user_type eq 1"}disabled="disabled"{/if} type="text" name="ta_xmf04" value="{$price_data->ta_xmf04}">
+            </div>
+            <div class="form">
+                <span class="left"> <label>Marke Price_外：</label></span>
+                <span class="right"><input {if condition="$user_type eq 1"}disabled="disabled"{/if}  type="text" name="ta_xmf05" value="{$price_data->ta_xmf05}">
+            </div>
+            <div class="form">
+                <span class="left"> <label>Agent Price_内：</label></span>
+                <span class="right"><input {if condition="$user_type eq 1"}disabled="disabled"{/if} type="text" name="ta_xmf06" value="{$price_data->ta_xmf06}">
+            </div>
+            <div class="form">
+                <span class="left"> <label>Agent Price_外：</label></span>
+                <span class="right"><input  {if condition="$user_type eq 1"}disabled="disabled"{/if}  type="text" name="ta_xmf07" value="{$price_data->ta_xmf07}">
+            </div>
+            <div class="form">
+                <span class="left"> <label>RefundQty(Kpcs)：</label></span>
+                <span class="right"><input   {if condition="$user_type eq 1"}disabled="disabled"{/if}  type="text" name="ta_xmf08" value="{$price_data->ta_xmf08}">
+            </div>
+            <div class="form">
+                <span class="left"> <label>带Code单价：</label></span>
+                <span class="right"><input  {if condition="$user_type eq 1"}disabled="disabled"{/if}  type="text" name="ta_xmf11" value="{$price_data->ta_xmf11}">
+            </div>
+        </div>
+        <div style="clear: both;float: right;">
+            <button type="button" class="layui-btn layui-btn-small edit">编辑</button>
+            <button type="button" class="layui-btn layui-btn-small closeLayer">取消</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    //编辑pricelisr
+    $(".edit").click(function(){
+        var data = $("form[name=price_list]").serialize();
+        $.post("{:url('erp/price_list/save_price')}",data,function(result){
+            showMsg(result);
+            $('#tt').datagrid('reload');
+        },"json")
+    })
+</script>

@@ -1,0 +1,123 @@
+{extend name="index@index/base" /}
+{block name="main"}
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<script type="text/javascript">
+		try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	</script>
+
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+				<a href="#">首页</a>
+		</li>
+
+		<li>
+			<a href="#">后台管理</a>
+		</li>
+			<li class="active">用餐数据</li>
+	</ul><!-- .breadcrumb -->
+</div>
+
+<div class="page-content">
+	<div class="page-header col-xs-12">
+            <h1 class="col-xs-9">
+                用餐数据
+                <small>
+                    <i class="icon-double-angle-right"></i>
+                    列表&nbsp;&nbsp;
+                    	(本次查询 
+                        	早餐统计<span class="red">{$page_info.eat_count.bf_count}</span>;
+                            午餐统计<span class="red">{$page_info.eat_count.lunc_count}</span>;
+                            晚餐统计<span class="red">{$page_info.eat_count.supper_count}</span>
+                          )
+                </small>                    
+            </h1>
+        <div class="pull-right  clearfix">        	
+            <!--<a href="{:url('User/ext_repo')}" class="btn btn-info btn-sm" id="add_user"><span class="icon-book"></span>导出报表</a>-->
+        </div>        
+	</div><!-- /.page-header -->
+
+	<div class="row"><!-- /.col -->
+    	<div class="col-xs-12">
+            <form  class="form-horizontal" action="{:url()}">
+                    <div class="form-group col-sm-10" style=" margin-bottom:0px;">
+                            <label for="form-field-2" class="col-sm-1 control-label no-padding-right">开始日期</label>
+                            <div class="col-sm-2">
+                                <input class="col-sm-12" type="text"  readonly="readonly" name="begin_date"  onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" value="{$page_info.begin_date}" />
+                            </div>
+                            <label for="form-field-2" class="col-sm-1 control-label no-padding-right"> 结束日期</label>
+                            <div class="col-sm-2">
+                                <input class="col-sm-12" type="text"  readonly="readonly" name="end_date"  onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" value="{$page_info.end_date}" />
+                            </div>
+                            <label for="form-field-2" class="col-sm-1 control-label no-padding-right"> 部门</label>
+                            <div class="col-sm-1">
+                                <select name="dep_id">
+                                	<option value="all">所有</option>
+                                    {volist name="$page_info.dep_arr" id="vo"}
+                                    	<option value="{$vo.id}">{$vo.en_name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <label for="form-field-2" class="col-sm-1 control-label no-padding-right"> 姓名</label>
+                            <div class="col-sm-2">
+                                <input class="col-sm-12" type="text" name="nickname"   value="{$page_info.nickname}" />
+                            </div>
+                           <label class="col-sm-1 control-label no-padding-right">
+                                <button class="btn btn-minier btn-primary" type="submit">
+                                    <i class="icon-ok bigger-110"></i>
+                                    提交
+                                </button>
+                           </label>
+                        </div>
+                         <button class="btn btn-minier btn-primary pull-right" type="button" name="supper_list">
+                            <i class="icon-ok bigger-110"></i>
+                            本日晚餐
+                            {eq name="page_info.supper_flag" value="1"}(已通知){else /}(未通知){/eq}
+                        </button>
+                </form>
+            <br /><br />
+            <table class="table table-striped table-bordered table-hover">
+            	<thead>
+                	<tr>
+                    	<th>工号</th>
+                        <th>姓名</th>
+                        <th>早餐</th>
+                        <th>午餐</th>
+                        <th>晚餐</th>
+                        <th>用餐日期</th>
+                    </tr>
+                </thead>
+                <tbody>
+                	{if condition="$page_info.empty eq 1"}						
+						<tr>
+							<td colspan="9" align="center">暂无数据！</td>
+						</tr>
+						{else/}
+						{volist name="page_info.list" id="vo"}
+                            <tr>
+                                <td>{$vo.user_gh}</td>
+                                <td>{$vo.nickname}</td>
+                                <td>{$vo.bf}</td>
+                                <td>{$vo.lunc}</td>
+                                <td>{$vo.supper}</td>
+                                <td>{:s_date($vo.entry_date)}</td>
+                            </tr>
+                    	{/volist}
+                    {/if}
+                </tbody>
+            </table>
+            {$page_info.page}
+        </div>
+	</div><!-- /.row -->
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+	$('select[name=dep_id]').val('{$page_info.dep_id}');
+	$('button[name=supper_list]').click(function(){
+			m_dialog('/sys/eat_list/cur_day_supper_list/','本日晚餐统计','','','','hideSave');
+		});
+</script>
+{/block}

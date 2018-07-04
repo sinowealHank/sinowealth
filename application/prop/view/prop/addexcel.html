@@ -1,0 +1,16 @@
+
+<form id="ajaxForm" action="{:url('prop/prop/leadexcel')}" method="post" enctype="multipart/form-data" >
+    <div class="form-group">
+        <label class="col-sm-3">excel文件：</label>
+        <div>
+            <input type="file" name="file" >
+        </div>
+    </div>
+    <div class="pull-right">
+        <button  class="btn btn-info">导入报表</button>
+        <a class="btn btn-default closeLayer">取消</a>
+    </div>
+</form>
+<script>
+    ajax_sub_from('ajaxForm');
+</script>

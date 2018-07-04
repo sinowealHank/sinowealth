@@ -1,0 +1,328 @@
+{extend name="index@index/base" /}
+{block name="main"}
+	<div class="breadcrumbs" id="breadcrumbs">
+	    <script type="text/javascript">
+	        try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	    </script>
+	    <ul class="breadcrumb">
+	        <li>
+	            <i class="icon-home home-icon"></i>
+	            <a href="#">审核></a>
+	            <span wtq_zs_id="zs"></span>
+	            <span wtq_mem_id="mem"></span>
+	        </li>
+	    </ul><!-- .breadcrumb -->
+	</div>
+	<div class="col-md-12">
+	    <div class="box">
+	        <div class="box-header">
+	        	<div>
+		            <button onclick="return all_ok_go()" class="btn btn-sm btn-primary" style="width:78px;">
+		                <i class="fa fa-list"></i> 
+		                	批量通过
+		            </button>
+		            <button onclick="return all_ok_go('no')" class="btn btn-sm btn-primary" style="width:78px;">
+		                <i class="fa fa-list"></i> 
+		                	批量拒绝
+		            </button>
+		            <!--button onclick="return all_ok_go('sta')" class="btn btn-sm btn-primary" style="width:117px;">
+		                <i class="fa fa-list"></i> 
+		                	批量拒绝并留言
+		            </button-->
+	        		<div style="float:right;padding-right:30px;">
+	        			<span>状态</span>
+		        			<select  wtq_up_index_name='zt'>
+		        				<option value="2">待审核</option>
+					            <option value="1">通过</option>
+					            <option value="0">未通过</option>
+				            	<option value="0,1,2">全部</option>
+				            </select>
+	        			<span>精确查找：</span>
+	        			<label class="inline">
+							<input wtq_up_index_name='sql_jq' value="yes" class="" type="checkbox">
+							<span class="lbl"></span>
+						</label>
+		            	<span>关键字：</span><input wtq_up_index_name='name'><button onclick="return sour('Shen')" class="btn btn-sm btn-primary">搜索</button>
+	        		</div>
+	        		
+	        	</div>
+    		</div>
+		    <div class="box-body">
+			    <table class="table table-hover">
+			        <thead>
+			            <tr>
+			            	<th>
+				            	<input onclick="var a=$('input[type=checkbox][name=all_ok_one]');if($(this).is(':checked')){a.prop('checked',true)}else{a.prop('checked',false)}" name='all_ok' value="0" type="checkbox">
+			            	</th>
+			                <th style="cursor:pointer;" onclick="paixu(this,'id')">编号<i wtq_up_index_i="i" class="icon-level-up" style="padding-left:5px;color:red;"></i></th>
+			                <th style="cursor:pointer;" onclick="paixu(this,'file_name')"><div onclick="event.stopPropagation();" onmousedown="name_th_width_down('left')" style="width:2px;height:19px;float:left;cursor:e-resize;background-color:#a08d8d;"></div>名字<div onclick="event.stopPropagation();" onmousedown="name_th_width_down('right')" style="width:2px;height:19px;float:right;cursor:e-resize;background-color:#a08d8d;"></div><i wtq_up_index_i="i" style="padding-left:30px;color:red;"></i></th>
+			                <!--th>分类</th-->
+			                <th style="cursor:pointer;" onclick="paixu(this,'file_size')">文件大小<i wtq_up_index_i="i" style="padding-left:30px;color:red;"></i></th>
+			                <th style="cursor:pointer;" onclick="paixu(this,'file_time')" >上传时间<i wtq_up_index_i="i" style="padding-left:30px;color:red;"></i></th>
+			                <th>版本</th>
+			                <th style="cursor:pointer;" onclick="paixu(this,'ok')">审核<i wtq_up_index_i="i" style="padding-left:30px;color:red;"></i></th>
+			                <th>操作</th>
+			            </tr>
+			        </thead>
+			        <tbody>
+			        
+			        </tbody>
+			    </table>
+			    
+		    </div>
+		    <div class="box-footer">
+		    	<div class="text-right">
+					
+		    	</div>
+		    </div>
+		</div>
+	</div>
+
+<input style="display:none" wtq_up_index_id='url'>
+<input style="display:none" wtq_up_index_name='xin' value="{//$xing}">
+{/block}
+{block name="script"}
+{include file="../application/file/view/up/js.html" /}
+    <script>
+    	//单个审核拉取弹框
+    	function ok_this(a,b,id,d){
+    		var th1='<input onclick="$(\'div[wtq_up_index_name=div]\').css(\'display\',\'none\');" wtq_up_index_name="all_stau" name="all_stau" value="1" checked="checked" type="radio"><span>通过</span>';
+    		var th2='';
+    		var th3='style="display:none;"';
+    		var th4='';
+    		if(a==2){}
+    		if(a==1){}
+    		if(a==0){th1='';th2='checked="checked"';th3='';th4='name="yuanyin"';}
+    		var th='<div style="height:80px;padding:10px 0 0 20px;"><input style="display:none;" wtq_up_index_name="id" value="'+id+'"><div>'+th1+
+					'<input '+th2+' onclick="$(\'div[wtq_up_index_name=div]\').css(\'display\',\'\');" wtq_up_index_name="all_stau" name="all_stau" value="0" type="radio">不通过'+
+					'</div><div wtq_up_index_name="div" '+th3+'>'+
+					'<span>不通过原因</span><textarea wtq_up_index_name="text" '+th4+'>'+b+'</textarea>'+
+					'</div></div>';
+			var th=th+'<hr><div><button wtq_up_index_alert_close="close" class="btn btn-primary btn-small layui-layer-close" style="float:right;margin-right:20px;">关闭</button> '+
+    		'<button onclick="shenhe(\'x\')" class="btn btn-primary btn-small" style="float:right;margin-right:5px;">保存并关闭</button> '+
+    		'<button onclick="shenhe()" class="btn btn-primary btn-small" style="float:right;margin-right:5px;">保存</button></div> '
+    		layer.open({
+      		  type: 1,
+      		  skin: 'layui-layer-rim', //加上边框
+      		  area: ['420px', '240px'], //宽高
+      		  content: th
+      		});
+    		$("div[class=layui-layer-title]").html(d+'审核')
+    	}
+    	//批量审核a为空侧成功a为no则失败
+    	function all_ok_go(a){
+    		var len=$("input[name=all_ok_one]").length;
+    		var id='';var b='';var c='nop;';
+    		var th='<div style="float:right;width:50%"><input name="all_ok_id" type="checkbox" onclick="var a=$(\'input[type=checkbox][all_ok_id=all_ok_id]\');if($(this).is(\':checked\')){a.prop(\'checked\',true)}else{a.prop(\'checked\',false)}">全部<br>';
+    		for(i=0;i<len;i++){
+    			if($("input[name=all_ok_one]").eq(i).is(':checked')){
+    				if(a=='no'){
+    					var c='ok';
+    				}else if(a==''){
+    					if($("input[name=all_ok_one]").eq(i).attr("ok")==0){
+    						var b=b+','+$("input[name=all_ok_one]").eq(i).val();
+    					}else{
+    						var c='ok';
+    					}
+    				}else{
+    					var c='ok'
+    				}
+    				if(c=='ok'){
+    					id=id+','+$("input[name=all_ok_one]").eq(i).val();
+        				th=th+'<input onclick="if(!$(this).is(\':checked\')){$(\'input[type=checkbox][name=all_ok_id]\').prop(\'checked\',false)}" all_ok_id="all_ok_id" name="all_ok_id[]" type="checkbox" value="'+$("input[name=all_ok_one]").eq(i).val()+'"><span>'+$("td[wtq_this_id=name"+$("input[name=all_ok_one]").eq(i).val()+"]").children('div').html() +'</span><br>'
+    				}
+    				c='no';
+    			}
+    		}
+    		th=th+'</div>'
+    		if(a=='sta'){
+    			var th='<form id="form2">'+th+'<div style="float:left;"><span style="color:red">*将会覆盖原有的留言</span><br><textarea name="text"></textarea></div></form>'
+    			var foot=th+'<hr><div class="pull-right" style="">'+
+		                '<button type="button" class="btn btn-primary" onclick="return ok_go_all(\''+a+'\')"><span aria-hidden="true">保存</span></button>'+
+		                ' <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close" onclick="return ok_go_all(\''+a+'\',\'\',\'x\')"><span aria-hidden="true">保存并关闭</span></button>'+
+		                ' <button type="button" class="btn btn-primary layui-layer-close" wtq_data-dismiss="modal" aria-label="Close"><span aria-hidden="true">关闭</span></button>'+
+		            '</div>'
+    			layer.open({
+    	      		  type: 1,
+    	      		  skin: 'layui-layer-rim', //加上边框
+    	      		  area: ['500px', '300px'], //宽高
+    	      		  content: foot
+    	      		});
+    		}else{
+    			ok_go_all(a,id)
+    		}
+    		
+    	}
+    	//修改文件状态
+    	function ok_go_all(a,b,d){
+    		$('.loading').parent().css('display','');
+    		if(a=='sta'){
+    			var form=new FormData($('#form2')[0]);
+    			var c=2;
+    			$.ajax({
+                    type: "POST",
+                    url:'{:url("Shen/ok_all")}?ok='+c,
+                    data:form,// 你的formid
+                    processData:false,
+                    contentType:false,
+                    dataType:'json',
+                    error: function(request) {
+                        mythisalert(0,'失败')
+                        $('.loading').parent().css('display','none');
+                    },
+                    success: function(data) {
+                    	var l=$("input[all_ok_id=all_ok_id]").length;
+            			l=l-1;
+            			for(l;l>=0;l=l-1){
+            				if($("input[all_ok_id=all_ok_id]").eq(l).is(':checked')){
+            					$("input[all_ok_id=all_ok_id]").eq(l).next('span').next('br').remove()
+            					$("input[all_ok_id=all_ok_id]").eq(l).next('span').remove()
+            					$("input[all_ok_id=all_ok_id]").eq(l).remove()
+            				}
+            			}
+                        mythisalert(data[0],data[1]);
+                        var a=$("input[type=radio][name=all_stau]:checked").val();
+                		var b=$("#form2").find("input[name=id]").val();
+                		if(a==0){
+                			var c=$("#form2").find("textarea[name=yuanyin]").val();
+                		}else{var c='';}
+                		$("span[ok_id="+b+"]").attr('onclick',"ok_this('"+a+"','"+c+"','"+b+"')");
+                		if(a==1){a='通过';css='btn btn-minier btn-success';}else if(a==0){$("input[type=radio][name=all_stau][value=1]").next("span").remove();$("input[type=radio][name=all_stau][value=1]").remove();a='失败';css='btn btn-minier btn-inverse';}else{a='未知状态';css='btn btn-minier btn-danger';}
+                		$("span[ok_id="+b+"]").html(a);
+                		$("span[ok_id="+b+"]").attr('class',css);
+                		if(d=='x'){
+		    				$('button[wtq_data-dismiss=modal]').trigger('click')
+		    			}
+                		var url=$("input[wtq_up_index_id=url]").val();
+                		if(url==''){ url='?c=1';}
+                		ajax_index(url)
+                		$('.loading').parent().css('display','none');
+                    }
+                });
+    		}else{
+    			if(a=='no'){var c=0;}else{var c=1;}
+    			$.post('{:url("Shen/ok_all")}?ok='+c,{all_ok_id:b},
+    	                function (data) {
+    						mythisalert(data[0],data[1]);
+    						$('.new_pwd').css('display','none');
+    						var url=$("input[wtq_up_index_id=url]").val();
+    						if(url==''){ url='?c=1';}
+    						ajax_index(url)
+    						$('.loading').parent().css('display','none')
+    	                },"json").error(
+    	                		function() {
+    	                			mythisalert(0,'失败');$('.loading').parent().css('display','none');
+    	                		}
+    	                		);
+    		}    		
+    	}
+    </script>
+   	<script>
+   		//单个审核修改状态
+   		function shenhe(a){
+   			var id=$("input[wtq_up_index_name=id]").val();
+   			var ok=$("input[wtq_up_index_name=all_stau]:checked").val();
+   			var sta='';
+   			if(ok==0){
+   				var sta=$("textarea[wtq_up_index_name=text]").val()}
+   			$('.loading').parent().css('display','');
+   			$.post('{:url("Shen/file_shen")}',{id:id,ok:ok,sta:sta},
+   	                function (data) {
+   						mythisalert(data[0],data[1]);
+   						if(a=='x'){
+   		    				$('button[wtq_up_index_alert_close=close]').trigger('click')
+   		    			}
+   						if(ok==0){
+   	            			
+   	            		}else{var c='';}
+   						var url=$("input[wtq_up_index_id=url]").val();
+						if(url==''){ url='?c=1';}
+						ajax_index(url)
+   						$('.loading').parent().css('display','none');
+   	                },"json").erroe(function(){mythisalert(0,'失败');$('.loading').parent().css('display','none');});
+   		}
+   	</script>
+   	<script>
+		var vie;
+	   	ajax_index()
+	   	//文件下载
+		function xz(id){
+	    	xz_all(id,'Shen')
+	    }
+	   	//文件预览
+    	function yl(url,houzhui,id){
+    		yl_all(url,houzhui,id,'Shen')
+	    }
+    	//异步加载页面内容
+    	function ajax_index(url=sour_text('Shen'),thi,s){
+    		ajax_index_all(url,thi,s,'Shen')
+    	}
+    	//对文件进行踩赞
+    	function lick(a,b,name,id){
+    		lick_all(a,b,name,id,'Shen')
+    	}
+    	//文件留言发表
+    	function fb(a){
+    		fb_all(a,'Shen')
+    	}
+    </script>
+   	<script>
+   		//页面内容组合
+    	function indexx(data,foot,url,shumu){
+    		var text;
+    		if(data==''){text='<tr><td colspan="7"><h2><p style="color:red;">没有数据</p></h2></td></tr>'}
+    		$.each(data, function (index, item) {
+    			if(item.ok==2){
+               		var shen='<span ok_id="'+item.id+'" onclick="ok_this(\''+item.ok+'\',\'\',\''+item.id+'\',\''+item.file_name+'\')" class="btn btn-minier btn-primary">待审核</span>'
+               	}else if(item.ok==1){
+               		var shen='<span ok_id="'+item.id+'" onclick="ok_this(\''+item.ok+'\',\'\',\''+item.id+'\',\''+item.file_name+'\')" class="btn btn-minier btn-success">通过</span>'
+               	}else if(item.ok==0){
+               		var shen='<span ok_id="'+item.id+'" onclick="ok_this(\''+item.ok+'\',\''+item.sta+'\',\''+item.id+'\',\''+item.file_name+'\')" class="btn btn-minier btn-inverse">失败</span>'
+               	}else{
+               		var shen='<span class="btn btn-minier btn-danger">未知状态</span>'
+               	}
+               	if(item.down==1){var down='<button onclick="return xz(\''+item.id+'\');" class="btn btn-xs">下载</button> ';}else{var down='<button class="btn btn-xs" style="opacity:0;cursor:auto">下载</button> '};
+               	var size_K;var size_M;var size_G;
+               	size_B=item.file_size;size=size_B.toFixed(2)+'B';
+               	if(size_B>100){
+               		size_K=size_B/1024;size=size_K.toFixed(2)+'KB';
+               	}
+				if(size_K>100){
+               		size_M=size_K/1024;size=size_M.toFixed(2)+'MB';
+               	}
+				if(size_M>100){
+               		size_G=size_M/1024;size=size_G.toFixed(2)+'GB';
+               	}
+				if(size_G>100){
+               		size_T=size_G/1024;size=size_T.toFixed(2)+'TB';
+               	}
+				var change_time=item.file_time;
+				change_time = change_time.split(' ');
+                 text=text+'<tr><td><input onclick="if(!$(this).is(\':checked\')){$(\'input[type=checkbox][name=all_ok]\').prop(\'checked\',false)}" ok="'+item.ok+'" name=\'all_ok_one\' value="'+item.id+'" type="checkbox"></td>'+
+                   	'<td>'+item.id+'</td>'+
+                   	'<td wtq_this_id="name'+item.id+'"><div wtq_this_wid="name" title="'+item.file_name+'" style="display:block;white-space:nowrap; overflow:hidden;text-overflow:ellipsis;width:300px;">'+item.file_name+'</div></td>'+
+                   	'<!--td>'+item.fenlei+'</td-->'+
+                   	'<td>'+size+'</td>'+
+                   	'<td>'+change_time[0]+'</td>'+
+                   	'<td>'+item.bb+'</td>'+
+                   	'<td>'+shen+'</td>'+
+                   	'<td>'+'<!--button onclick="return yl(\''+item.url+item.file_sc_name+'.'+item.file_houzhui+'\',\''+item.file_houzhui+'\',\''+item.id+'\');" class="btn btn-xs">预览</button--> '+down+
+                   	'<button style="" class="btn btn-xs layerIframe" url="{:url(\'One_up/file_xx\')}?id='+item.id+'" wid="70%" hig="90%" title="'+item.file_name+'">详情</button> '+
+                   	'</td>'
+                   //输出0...aaa,bbb,ccc  1...ddd,eee,fff  2...ggg,hhh,iii   这时的index为数组下标,item相当于取这二维数组中的每一个数组
+                  
+                   text=text+'</tr>';
+               });
+               $("div[class=box-body]").find('tbody').html(text);
+               var inn=$("div[class=box-footer]").find("div[class=text-right]");
+               if(foot==1){
+               		inn.html('')
+               }else{
+               		inn.html(foot)
+               }
+               $("input[wtq_up_index_id=url]").val(url);
+               $("span[wtq_mem_id=mem]").html(shumu);
+               $('.loading').parent().css('display','none');
+    	}
+   	</script>
+{/block}

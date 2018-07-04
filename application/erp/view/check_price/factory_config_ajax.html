@@ -1,0 +1,18 @@
+<thead>
+	<tr>
+		{foreach $config_title as $key=>$t}
+			<td onclick="config_paixu('{$key}','{$config_zorf}')" style="cursor: pointer;"><div><b>{$t}{if condition="$config_sort_name==$key"}<i wtq_up_index_i="i" class="icon-level-up" style="padding-left:5px;color:red;font-size: 16px;">{if condition="$config_zorf==1"}↑{else /}↓{/if}</i>{/if}</b></div></td>
+		{/foreach}
+		<td><div><b>操作</b></div></td>
+	</tr>
+</thead>
+<tbody>
+	{foreach $fac_name as $con}
+		<tr wtq_id="{$con['id']}">
+			{foreach $con as $key=>$c}
+				<td  wtq_type="{$key}" {if condition="$key=='type_flag'"}style="display:none"{/if}><div>{$c}</div></td>
+			{/foreach}
+			<td><div><button onclick="add_config('{$con['id']}')">修改</button><!--button>删除</button--></div></td>
+		</tr>
+  		{/foreach}
+</tbody>

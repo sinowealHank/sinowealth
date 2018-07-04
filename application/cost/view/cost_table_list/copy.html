@@ -1,0 +1,69 @@
+<meta charset="utf-8" />
+<div>复制Pro no:<span style="color:green">{$page_info.prdno} </span>数据</div>
+<form action="copyRow" method="post" id="rowForm">
+	<div style="margin-left:5%">
+	   	<table cellpadding="5" >
+	   		<tr>
+	   		{volist name="page_info.info" id="vo" key="k"}
+	   		{php}if (($k-1)%4 == 0){
+					echo "</tr>";
+					echo "<tr>";
+				}
+			{/php}		
+			<td  align="right">{$vo.field_show}:</td>
+			{in name="vo.field" value="$page_info.field_category_4"}
+			{php}$content = cost_get_select_content($vo['field']);{/php}
+			<td>
+				<select name='{$vo.field}' style="width:100%">
+					{volist name="content" id="v"}
+					<option  value = "{$v}"  {if condition="(trim($v) == trim($vo['value']))"}selected = "selected" {/if} >{$v}</option >
+					{/volist}
+				</select>
+			</td>	   		
+			{else /}
+			{in name="vo.field" value="WF,WF_Die,by10,by11,CP_Die,CP_Pcs,by60,by12,by13,Ym,by14,by17,PUG,Die,by21,by22,F_T_Yld,by23,F_T,FT_sjjg,F_T_TWEO,by26,by27,by29,by30,by32,by33,by34,by35,by36,by37,by39,by43,by44,by45,by46,by49,by50,by51,by54,by55,by56,U_Cost_US,U_Cost_HK"}
+				<td><input onkeyup="value=value.replace(/[^\d\.]/g,'')" onblur="value=value.replace(/[^\d\.]/g,'')" class="easyui-textbox" type="text" name="{$vo.field}" value="2"></input></td>		
+			{else/}
+				<td><input class="easyui-textbox" type="text" name="{$vo.field}" value="{$vo.value}"></input></td>
+			{/in}
+			{/in}
+			{/volist}
+	   		</tr>
+	   			
+	   	</table>
+   </div>
+   <div style="margin:3% 20% 2% 40%"><span>提交下个部门：</span><input type="checkbox" name="email"/></div>
+</form>
+	<div style="margin:0 0 10% 40%">
+	   	<button onclick="rowSubmit()" type="button" style='cursor:pointer;' class="copy">提交</button>
+	   	<button class='closeLayer' style='cursor:pointer;'>关闭</button>
+   	</div>
+<script>
+    function rowSubmit(){
+    	var $form = $('#rowForm');
+		$.ajax({
+			type:$form.method || 'POST',
+			url:$form.attr("action"),
+			beforeSend: function(){
+		    this.layerIndex = layer.load(1, {
+					shade: 0.3 //0.1透明度的白色背景
+				});
+			},
+			data:$form.serializeArray(),
+			dataType:"json",
+			success:function(result){
+				layer.close(this.layerIndex);
+				showMsg(result);
+				if(result.statusCode == 1){
+					reload_list();
+				}
+				//closeIndex('复制成功','1');						
+			},
+			complete: function () {
+				$(".copy").removeAttr("disabled");
+			}
+		});
+    }
+</script>
+
+

@@ -1,0 +1,104 @@
+<meta charset="utf-8" />
+<form action="editRow" method="post" id="rowForm">
+	<div style="margin-left:5%">
+	   	<table cellpadding="5" >
+	   	<input type="hidden" name="id" value="{$page_info.id}"/>
+	   		<tr>
+	   		{volist name="page_info.info" id="vo" key="k"}
+	   		{php}if (($k-1)%4 == 0){
+					echo "</tr>";
+					echo "<tr>";
+				}
+			{/php}		
+	   			<td  align="right">{$vo.field_show}:</td>
+	   			
+				<td><input class="easyui-textbox" type="text" name="{$vo.field}" readonly value="{$vo.value}"></input></td>
+			  		
+				
+	   		
+	   			
+	   		
+			{/volist}
+	   		</tr>
+	   			
+	   	</table>
+   </div>
+</form>
+<div style="margin:0% 0 10% 40%">
+	   	<button class='closeLayer' style='cursor:pointer;'>关闭</button>
+   	</div>
+<script>
+    function rowSubmit(){
+    	var $form = $('#rowForm');
+		$.ajax({
+			type:$form.method || 'POST',
+			url:$form.attr("action"),
+			data:$form.serializeArray(),
+			dataType:"json",
+			success:function(result){
+				showMsg(result);
+				if(result.statusCode == 1){
+					reload_list();
+				}
+			},
+		});
+    }
+	/* 计算公式
+	CP_Die = CP_Pcs/Good_Die
+	Ym = by14/Good_Die
+	F_T = F_T_TWEO/by23
+	by45 = by46/Good_Die
+	U_Cost_US = WF_Die+ CP_Die + Ym +PUG+Die+ F_T +by30+by35+by37+by39
+	*/
+	$('input[name=CP_Pcs]').change(function(){
+		CP_Die_val();
+		U_Cost_US_val();
+	});
+	$('input[name=Good_Die]').change(function(){
+		CP_Die_val();
+		Ym_val();
+		by45_val();
+		U_Cost_US_val();
+	});
+	$('input[name=by14]').change(function(){
+		Ym_val();
+		U_Cost_US_val();
+	});
+	$('input[name=F_T_TWEO],input[name=by23]').change(function(){
+		F_T_val();
+		U_Cost_US_val();
+	});
+	$('input[name=by46]').change(function(){
+		by45_val_val();
+	});
+	$('input[name=WF_Die],input[name=PUG],input[name=Die],input[name=by30],input[name=by35],input[name=by37],input[name=by39]').change(function(){
+		U_Cost_US_val();
+	});
+	
+	
+	function CP_Die_val(){
+		var CP_Die = Number($('input[name=CP_Pcs]').val())/Number($('input[name=Good_Die]').val());	
+		$('input[name=CP_Die]').val(CP_Die);
+	}
+	function Ym_val(){
+		Ym = Number($('input[name=by14]').val())/Number($('input[name=Good_Die]').val());	
+		$('input[name=Ym]').val(Ym);
+	}
+	function F_T_val(){
+		var F_T = Number($('input[name=F_T_TWEO]').val())/Number($('input[name=by23]').val());	
+		$('input[name=F_T]').val(F_T);
+	}
+	function by45_val(){
+		var by45 = Number($('input[name=by46]').val())/Number($('input[name=Good_Die]').val());	
+		$('input[name=by45]').val(by45);
+	}
+	function U_Cost_US_val(){
+		var U_Cost_US = Number($('input[name=WF_Die]').val())+Number($('input[name=CP_Die]').val())+
+		            Number($('input[name=Ym]').val())+Number($('input[name=PUG]').val())+
+					Number($('input[name=Die]').val())+Number($('input[name=F_T]').val())+
+					Number($('input[name=by30]').val())+Number($('input[name=by35]').val())+
+					Number($('input[name=by37]').val())+Number($('input[name=by39]').val());
+		$('input[name=U_Cost_US]').val(U_Cost_US);
+	}
+</script>
+

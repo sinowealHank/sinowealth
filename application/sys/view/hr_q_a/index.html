@@ -1,0 +1,130 @@
+{extend name="index@index/base" /}
+{block name="main"}
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<script type="text/javascript">
+		try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	</script>
+
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+				<a href="#">首页</a>
+		</li>
+
+		<li>
+			<a href="#">后台管理</a>
+		</li>
+			<li class="active">问题反馈</li>
+	</ul><!-- .breadcrumb -->
+</div>
+
+<div class="page-content">
+	<div class="page-header col-xs-12">
+            <h1 class="col-xs-9">
+                问题反馈
+                <small>
+                    <i class="icon-double-angle-right"></i>
+                    列表
+                </small>                    
+            </h1>
+	</div><!-- /.page-header -->
+
+	<div class="row"><!-- /.col -->
+    	<div class="col-xs-12">
+        	<form  class="form-horizontal" action="{:url()}">
+                <div class="form-group" style=" margin-bottom:0px;">
+                		<label for="form-field-3" class="col-sm-2 control-label no-padding-right"> 问题类型</label>
+                        <div class="col-sm-3">
+                            <select name="hr_is_t">
+                            	<option value="all" {eq name="page_info.hr_is_t" value="all"} selected="selected" {/eq}>全部</option>
+                            	<option value="1" {eq name="page_info.hr_is_t" value="1"} selected="selected" {/eq}>管理部修改资料</option>
+                                <option value="2" {eq name="page_info.hr_is_t" value="2"} selected="selected" {/eq}>考勤问题反馈</option>
+                            </select>
+                        </div>
+                        <label for="form-field-3" class="col-sm-2 control-label no-padding-right"> 是否已经答复</label>
+                        <div class="col-sm-3">
+                            <select name="hr_is_a">
+                            	<option value="all" {eq name="page_info.hr_is_a" value="all"} selected="selected" {/eq}>全部</option>
+                                <option value="q" {eq name="page_info.hr_is_a" value="q"} selected="selected" {/eq}>未答复</option>
+                                <option value="a" {eq name="page_info.hr_is_a" value="a"} selected="selected" {/eq}>已答复</option>
+                            </select>
+                        </div>
+                       <label class="col-sm-1 control-label no-padding-right">
+                       		<button class="btn btn-minier btn-primary" type="submit">
+                                <i class="icon-ok bigger-110"></i>
+                                搜索
+                            </button>
+                       </label>
+                    </div>
+            </form>
+            <br />
+            <table class="table table-striped table-bordered table-hover">
+            	<thead>
+                	<tr>
+                    	<th>编号</th>
+                        <th>问题类型</th>
+                        <th>问题描述</th>
+                        <th>答复</th>
+                        <th>提交人</th>
+                        <th>提交时间</th>
+                        <th>答复时间</th>
+                        <th>邮件通知</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                	{if condition="$page_info.empty eq 1"}						
+						<tr>
+							<td colspan="9" align="center">暂无数据！</td>
+						</tr>
+						{else/}
+						{volist name="page_info.list" id="vo"}
+                            <tr>
+                                <td>{$vo.id}</td>
+                                <td>{:get_q_a_type($vo['q_type'])}</td>
+                                <td>{:s_str($vo.q_val,20)}</td>
+                                <td>{:s_str($vo.a_val,20)}</td>                                
+                                <td>{:get_cache_data('user_info',$vo.user_id,'nickname')}</td>
+                                <td>{$vo.create_time}</td>
+                                <td>{$vo.a_time}</td>
+                                <td>{$vo.mail_send_flag ? '已通知' : '未通知'}</td>
+                                <td class="text-center">
+                                    <div class="visible-md visible-lg btn-group">
+                                    	{if condition=" strlen($vo['a_time']) eq 0 "}
+                                        <button url="{:url('sys/hr_q_a/qa_a')}/id/{$vo.id}/cur_page/{$page_info.cur_page}" wid="99%" hig="99%" max="true" class="btn btn-xs btn-info layerIframe" name="sys_qa_a" title="答复">
+                                            <i class="icon-edit bigger-120"></i>
+                                        </button>
+                                        {/if}
+                                        <button url="{:url('sys/hr_q_a/view_qa')}/id/{$vo.id}/cur_page/{$page_info.cur_page}" wid="99%" hig="99%" max="true" class="btn btn-xs btn-info layerIframe" name="sys_qa_view" qa_id="{$vo.id}"  title="查看">
+                                            <i class="icon-eye-open bigger-120"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                    	{/volist}
+                    {/if}
+                </tbody>
+            </table>
+            {$page_info.page}
+        </div>
+	</div><!-- /.row -->
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+	/*$(function(){
+		$('button[name=sys_qa_a]').click(function(){
+			m_dialog('{:url("sys/hr_q_a/qa_a")}/id/'+$(this).attr('qa_id')+'/cur_page/{$page_info.cur_page}','答复修改');
+			});
+	})
+	
+	$(function(){
+		$('button[name=sys_qa_view]').click(function(){
+			m_dialog('{:url("sys/hr_q_a/view_qa")}/id/'+$(this).attr('qa_id')+'/cur_page/{$page_info.cur_page}','查看问题','','','','hideSave');
+			});
+	})*/
+
+</script>
+{/block}

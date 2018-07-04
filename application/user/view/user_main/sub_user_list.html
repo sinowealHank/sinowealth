@@ -1,0 +1,183 @@
+{extend name="index@index/base" /}
+{block name="main"}
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<script type="text/javascript">
+		try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	</script>
+
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+				<a href="#">首页</a>
+		</li>
+
+		<li>
+			<a href="#">用户首页</a>
+		</li>
+			<li class="active">考勤管理</li>
+	</ul><!-- .breadcrumb -->
+    
+    
+    <div class="nav-search" id="nav-search">
+        <form class="form-search">
+            <span class="input-icon">
+                <input placeholder="搜索 ..." class="nav-search-input" id="nav-search-input" autocomplete="off" type="text">
+                <i class="icon-search nav-search-icon"></i>
+            </span>
+        </form>
+    </div>
+
+</div>
+
+<div class="page-content">
+	<div class="page-header col-xs-12">
+            <h1 class="col-xs-4">
+                考勤管理
+                <small>
+                    <i class="icon-double-angle-right"></i>
+                    员工列表
+                </small>
+            </h1>
+        <div class="pull-right  clearfix">
+        	<form style="float:left;padding-right:10px" class="form-horizontal" role="form" method="post" name="add_note_form" action="{:url()}" >
+	        	<select name="site_id">
+	       			<option value="all">全部</option>
+	               {volist name="page_info['site_arr']" id="vo"}
+	                   <option value="{$vo.id}" {eq name="$page_info.site_id" value="$vo.id"} selected="selected" {/eq}>{$vo.site}</option>
+	                {/volist}
+	            </select>
+	            {$page_info.dep_select}
+	            <select name="user_id">
+	            	<option value="" {$page_info.user_id}>全部</option>
+	                {volist name='page_info.user_arr' id="vo"}
+	                	<option value="{$vo.id}" dep_id="{$vo.dep_id}" site_id="{$vo.site_id}"  {eq name="$page_info.user_id" value="$vo.id"} selected="selected" {/eq}>{$vo.nickname}</option>
+	                {/volist}
+	            </select>
+	            <button class="btn btn-info btn-sm">查询</button>&nbsp
+	            <!--button onclick="if($('#end_date').css('display')=='none'){$('#end_date').css('display','');$('#begin_date').css('display','');}else{$('#end_date').css('display','none');$('#begin_date').css('display','none');}" type="button" style="font-size: 20px;display: inline-block;border-radius: 0;padding: 3px 2px;border: 1px solid transparent;background-color: #b8bab7;">T</button-->
+	            <input style="width: 85px;" min="" max="{$page_info.date_max}" value="" star="end_date" format="YYYY-MM-DD" type="text"  readonly="readonly" name="begin_date" id="begin_date" />
+	            <input style="width: 85px;" min="" max="{$page_info.date_max}" value=""  end="begin_date" format="YYYY-MM-DD" type="text"  readonly="readonly" name="end_date" id="end_date" />
+				
+				<!--button onclick="excel('{:url('')}?excel=excel}')" type="button" style="float:right;" class="btn btn-info btn-sm" type="button">导出报表</button-->
+            </form>
+        	<button onclick="excel('{:url('UserMain/ext_hr_repo')}')" type="button" class="btn btn-info btn-sm" id="add_user"><span class="icon-book"></span>考勤报表</button>
+            <button onclick="excel('{:url('UserMain/ext_note_repo')}')" type="button" class="btn btn-info btn-sm" id="add_user"><span class="icon-book"></span>申请单报表</button>
+            <a href="{:url('UserMain/index')}" class="btn btn-info btn-sm" id="add_user"><span class="icon expand-icon glyphicon glyphicon-plus"></span>返回</a>
+        </div>        
+	</div><!-- /.page-header -->
+
+	<div class="row"><!-- /.col -->
+    	<div class="col-xs-12">
+        	
+            <table class="table table-striped table-bordered table-hover">
+            	<thead>
+                	<tr>
+                    	<th onclick="paixu(this,'user_gh')" style="cursor:pointer;">工号<i wtq_up_index_i="i" {eq name="$page_info.ii[0]" value="user_gh"}class='icon-level-{eq name="$page_info.ii[1]" value="1"}up{else/}down{/eq}'{/eq} style="color:#9F9696;"></i></th>
+                        <th onclick="paixu(this,'nickname')" style="cursor:pointer;">姓名<i wtq_up_index_i="i" {eq name="$page_info.ii[0]" value="nickname"}class='icon-level-{eq name="$page_info.ii[1]" value="1"}up{else/}down{/eq}'{/eq} style="color:#9F9696;"></i></th>
+                        <th onclick="paixu(this,'sex')" style="cursor:pointer;">性别<i wtq_up_index_i="i" {eq name="$page_info.ii[0]" value="sex"}class='icon-level-{eq name="$page_info.ii[1]" value="1"}up{else/}down{/eq}'{/eq} style="color:#9F9696;"></i></th>
+                        <th onclick="paixu(this,'dep_id')" style="cursor:pointer;">部门<i wtq_up_index_i="i" {eq name="$page_info.ii[0]" value="dep_id"}class='icon-level-{eq name="$page_info.ii[1]" value="1"}up{else/}down{/eq}'{/eq} style="color:#9F9696;"></i></th>
+                        <th onclick="paixu(this,'ext_tel')" style="cursor:pointer;">分机<i wtq_up_index_i="i" {eq name="$page_info.ii[0]" value="ext_tel"}class='icon-level-{eq name="$page_info.ii[1]" value="1"}up{else/}down{/eq}'{/eq} style="color:#9F9696;"></i></th>
+                        <th onclick="paixu(this,'site_id')" style="cursor:pointer;">站点<i wtq_up_index_i="i" {eq name="$page_info.ii[0]" value="site_id"}class='icon-level-{eq name="$page_info.ii[1]" value="1"}up{else/}down{/eq}'{/eq} style="color:#9F9696;"></i></th>
+                        <th onclick="paixu(this,'hr_user_id')" style="cursor:pointer;">主管<i wtq_up_index_i="i" {eq name="$page_info.ii[0]" value="hr_user_id"}class='icon-level-{eq name="$page_info.ii[1]" value="1"}up{else/}down{/eq}'{/eq} style="color:#9F9696;"></i></th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                	{if condition="empty($page_info.list)"}						
+						<tr>
+							<td colspan="9" align="center">暂无数据！</td>
+						</tr>
+						{else/}
+						{volist name="page_info.list" id="vo"}
+                            <tr>
+                                <td>{$vo.user_gh}</td>
+                                <td>{$vo.nickname}</td>
+                                <td>{$vo.sex ? '男' : '女'}</td>
+                                <td>{:get_cache_data('dep_info',$vo.dep_id,'en_name')}</td>                                
+                                <td>{$vo.ext_tel}</td>
+                                <td>{:get_cache_data('site_info',$vo.site_id,'site')}</td>
+                                <td>{:get_cache_data('user_info',$vo.hr_user_id,'nickname')}</td>
+                                <td class="text-center">
+                                    <div class="visible-md visible-lg btn-group">
+                                        <a class="btn btn-xs btn-info" href="user_hr/user_id/{$vo.id}"  title="考勤记录">
+                                            <i class="icon-credit-card "></i>
+                                        </a>
+                                    </div>
+                                   
+                                </td>
+                            </tr>
+                    	{/volist}
+                    {/if}
+                </tbody>
+            </table>
+            {$page_info.page}
+        </div>
+	</div><!-- /.row -->
+</div>
+{/block}
+{block name="script"}
+<script>
+function excel(url){
+	$("form[name=add_note_form]").attr("action",url)
+	$("form[name=add_note_form]").submit();
+	$("form[name=add_note_form]").attr("action","{:url("")}")
+}
+function paixu(thi,ii){
+	if($(thi).children('i').attr('class')=='icon-level-down'){var a='&a=1';var clas='icon-level-up';}else{var a='&a=';var clas='icon-level-down';}
+	var this_i="?ii="+ii+a;
+	$("form[name=add_note_form]").attr("action","{:url()}"+this_i)
+	$("form[name=add_note_form]").submit();
+}
+</script>
+<script>
+//搜索条件合集，站点，部门，人员js
+$('select[name=dep_id]').val('{$page_info.dep_id}');
+
+$('select[name=dep_id]').change(function(){
+	user_select=$('select[name=user_id]');
+	site_id=$('select[name=site_id]').val();
+	dep_id=$(this).val();
+		if(dep_id=='all'){
+				user_select.find('option[site_id='+site_id+']').show();
+				user_select.val('all');
+			}else{
+				user_select.find('option').hide();
+				user_select.find('option[dep_id='+dep_id+'][site_id='+site_id+']').show();
+				}
+	});
+	
+$('select[name=site_id]').change(function(){
+	site_id=$(this).val();
+	dep_id=$('select[name=dep_id]').val();
+		user_select.find('option').hide()
+		if(dep_id != 'all'){
+				user_select.find('option[site_id='+site_id+'][dep_id='+dep_id+']').show();
+			}else{
+				user_select.find('option[site_id='+site_id+']').show();
+				}
+	});
+//页面提交后有站点&部门数据提交过来,过滤部门&站点人员
+site_id=$('select[name=site_id]').val();
+dep_id=$('select[name=dep_id]').val();
+user_select=$('select[name=user_id]');
+
+if(dep_id != 'all'){
+		user_select.find('option[site_id='+site_id+'][dep_id='+dep_id+']').show();
+	}else{
+		user_select.find('option[site_id='+site_id+']').show();
+		}
+
+if(dep_id=='all'){
+		user_select.find('option[site_id='+site_id+']').show();
+		//user_select.val('all');
+	}else{
+		user_select.find('option').hide();
+		user_select.find('option[dep_id='+dep_id+'][site_id='+site_id+']').show();
+		}
+
+$('input[name=key]').click(function(){
+	layer.tips('姓名,英文名,工号,卡号', $(this),{tips:1});
+});
+</script>
+{/block}

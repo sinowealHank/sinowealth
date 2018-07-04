@@ -1,0 +1,76 @@
+{extend name="index@index/base" /}
+{block name="main"}
+<style>
+    .page-header span{ margin-left: 10px;}
+</style>
+<div class="breadcrumbs" id="breadcrumbs">
+    <script type="text/javascript">
+        try{ace.settings.check('breadcrumbs','fixed')}catch(e){}
+    </script>
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">首页</a>
+        </li>
+
+        <li>
+            <a href="#">后台管理</a>
+        </li>
+        <li class="active">部门主管审核采购单</li>
+    </ul><!-- .breadcrumb -->
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <span><a href="{:url('prop/dep/index')}" class="btn btn-primary">返回</a></span>
+    </div><!-- /.page-header -->
+    <div>
+        <form class="search_form" method="get">
+            <span>采购物品信息:</span><input type="text" name="pur_name" value="{$page_info.pur_name?$page_info.pur_name:'';}">
+            <span>使用人：</span> <input type="text" name="user_name" value="{$page_info.user_name?$page_info.user_name:'';}">
+            <span><button type="submit" class="btn btn-primary btn-xs">查询</button></span>
+        </form>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>ID:</th>
+                <th>采购物品信息：</th>
+                <th>使用人名称：</th>
+                <th>采购建议：</th>
+                <th>供应商1：</th>
+                <th>供应商2：</th>
+                <th>供应商3：</th>
+
+                <th>主管审核状态:</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="$page_info.data" id="vo"}
+            <tr>
+                <td>{$vo.id}</td>
+                <td>{$vo.pur_name}</td>
+                <td>{$vo.user_name}</td>
+                <td>{$vo.pur_advice}</td>
+                <td>{$vo.supplier_1}</td>
+                <td>{$vo.supplier_2}</td>
+                <td>{$vo.supplier_3}</td>
+                <th>
+                    {switch name="$vo.pur_process"}
+                    {case value="7"}<button class="btn btn-info btn-xs layerIframe" title="确认相关信息"  max="true" wid="810px;" hig='600px' url="checkagain?id={$vo.id}">申请人已签呈</button>{/case}
+                    {case value="2"}<button class="btn btn-info btn-xs layerIframe" title="确认相关信息"  max="true" wid="810px;" hig='600px' url="checkpur?id={$vo.id}">IT主管已确认</button>{/case}
+                    {case value="0"}<button class="btn btn-xs btn-info layerIframe" >未确认</button>{/case}
+                    {/switch}
+                </th>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+</div>
+{/block}
+{block name="script"}
+
+<script>
+
+</script>
+{/block}

@@ -1,0 +1,27 @@
+<style>
+    .form-group{padding-top:30px; }
+</style>
+<form action="{:url('prop/config/edittype')}" method="post" onsubmit="return validateCallback(this);">
+    <input type="hidden" name="id" value="{$page_info.prop.id}">
+    <div class="modal-body">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">资产分类名称:</label>
+            <div class="col-sm-8">
+                <input type="text" name="prop_type"  value="{$page_info.prop.prop_type}"><span style="color:red;top: -5px;position:relative;">*</span><span class="error1"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">所属上级分类:</label>
+            <div class="col-sm-8">
+                <select name="parent_id">
+                    <option value="0">顶级资产分类</option>
+                    {$page_info.str}
+                </select>
+            </div>
+        </div>
+        <div class="pull-right">
+            <button class="btn btn-info">修改</button>
+            <a class="btn btn-default closeLayer">取消</a>
+        </div>
+    </div>
+</form>

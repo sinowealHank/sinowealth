@@ -1,0 +1,401 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/demo.css">
+<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/assets/js/sw.js"></script>
+<script src="__PUBLIC__/static/assets/js/layer.js"></script> 
+<script src="__PUBLIC__/static/assets/js/zrj.js"></script>
+
+<style>
+	.datagrid-cell{ font-size:14px;}
+	.datagrid-header,.datagrid-cell span{ font-size:20px;}
+</style>
+<title>
+	 {$page_info.site_name} {$page_info.month}月考勤维护
+	{eq name="$page_info.finish_flag" value="1"}
+    	(已结转)
+    {else/}
+    	(未结转)
+    {/eq}
+</title>
+</head>
+    <body class="easyui-layout">
+    	<div region="center" style="padding:5px; border:#000 solid 1px;" border="true">  
+            <table class="easyui-datagrid" id="tt" title="
+            	{$page_info.year}-{$page_info.month}月 [{$page_info.site_name}] 考勤数据结算
+                {eq name="$page_info.finish_flag" value="1"}
+                    (已结转)
+                {else/}
+                    (未结转)
+                {/eq}
+            " style="width:100%;">
+                <thead data-options="frozen:true">
+                    <tr>
+                    	<th data-options="field:'id',hidden:true">id</th>
+                        <th data-options="field:'user_id',hidden:true">user_id</th>
+                        <th data-options="field:'user_gh',width:80,sortable:true">工号</th>
+                        <th data-options="field:'nickname',width:80,sortable:true,formatter:formatNickname">用户名</th>
+                    </tr>
+                </thead>
+                
+                <thead>
+                	{eq name="$page_info.finish_flag" value="0"}
+                        <tr>
+                            <th data-options="field:'last_annual_num',sortable:true,width:120,editor:{type:'numberbox',options:{precision:1}}" title="上月结算年休">上月结算年休</th>
+                            <th data-options="field:'last_repair_num',sortable:true,width:120,editor:{type:'numberbox',options:{precision:1}}" title="上月结算补休">上月结算补休</th>
+                            <th data-options="field:'holiday_hour',sortable:true,width:120,editor:{type:'numberbox',options:{precision:1}}" title="节假日结加班费时数">节假日结加班费时数</th>
+                            {eq name="$_SESSION['hr_trim']['site_id']" value="7"}
+                            	<th data-options="field:'tw_out_work_time',sortable:true,width:120,editor:{type:'numberbox',options:{precision:1}}" title="上月加班转休假">上月加班转休假</th>
+                            {/eq}
+                            <th data-options="field:'local_note_hour',sortable:true,width:120,editor:{type:'numberbox',options:{precision:1}}" title="本月申请休假">本月申请休假</th>
+                            <th data-options="field:'local_annual_num',sortable:true,width:120" title="本次结算年休时数">本次结算年休时数</th>
+                            <th data-options="field:'local_repair_num',sortable:true,width:120" title="本次结算补休时数">本次结算补休时数</th>
+                            <th data-options="field:'local_num',sortable:true,width:120" title="本次年休+补休">本次年休+补休</th>
+                            <th data-options="field:'casual_leave',sortable:true,width:120" title="事假时数">事假时数</th>
+                            <th data-options="field:'sick_leave',sortable:true,width:120" title="病假时数">病假时数</th>
+                            <th data-options="field:'abs_hour',sortable:true,width:120,editor:{type:'numberbox',options:{precision:1}}" title="旷职时数">旷职时数</th>
+                            <th data-options="field:'bf_num',sortable:true,width:120,editor:{type:'numberbox',options:{precision:1}}" title="早餐统计">早餐</th>
+                            <th data-options="field:'lunch_num',sortable:true,width:120,editor:{type:'numberbox',options:{precision:1}}" title="午餐统计">午餐</th>
+                            <th data-options="field:'intern_day',sortable:true,width:60,editor:{type:'numberbox',options:{precision:1}}" title="实习生出勤天数">实习生出勤天数</th>
+                            <th data-options="field:'remark',sortable:true,width:350,editor:{type:'textarea'}" title="备注">备注</th>
+                            <th data-options="field:'cur_date',sortable:true,width:120" title="操作月份">操作月份</th>
+                        </tr>
+                    {else/}
+                        <tr>
+                            <th data-options="field:'last_annual_num',sortable:true,width:120" title="上月结算年休">上月结算年休</th>
+                            <th data-options="field:'last_repair_num',sortable:true,width:120" title="上月结算补休">上月结算补休</th>
+                            <th data-options="field:'holiday_hour',sortable:true,width:120" title="节假日结加班费时数">节假日结加班费时数</th>
+                            {eq name="$_SESSION['hr_trim']['site_id']" value="7"}
+                            	<th data-options="field:'tw_out_work_time',sortable:true,width:120" title="上月加班转休假">上月加班转休假</th>
+                            {/eq}
+                            <th data-options="field:'local_note_hour',sortable:true,width:120" title="本月申请休假">本月申请休假</th>
+                            <th data-options="field:'local_annual_num',sortable:true,width:120" title="本次结算年休时数">本次结算年休时数</th>
+                            <th data-options="field:'local_repair_num',sortable:true,width:120" title="本次结算补休时数">本次结算补休时数</th>
+                            <th data-options="field:'local_num',sortable:true,width:120" title="本次年休+补休">本次年休+补休</th>
+                            <th data-options="field:'casual_leave',sortable:true,width:120" title="事假时数">事假时数</th>
+                            <th data-options="field:'sick_leave',sortable:true,width:120" title="病假时数">病假时数</th>
+                            <th data-options="field:'abs_hour',sortable:true,width:120" title="旷职时数">旷职时数</th>
+                            <th data-options="field:'bf_num',sortable:true,width:120" title="早餐统计">早餐</th>
+                            <th data-options="field:'lunch_num',sortable:true,width:120" title="午餐统计">午餐</th>
+                            <th data-options="field:'intern_day',sortable:true,width:60" title="实习生出勤天数">实习生出勤天数</th>
+                            <th data-options="field:'remark',sortable:true,width:350" title="备注">备注</th>
+                            <th data-options="field:'cur_date',sortable:true,width:120" title="操作月份">操作月份</th>
+                        </tr>
+                    {/eq}
+                </thead>
+            </table>
+        </div>
+        <div id="tb">
+        	&nbsp;&nbsp;&nbsp;&nbsp;
+            <select name="site_id">
+            	{volist name="$page_info.site_info" id="vo"}
+                	<option value="{$vo.id}" {eq name="$_SESSION['hr_trim']['site_id']" value="$vo.id"} selected="selected" {/eq}>{$vo.site}</option>
+                {/volist}
+            </select>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <select name="dep_id">
+            	<option value="0">ALL</option>
+                {volist name="$page_info.dep_info" id="vo"}
+                    <option value="{$vo.id}" {eq name="$_SESSION['hr_trim']['dep_id']" value="$vo.id"}  selected="selected" {/eq}>{$vo.zh_name}</option>
+                {/volist}
+            </select>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <select name="year_month">
+                {volist name="$page_info.year_month" id="vo"}
+                    <option value="{$vo}"  {eq name="$_SESSION['hr_trim']['year_month']" value="$vo"}  selected="selected" {/eq}>{$vo}</option>
+                {/volist}
+            </select>            
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="text" name="key" value="{$_SESSION['hr_trim']['key']}" />           
+            &nbsp;&nbsp;&nbsp;&nbsp;        
+            <a href="#" class="easyui-linkbutton" iconCls="icon-filter" plain="true" onclick="field_cal_tb(this)">确定</a>
+            
+            {eq name="$page_info.data_cr_flag" value="1"}
+            <div style="float:right;"> 
+            	<a href="#" class="easyui-linkbutton" iconCls="icon-large-smartart" plain="true" onclick="ext_hr_tb()">导出报表</a>
+                    &nbsp;&nbsp;           
+            	{eq name="$page_info.finish_flag" value="0"}
+                	<a href="#" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="re_cal_hr()" rbac_flag="re_cal_hr">重新计算考勤数据</a>
+                    &nbsp;&nbsp;     
+                    {neq name="$_SESSION['hr_trim']['site_id']" value="7"}               
+            			<a href="#" class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="Finish_hr_pay()" rbac_flag="finish_hr_pay">结转考勤到薪资</a>
+                    {/neq}
+                {/eq}
+            </div>
+            {/eq}
+        </div>
+    </body>
+</html>
+{eq name="$page_info.finish_flag" value="0"}
+<script>
+	$(function(){
+			$('#tt').datagrid('enableCellEditing');
+		})
+</script>
+{/eq}
+
+<script>
+	
+	$('#tt').datagrid({
+			iconCls: 'icon-edit',
+			singleSelect:true,
+			url: '/sys/hr_trim/get_hr_cal_data/',
+			method:'get',
+			fit:true,
+			fitcolumns:true,
+			showFooter: true,
+			toolbar:'#tb',			
+			onAfterEdit:function(rowIndex,rowData,changes){				
+				
+				//循环changes对象,获取对应健&值
+				 for (var key in changes)
+					{
+						if(changes[key]==''){
+								val=' ';
+							}else{
+								val=changes[key];
+								}	
+						
+						$.ajax({
+							 	type:"POST",
+								url: "/sys/hr_trim/update_field_val/id/"+rowData.id,
+								data:changes,
+								dataType:"json",
+								success:function(result){
+									dataObj=result;
+									row_info=dataObj.row_info;
+									//行数据更新							
+									$('#tt').datagrid('updateRow',{
+										index:rowIndex,
+										row:{
+											//本次结算年休时数
+											local_annual_num:row_info.local_annual_num,
+											//本次结算补休时数
+											local_repair_num:row_info.local_repair_num,
+											//本次年休+补休
+											local_num: row_info.local_num,
+											//事假数
+											casual_leave:row_info.casual_leave
+											}
+										}
+									);
+									
+									count_arr=dataObj.count_arr;
+									//统计行数据更新
+									var footrows=$('#tt').datagrid('getFooterRows');
+									footrows[0][key]=formatCurrency(count_arr[key]);
+									footrows[0]['local_annual_num']=formatCurrency(count_arr.local_annual_num);
+									footrows[0]['local_repair_num']=formatCurrency(count_arr.local_repair_num);
+									footrows[0]['local_num']=formatCurrency(count_arr.local_num);
+									$('#tt').datagrid('reloadFooter');
+									}
+							});
+						
+						
+						//$.post('/sys/hr_trim/update_field_val/id/'+rowData.id+'/value/'+val+'/field/'+key,function(result){});
+					}
+				
+				}
+		});
+	
+	$.extend($.fn.datagrid.methods, {
+			editCell: function(jq,param){
+				return jq.each(function(){
+					var opts = $(this).datagrid('options');
+					var fields = $(this).datagrid('getColumnFields',true).concat($(this).datagrid('getColumnFields'));
+					for(var i=0; i<fields.length; i++){
+						var col = $(this).datagrid('getColumnOption', fields[i]);
+						col.editor1 = col.editor;
+						if (fields[i] != param.field){
+							col.editor = null;
+						}
+					}
+					$(this).datagrid('beginEdit', param.index);
+					
+                    var ed = $(this).datagrid('getEditor', param);
+                    if (ed){
+                        if ($(ed.target).hasClass('textbox-f')){
+                            $(ed.target).textbox('textbox').focus().select();
+                        } else {
+                            $(ed.target).focus().select();
+                        }
+                    }
+					for(var i=0; i<fields.length; i++){
+						var col = $(this).datagrid('getColumnOption', fields[i]);
+						col.editor = col.editor1;
+					}
+				});
+			},
+            enableCellEditing: function(jq){
+                return jq.each(function(){
+                    var dg = $(this);
+                    var opts = dg.datagrid('options');			//获取datagrid的属性对象
+					
+                    opts.oldOnClickCell = opts.onClickCell;		//onClickCell  当用户点击单元格时触发
+					
+					
+                    opts.onClickCell = function(index, field){	//index 0 开始计算,cell 点击时判断此cell是否已经是编辑状态
+						//如果是编辑状态
+                        if (opts.editIndex != undefined){
+                            if (dg.datagrid('validateRow', opts.editIndex)){
+		
+                                dg.datagrid('endEdit', opts.editIndex);
+								var row = dg.datagrid("getSelected",index);								
+                                opts.editIndex = undefined;
+                            } else {
+                                return;
+                            }
+                        }
+						
+						//如果不是编辑状态,则调用editCell方法,进入编辑状态
+                        dg.datagrid('selectRow', index).datagrid('editCell', {
+                            index: index,
+                            field: field
+                        });
+                        opts.editIndex = index;
+                        opts.oldOnClickCell.call(this, index, field);
+                    }
+                });
+            }
+		});		
+		
+		//某列数据重新统计
+		function conunt(field){
+		
+			var rows=$('#tt').datagrid('getRows');
+			var footrows=$('#tt').datagrid('getFooterRows');
+			var total=0;
+			for (var i=0; i<rows.length;i++){
+				total += parseFloat(rows[i][field]);
+				}			
+			footrows[0][field]=formatCurrency(total);
+			$('#tt').datagrid('reloadFooter');			
+		}
+		
+		//搜索过滤
+		function field_cal_tb(){
+			//站点过滤
+			site_id=$('#tb select[name=site_id]').val();
+			//部门过滤
+			dep_id=$('#tb select[name=dep_id]').val();
+			
+			//月份过滤
+			year_month=$('#tb select[name=year_month]').val();
+			
+			//关键字过滤
+			key=$('#tb input[name=key]').val();	
+
+			$.post("/sys/hr_trim/index/site_id/"+site_id+"/dep_id/"+dep_id+"/year_month/"+year_month+"/key/"+key,function(){
+				//alert('aaa');
+				location.reload();
+				});	
+		}
+
+		//重新刷新数据表
+		function reload_tb(){
+			//站点过滤
+			site_id=$('#tb select[name=site_id]').val();
+			//部门过滤
+			dep_id=$('#tb select[name=dep_id]').val();
+			
+			//月份过滤
+			year_month=$('#tb select[name=year_month]').val();
+			
+			//关键字过滤
+			key=$('#tb input[name=key]').val();	
+			
+				$('#tt').datagrid('reload',{
+					url: "/sys/hr_trim/get_hr_cal_data/",  method: "post",site_id:site_id,dep_id:dep_id,year_month:year_month,key:key});
+			}
+			
+		//重新计算考勤数据
+		function re_cal_hr(){
+
+			if(confirm('确认重新计算 {$page_info.site_name} 考勤数据?\n将覆盖已修改数据!')){
+				/*
+				$.post('/sys/hr_trim/re_cal_hr/',function(result){
+					alert(result);
+					});
+					*/
+									
+					$.ajax({   
+						type: 'POST',   
+						dataType : 'text',  
+						url: '/sys/hr_trim/re_cal_hr', 
+						beforeSend: ajaxLoading,  
+						success: function(result){   
+							ajaxLoadEnd();
+							alert(result);
+							location.reload();
+						}   
+					}); 
+				}
+			}
+			
+		//发送数据到薪资
+		function Finish_hr_pay(){
+			//站点过滤
+			site_name=$('#tb select[name=site_id]').find('option:selected').text();
+
+			if(confirm('确定发送 {$page_info.site_name} 到薪资?\n结转后将不可修改数据!')){
+				$.post('/sys/hr_trim/finish_hr_pay/',function(result){						
+						alert(result);
+						location.reload();
+					});
+				}
+			}
+			
+		//导出考勤报表到Excel
+		function ext_hr_tb(){
+			year_month=$('#tb select[name=year_month]').val();
+			window.open("/sys/hr_trim/ext_hr_tb/year_month/"+year_month);
+			//layer.msg('导出成功');	
+		}	
+		
+		//旷职数大于0的,标记红色,绑定查看旷职原因事件		
+		function formatNickname(val,row){
+			if (row.abs_hour>0){
+				return '<span style="color:red;cursor:pointer;font-size:14px;" row_id="'+row.id+'" onClick="view_abs_info(this)">'+val+'</span>';
+			} else {
+				return val;
+			}
+		}
+		
+		function view_abs_info(obj){
+			obj=$(obj);
+			row_id=obj.attr('row_id');
+			$.post('/sys/hr_trim/get_abs_info/row_id/'+row_id,function(result){
+					json_obj=eval('('+result+')');
+					layer.open({
+						type:1,skin:'layui-layer-rim',area:['850px'],
+						title:json_obj.title,
+						content:json_obj.content
+						});
+				});			
+			}
+	showStatus_a_button('{$Think.PRI_ARR}','{$Think.RBAC_FLAG}');
+</script>
+
+{eq name="$page_info.cal_check_flag" value="1"}
+<script>
+	layer.confirm("未过本月{:config('hr_cr_date')}日,确定生成{$page_info.year}-{$page_info.month}考勤数据?",
+	{icon:3,title:'确认生成考勤数据?',btn:['确定生成','不生成'],
+		yes:function(index,layero){
+			var index=layer.load(1,{
+					shade:[0.1,'#fff']
+				});
+			$.post('/sys/hr_trim/index/confirm_cal_hr/cal_hr/',function(){
+				window.location.reload();
+				});
+			},
+		btn2:function(){
+			layer.close();			
+			}});
+</script>
+{/eq}

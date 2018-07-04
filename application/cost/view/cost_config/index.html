@@ -1,0 +1,142 @@
+{extend name="index@index/base" /}
+{block name="main"}
+<meta charset="utf-8">
+<div class="breadcrumbs" id="breadcrumbs">
+	<script type="text/javascript">
+		try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	</script>
+
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+				<a href="#">首页</a>
+		</li>
+			<li class="active">系统配置</li>
+	</ul><!-- .breadcrumb -->
+</div>
+
+<div class="page-content" style='width:100%;'>
+<a url="changeDate" class='layerSubmit' title='转换结果' style='cursor:pointer;'>数据转换</a>
+	<div class="row">
+	<div class="col-sm-12">
+		<div class="tabbable">
+			<ul class="nav nav-tabs" id="myTab">
+				<li class="active">
+					<a data-toggle="tab" href="#home">
+						<i class="green  icon-cog  bigger-110"></i>
+						下拉框
+					</a>
+				</li>
+
+				<li>
+					<a data-toggle="tab" href="#profile">
+						<i class="green  icon-cog bigger-110"></i>
+						邮件
+					</a>
+				</li>
+
+
+				<li>
+					<a data-toggle="tab" href="#email">
+						<i class="green  icon-cog bigger-110"></i>
+						提交删除申请
+					</a>
+				</li>
+
+			</ul>
+
+			<div class="tab-content" style='border:0px;'>
+				<div id="home" class="tab-pane in active"> 
+				{volist name="page_info.field" id="vo"}
+				<form action="edit" method='post' onsubmit="return validateCallback(this)">
+					<ul style='float: left;width: 250px;margin: 15px 0 0 30px;height: 300px;overflow: auto;'>
+						<input type="hidden" name='id' value="{$vo.id}"/>
+						<li style='background:#438eb9;color:#fff;height:25px;text-align:center;font-size:18px;line-hight:25px'>{$vo.title}</li>
+						<li><textarea placeholder="" name="content" style="width:250px;height:246px;padding-left:3px">{$vo.content}</textarea> </li>
+						<li style='text-align:center;margin-top:3px' ><button type='submit' class='btn-success btn-xs'>保存</button></li>
+					</ul>
+				</form>
+				{/volist}	
+				</div>
+				
+				<div id="profile" class="tab-pane">
+                	<ul>
+                    	<li>
+				<p style="font-size:19px;border-bottom:1px solid #aaa">未走完流程，数据提交通知人员</p>
+				<div style="height:450px; overflow:auto;">
+					{volist name="page_info.email" id="vo" key="k"}
+					{in name="k" value="1,2,3,4"}
+					<form action="edit" method='post' onsubmit="return validateCallback(this)">
+						<ul style='float: left;width: 250px;margin: 15px 0 0 30px;height: 300px;overflow: auto;'>
+							<input type="hidden" name='id' value="{$vo.id}"/>
+							<li style='background:#438eb9;color:#fff;height:25px;text-align:center;font-size:18px;line-hight:25px'>{$vo.title}</li>
+							<li><textarea placeholder="" name="content" style="width:250px;height:246px;padding-left:3px">{$vo.content}</textarea> </li>
+							<li style='text-align:center;margin-top:3px' ><button type='submit' class='btn-success btn-xs'>保存</button></li>
+						</ul>
+					</form>
+					{/in}
+					{/volist}
+					</div>
+                    	</li>
+                       	<li>
+                        <br /><br />
+					<p style="font-size:19px;border-bottom:1px solid #aaa">已走完流程，数据修改通知人员</p>
+					<div style="height:450px; overflow:auto;">
+					{volist name="page_info.email" id="vo" key="k"}
+					{in name="k" value="5,6,7,8"}
+					<form action="edit" method='post' onsubmit="return validateCallback(this)">
+						<ul style='float: left;width: 250px;margin: 15px 0 0 30px;height: 300px;overflow: auto;'>
+							<input type="hidden" name='id' value="{$vo.id}"/>
+							<li style='background:#438eb9;color:#fff;height:25px;text-align:center;font-size:18px;line-hight:25px'>{$vo.title}</li>
+							<li><textarea placeholder="" name="content" style="resize:none;width:250px;height:246px;padding-left:3px">{$vo.content}</textarea> </li>
+							<li style='text-align:center;margin-top:3px' ><button type='submit' class='btn-success btn-xs'>保存</button></li>
+						</ul>
+					</form>
+					{/in}
+					{/volist}
+					</div>
+                    </li>
+                    <ul>
+				</div>
+
+
+				<div id="email"  class="tab-pane">
+
+					<p style="font-size:19px;border-bottom:1px solid #aaa">提交删除申请，邮件配置页面</p>
+					{volist name="$page_info.user" id="vo"}
+
+					<form  name="{$vo.name}Form" method='post' onsubmit="return validateCallback(this)">
+						<input type="hidden" value="{$vo.id}" name="id">
+						<ul style='float: left;width: 250px;margin: 15px 0 0 30px;height: 300px;overflow: auto;'>
+							<li style='background:#438eb9;color:#fff;height:25px;text-align:center;font-size:18px;line-hight:25px'>{$vo.title}</li>
+							<li style="resize:none;width:200px;height:200px;padding-left:3px">
+								<label>选择部门人员:</label>
+								<div>
+									{$vo.config}
+								</div>
+							</li>
+							<li style='text-align:center; ' ><button type="button" class='btn btn-primary btn-xs ' onclick="add('{$vo.name}')">保存</button></li>
+						</ul>
+					</form>
+					{/volist}
+				</div>
+				
+			</div>
+		</div>
+	</div><!-- /span -->
+	
+</div>
+{/block}
+
+{block name="script"}
+<script>
+	function add(parm){
+		var id = $("form[name="+parm+"Form] input[name=id]").val();
+		var id_str = $("input:checkbox[name='"+parm+"']:checked").map(function (index, elem) {return $(elem).val();}).get().join(',');
+		$.post("{:url('cost/cost_config/add_email_config')}",{id_str:id_str,id:id},function(result){
+			showMsg(result);
+		},"JSON")
+	}
+	
+</script>
+{/block}

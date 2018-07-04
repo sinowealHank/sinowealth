@@ -1,0 +1,200 @@
+ 
+ 
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Cost Table</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black"> 
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="__PUBLIC__/static/assets/css/ace.min.css" />
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/demo.css">
+	<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.min.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/easyui-lang-zh_CN.js"></script>		
+	<script src="__PUBLIC__/static/assets/layer/layer.js"></script>	
+</head>
+<style>
+	.fieldId{cursor:pointer;}
+	.fieldId:hover{display:block;color:#fff;background-color:#888;border:1px solid #ccc}
+</style>
+<body>
+	<table class="easyui-datagrid" id="tt" title="Cost Table">
+		<thead data-options="frozen:true">
+			<tr>			
+				<th data-options="field:'id',width:50,sortable:true,formatter:binding">ID</th>				
+				<!-- pe可修改常规信息 -->	
+				<th data-options="field:'line',width:60,sortable:true,formatter:flow">产品线</th>							
+				<th data-options="field:'type',width:130,sortable:true,formatter:flow">Type no</th>
+				<th data-options="field:'prdno',width:175,sortable:true,formatter:binding">Prd no</th>		
+									
+			</tr>
+		</thead>
+		<thead>
+		<!-- 1:pp查看 2:pp编辑 3:pe查看 4:pe编辑 5:te查看 6te编辑 7:qa查看 8:qa编辑 9:mt查看 -->
+			<tr>
+				{volist name="page_info.field" id="vo"}				
+					<th data-options='field:"{$vo.field}",width:120,sortable:true,formatter:flow'>{$vo.field_show}</th>														
+				{/volist}
+			</tr>
+		</thead>
+	</table>
+	<div id='tb'>
+	产品线: 
+			<select name="line">	
+				<option value="1">全部</option>
+				{volist name="page_info.line" id="v"}
+					<option  value = "{$v}">{$v}</option >
+				{/volist}			
+			</select>	
+	&nbsp;&nbsp;Type no:<input type="text" name="type" value="" style="width:120px;"/>
+	&nbsp;&nbsp;Prd no:<input type="text" name="prdno" value="" style="width:120px;"/>
+	&nbsp;&nbsp;关键字：<select name='key_field' id='key_select'>
+	<option  value = "1">全部</option >
+		{volist name="page_info.key" id="v"}
+		<option  value = "{$v['name']}">{$v['show']}</option >
+		{/volist}
+	</select>
+	<input type="text" name='key' value=''/>
+	<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="reload()">查询</a> 
+
+	</div>
+	<div>
+	</div>
+</body>
+<script>
+$(function (){  
+   $('#tt').datagrid({
+		loadMsg : "正在加载数据",
+		singleSelect:true,
+		toolbar:'#tb',
+		pagination:true,//显示分页 
+		pageSize:20,//分页大小
+		pageList:[10,20,30],
+		url:"costDate",
+		onAfterEdit:function(rowIndex,rowData,changes){		
+	      $.post("editCost",{data:rowData,changes:changes},function(result){
+	    	  $('#tt').datagrid('reload');
+	    	  });
+		},
+	
+	
+	})
+})  
+	//点击搜索触发此方法
+	function reload(){
+	
+		var param = inputToString();//获取查询参数拼接成的json对象
+		if(param == '0'){
+			var param = {searchEmpty:"1"};
+		}
+		$('#tt').datagrid('reload',param);//重新加载datagrid
+	}
+	
+ //搜索条件拼接 json对象
+	function inputToString(){
+		 nv = '{';
+		 i = 0;
+		  $("#tb input,#tb select").each(function(){			  
+			  if($(this).val()!==''){
+				  i = i+1;
+				    nv = nv +'"'+$(this).attr("name")+'":"'+$.trim($(this).val())+'"'+',';				 
+			  }			
+			});
+		  if(i==0){
+			  return '0';
+		  }
+		//  nv = nv +'"'+$('#key_select').attr("name")+'":"'+$.trim($('#key_select').val())+'"'+',';
+		  s=nv.substring(0,nv.length-1)+'}';
+		  var obj = JSON.parse(s);
+		 return obj;
+		 // return clock; 
+	}
+  //id绑定事件
+  function binding(value,rowData,rowIndex){
+	  if(rowData.flow < 4){
+		  return '<a onclick="toEdit('+rowData.id+','+rowIndex+')" class="fieldId" style="cursor:pointer;color:red"> '+value+'</a>';
+	  }else{
+		  return '<a onclick="toEdit('+rowData.id+','+rowIndex+')" class="fieldId" style="cursor:pointer;"> '+value+'</a>';
+	  }
+		
+  }
+  function flow(value,rowData,rowIndex){
+	  if(rowData.flow < 4){
+		  return '<span style="color:red"> '+value+'</span>';
+	  }else{
+		  return '<span> '+value+'</span>';
+	  }
+  }
+	//点击id触发事件
+	function toEdit(id,index){
+		// return false;
+		var url = 'action?id='+id+'&indexRow='+index;
+		layerIframe('操作',url,'450px','150px','0.3');		
+	}
+	
+
+	function closeIndex(msg,action){
+		layer.close(index);
+		layer.alert(msg,{
+			  title:"操作成功",
+			  time:3000,
+			  offset: 't',
+			  skin:'success-class' //样式类名
+			  ,closeBtn: 0,
+			  anim: 4,
+			  yes: function(index){
+					 layer.close(index);
+				  }
+		});
+		if(action == '1'){
+			$('#tt').datagrid('reload');
+		}
+	}
+	//
+	function reload_list(){
+		$('#tt').datagrid('reload');
+	}
+	//删除回调
+	function dlBack(index){
+		$('#tt').datagrid('deleteRow',index);
+		$('#tt').datagrid('reload');
+	} 
+	//导出报表
+	$(document).on('click','.getExcel',function() {
+		var line = $.trim($('select[name=line]').val());
+		var prdno = $.trim($('input[name=prdno]').val());
+		var type = $.trim($('input[name=type]').val());
+		var key = $.trim($('input[name=key]').val());
+		var key_field = $.trim($('select[name=key_field]').val());
+		url = 'getExcel?prdno='+prdno+'&type='+type+'&line='+line+'&key='+key+'&key_field='+key_field;
+		var confirm = layer.confirm('确定导出此搜索条件数据吗？',{
+			skin: 'info-class', //样式类名
+			btn: ['确定','关闭'] //按钮
+		},function(){	//点击确定
+			window.location.href=url;
+		},function(){ //点击关闭
+			layer.close(confirm);
+		});
+	})
+
+	//批量修改
+	$(document).on('click','.editBySearch',function() {
+		var prdno = $.trim($('input[name=prdno]').val());
+		var type = $.trim($('input[name=type]').val());
+		var line = $.trim($('select[name=line]').val());
+		var key = $.trim($('input[name=key]').val());
+		var key_field = $.trim($('select[name=key_field]').val());
+		url = 'editBySearch?prdno='+prdno+'&type='+type+'&line='+line+'&key='+key+'&key_field='+key_field;
+		layerIframe('批量修改',url,'550px','250px');
+	})
+</script>
+<script src="__PUBLIC__/static/assets/js/lds.js"></script>
+</html>
+

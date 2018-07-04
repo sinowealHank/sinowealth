@@ -1,0 +1,341 @@
+    <script>
+	    //删除分类
+    	function del_this_fenlei(id,sup=''){
+	    	if(sup=='super'){
+	    		if(confirm("你确定要删除么")){
+					
+			    }else{
+			    	return false;
+			    }
+	    	}
+			$('.loading').parent().css('display','');
+			$.post('{:url("One_up/del_fenlei")}',{id:id,sup:sup},
+	                function (data) {
+						mythisalert(data[0],data[1]);
+						if(data[0]==1){
+							$("div[wtq_del_id="+id+"]").remove();
+						}
+						$('.loading').parent().css('display','none');
+	                },"json").error(function(){mythisalert(0,'失败');$('.loading').parent().css('display','none');});
+		}
+    	//添加分类
+    	function fenlei_add_all(id,dep_id,lv,controll){
+   			lv=lv*1+1*1;
+   			if(id){
+   				url='?parents_id='+id+'&dep_id=&lv='+lv;
+   				thi=id;
+   			}else{
+   				url='?parents_id=0&dep_id='+dep_id+'&lv=2';
+   				thi='b'+dep_id;
+   			}
+   			var fenlei=$("input[wtq_new_id="+thi+"]").val();
+   			$('.loading').parent().css('display','');
+   			$.post('{:url("'+controll+'/fenlei_add")}'+url,{fenlei:fenlei},
+   	                function (data) {
+   						mythisalert(data[0],data[1]);
+   						$('div[wtq_bs_id='+thi+']').after(data[2]);
+   						$('.loading').parent().css('display','none');
+   	                },"json").error(function(){mythisalert(0,'失败');$('.loading').parent().css('display','none');});
+   			
+   		}
+    	//开始上传/修改
+    	function change_ok(a){
+			if($("input[biaoshi=all]:checked").val()=='all'){
+		    	id='all';
+		    }else{
+		    	var diyu_id='';var bumen_id='';var geren_id='';
+				
+				var d = {};
+			    var t = $('form[wtq_id=qx]').serializeArray();
+			    $.each(t, function() {
+			    	if(this.name=='site[]'){
+			    		diyu_id=diyu_id+'{'+this.value+'}'
+			    	}
+			    	if(this.name=='dep[]'){
+			    		bumen_id=bumen_id+'['+this.value+']'
+			    	}
+			    	if(this.name=='geren[]'){
+			    		geren_id=geren_id+'('+this.value+')'
+			    	}
+		    	    });
+			    id=diyu_id+bumen_id+geren_id;
+		    }
+			var form = new FormData($('form[wtq_form=id]')[0]);
+			$('.loading').parent().css('display','');
+			$.ajax({
+            type: "POST",
+            url:'{:url("One_up/change")}?qx_id='+id,
+            data:form,// 你的formid
+            processData:false,
+            contentType:false,
+            dataType:'json',
+            error: function(request) {
+                mythisalert(0,'失败')
+                $('.loading').parent().css('display','none');
+            },
+            success: function(data) {
+                mythisalert(data[0],data[1]);
+				if(a=='x'){
+    				$('button[wtq_up_index_alert_close=close]').trigger('click')
+    			}
+				var this_mulu_id=$("input[type=radio][name=ml]:checked").val();
+				if(this_mulu_id){
+					if(data[0]==1){
+						var come=$("div[wtq_b_id="+this_mulu_id+"]").children('span');
+						var come_shu=come.html();
+						come.html(come_shu*1+1*1);
+						var site=$("div[wtq_b_id='']").children('span');
+						var site_shu=site.html();
+						site.html(site_shu*1+1*1);
+						var come="div[wtq_b_id="+this_mulu_id+"]";
+					}
+					ajax_index('?xing='+$("input[type=radio][name=ml]:checked").val(),come)
+					//menu_ajax('i',vie,'?xing='+$("input[type=radio][name=ml]:checked").val());
+				}else{
+					ajax_index('?xing='+$("input[type=radio][name=ml]:checked").val())
+					menu_ajax('i',vie,sour_text());
+				}
+                $('.loading').parent().css('display','none');
+            }
+        });
+		}
+    	//更新拉取因为是传的post不想改了
+	    function change(id='',mid=''){
+		    $('.loading').parent().css('display','');
+			$.post('{:url("One_up/change_ajax")}?id='+mid,{id:id},
+		                function (data) {
+		    			var a=data+'<div><button wtq_up_index_alert_close="close" class="btn btn-primary btn-small layui-layer-close" style="float:right;margin-right:20px;">关闭</button> '+
+		        		'<button onclick="change_ok(\'x\')" class="btn btn-primary btn-small" style="float:right;margin-right:5px;">保存并关闭</button> '+
+		        		'<button onclick="change_ok()" class="btn btn-primary btn-small" style="float:right;margin-right:5px;">保存</button></div> '
+		        		layer.open({
+		            		  type: 1,
+		            		  title: $('td[wtq_this_id=name'+id+']').find('div').html(),
+		            		  skin: 'layui-layer-rim', //加上边框
+		            		  area: ['620px', '740px'], //宽高
+		            		  content: a
+		            		});
+		         		$('.loading').parent().css('display','none');
+					},"json").error(function(){mythisalert(0,'失败');$('.loading').parent().css('display','none');});
+		}
+	    //查看不通过原因
+	    function yy(b,d){
+	    	if(b==''){b='<span style="color: #b0b0b066;">没有留言哦，可能看你不爽吧(#滑稽)</span>';}
+			var th='<div style="height:80px;padding:10px 0 0 20px;">'+
+					'<div wtq_up_index_name="div">'+
+					'<span>不通过原因：</span>'+b+
+					'</div></div>';
+			var th=th+'<hr><div><button wtq_up_index_alert_close="close" class="btn btn-primary btn-small layui-layer-close" style="float:right;margin-right:20px;">关闭</button></div> '
+			layer.open({
+	  		  type: 1,
+	  		  title: d+'未通过原因',
+	  		  skin: 'layui-layer-rim', //加上边框
+	  		  area: ['420px', '220px'], //宽高
+	  		  content: th
+	  		});
+			$("div[class=layui-layer-title]").html(d+'审核')
+		}
+	</script>
+	<script>
+	//文件下载
+    	function xz(id){
+	    	xz_all(id,'One_up')
+	    }
+    	//文件预览
+    	function yl(url,houzhui,id){
+    		yl_all(url,houzhui,id,'One_up')
+	    }
+    	//异步加载页面内容
+    	function ajax_index(url='',thi,s){
+    		ajax_index_all(url,thi,s,'One_up')
+    	}
+    	//对文件进行踩赞
+    	function lick(a,b,name,id){
+    		lick_all(a,b,name,id,'One_up')
+    	}
+    	//文件留言发表
+    	function fb(a){
+    		fb_all(a,'One_up')
+    	}
+    </script>
+   	<script>
+  		//页面内容组合
+	   	function indexx(data,foot,url,shumu,bt,thi){
+			var text;
+			if(data==''){text='<tr><td colspan="7"><h2><p style="color:red;">没有数据</p></h2></td></tr>'}
+			$.each(data, function (index, item) {
+	           	if(item.ok==2){
+	           		var shen='<span ok_id="'+item.id+'" class="btn btn-minier btn-primary">待审核</span>'
+	           	}else if(item.ok==1){
+	           		var shen='<span ok_id="'+item.id+'" class="btn btn-minier btn-success">通过</span>'
+	           	}else if(item.ok==0){
+	           		var shen='<span ok_id="'+item.id+'" onclick="yy(\''+item.sta+'\',\''+item.file_name+'\')" class="btn btn-minier btn-inverse">失败</span>'
+	           	}else{
+	           		var shen='<span class="btn btn-minier btn-danger">未知状态</span>'
+	           	}
+	           	if(item.down==1){
+	           		var down='<button onclick="return xz(\''+item.id+'\');" class="btn btn-xs">下载</button> ';
+	           	}else{
+	           		var down='<button class="btn btn-xs" style="opacity:0;cursor:auto">去去</button> '
+	           	}
+	           	var size_K;var size_M;var size_G;
+	           	size_B=item.file_size;size=size_B.toFixed(2)+'B';
+	           	if(size_B>100){
+	           		size_K=size_B/1024;size=size_K.toFixed(2)+'KB';
+	           	}
+				if(size_K>100){
+	           		size_M=size_K/1024;size=size_M.toFixed(2)+'MB';
+	           	}
+				if(size_M>100){
+	           		size_G=size_M/1024;size=size_G.toFixed(2)+'GB';
+	           	}
+				if(size_G>100){
+	           		size_T=size_G/1024;size=size_T.toFixed(2)+'TB';
+	           	}
+				var timestamp = Date.parse(new Date());
+				timestamp = timestamp / 1000;
+				var timestamp2 = Date.parse(new Date(item.die_time));
+				timestamp2 = timestamp2 / 1000;
+				if(timestamp2<timestamp){
+					col='style="color: red;"'
+					if(item.bb_new==0){
+						col='style="color: green;"'
+					}
+				}else{
+					col='';
+					if(item.bb_new==0){
+						col='style="color: blue;"'
+					}
+				}
+				var arr='{$vip}';
+				var arr=JSON.parse(arr);
+				if($.inArray(item.id, arr)=='-1' && item.ok!=0){
+					var gx='<button style="" class="btn btn-xs" onclick="change(\''+item.id+'\')">更新</button>';
+				}else{var gx='';}
+				var arr2='{$ok_open}';
+				var arr2=JSON.parse(arr2);
+				if($.inArray(item.file_houzhui, arr2)=='-1'){
+					var yl='<!--button class="btn btn-xs" style="opacity:0;cursor:auto">预览</button--> ';
+				}else{
+					var yl='<!--button onclick="return yl(\''+item.url+item.file_sc_name+'.'+item.file_houzhui+'\',\''+item.file_houzhui+'\',\''+item.id+'\');" class="btn btn-xs">预览</button--> ';
+				}
+				if(item.bb_id==0 && item.ok==2){
+					del=' <button style="" class="btn btn-xs" onclick="del_this(\''+item.id+'\')">删除</button>';
+				}else{
+					del='';
+				}
+				var change_time=item.file_time;
+				change_time = change_time.split(' ');
+	               text=text+'<tr '+col+'>'+
+	               	'<td>'+item.id+'</td>'+
+	               	'<td wtq_this_id="name'+item.id+'"><div wtq_this_wid="name" title="'+item.file_name+'" style="display:block;white-space:nowrap; overflow:hidden;text-overflow:ellipsis;width:300px;">'+item.file_name+'</div></td>'+
+	               	'<!--td>'+item.fenlei+'</td-->'+
+	               	'<td>'+size+'</td>'+
+	               	'<td>'+change_time[0]+'</td>'+
+	               	'<td>'+item.bb+'</td>'+
+	               	'<td>'+shen+'</td>'+
+	               	'<td>'+yl+down+
+	               	'<button wid="70%" hig="90%" class="btn btn-xs layerIframe" url="{:url(\'One_up/file_xx\')}?id='+item.id+'" title="'+item.file_name+'">详情</button> '+gx+del+
+	               	'</td>'
+	               //输出0...aaa,bbb,ccc  1...ddd,eee,fff  2...ggg,hhh,iii   这时的index为数组下标,item相当于取这二维数组中的每一个数组
+	              
+	               text=text+'</tr>';
+	           });
+	           $("div[class=box-body]").find('tbody').html(text);
+	           var inn=$("div[class=box-footer]").find("div[class=text-right]");
+	           	if(foot==1){
+	           		inn.html('')
+	           	}else{
+	           		inn.html(foot)
+	           	}
+	           	
+	           $("input[wtq_up_index_id=url]").val(url);
+	           $("span[wtq_mem_id=mem]").html(shumu);
+	           if(bt){
+	           	$("span[wtq_zs_id=zs]").html(bt);
+	           }
+	           $('.loading').parent().css('display','none');
+	       
+		}
+  		//删除文件
+  		function del_this(id){
+			if(confirm("你确定要删除么")){
+				
+		    }else{
+		    	return false;
+		    }
+  			$.post('{:url("Up/this_del")}',{id:id},
+  		            function (data) {
+  						mythisalert(data[0],data[1]);
+  						sour();
+  		            },"json").error(function(){mythisalert(0,'失败');$('.loading').parent().css('display','none');});
+  		}
+  		//乾坤大挪移
+  		function diversion(id,name){
+  			$.post('{:url("Up/diversion")}?diversion=1',{},
+  		            function (data) {
+		  				layer.open({
+		  	      		  type: 1,
+		  	      		  skin: 'layui-layer-rim', //加上边框
+		  	      		  area: ['700px', '500px'], //宽高
+		  	        	  content: '<div id="tree2" class="tree tree-unselectable">'+data+'</div><hr><input new_user="new"><button onclick="diversion_star('+id+')">完成</button>',
+		  	      		  title:'要将'+name+'插入那个目录',
+		  	      		});
+  		            },"json").error(function(){mythisalert(0,'失败');});
+			return false;
+  			
+  		}
+  		function diversion_star(id){
+  			var parents_id=$("input[name='ml'][parents_id]:checked").attr('parents_id');
+  			var dep_id=$("input[name='ml'][dep_id]:checked").attr('dep_id');
+  			var lv=$("input[name='ml'][lv]:checked").attr('lv');
+  			var new_user=$("input[new_user=new]").val();
+  			if(parents_id==id){
+  				mythisalert(0,'自己不能搞自己哦');
+  				return false;
+  			}
+  			$.post('{:url("Up/diversion")}',{id:id,parents_id:parents_id,dep_id:dep_id,lv:lv,new_user:new_user},
+  		            function (data) {
+  						mythisalert(data[0],data[1]+',请收到刷新<span style="font-size:8px">手动一小下，造福千万猿</span>');
+  		            },"json").error(function(){mythisalert(0,'失败');});
+  		}
+  		//文件夹权限
+  		function folder_qx(id){
+  			$.post('{:url("Up/folder_qx")}',{id:id},
+  		            function (data) {
+  				layer.open({
+	  	      		  type: 1,
+	  	      		  skin: 'layui-layer-rim', //加上边框
+	  	      		  area: ['700px', '500px'], //宽高
+	  	        	  content: '<div style="margin: 5px 20px;"><div>'+data+'</div><hr><button class="btn btn-primary btn-small" onclick="folder_qx_sqve('+id+')">完成</button> <a class="btn btn-primary btn-small layui-layer-close" wtq_up_index_alert_close="close">关闭</a></div>',
+	  	      		  title:'要将插入那个目录',
+	  	      		});
+  		            },"json").error(function(){mythisalert(0,'失败');});
+  		}
+  		function folder_qx_sqve(id){
+  			var diyu_id='';var bumen_id='';var geren_id='';
+			var d = {};
+		    var t = $('form[wtq_id=qx]').serializeArray();
+		    $.each(t, function() {
+		    	if(this.name=='site[]'){
+		    		diyu_id=diyu_id+'{'+this.value+'}'
+		    	}
+		    	if(this.name=='dep[]'){
+		    		bumen_id=bumen_id+'['+this.value+']'
+		    	}
+		    	if(this.name=='geren[]'){
+		    		geren_id=geren_id+'('+this.value+')'
+		    	}
+	    	    });
+		    qx_id=diyu_id+bumen_id+geren_id;
+		    if($("input[dep_qx_open=ok]:checked").val()=='1'){
+		    	var dep_qx_open=2;
+		    }else{
+		    	var dep_qx_open=1;
+		    }
+		    
+  			$.post('{:url("Up/folder_qx")}',{id:id,ok:'1',qx_id:qx_id,dep_qx_open:dep_qx_open},
+  		            function (data) {
+  						mythisalert(data[0],data[1]);
+  		            },"json").error(function(){mythisalert(0,'失败');});
+  		}
+   	</script>

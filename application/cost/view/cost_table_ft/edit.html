@@ -1,0 +1,176 @@
+<meta charset="utf-8" />
+<form action="editRow" method="post" id="rowForm">
+<input type="hidden" name='id' value='{$page_info.list.id}'/>
+	<div style="margin-left:5%">
+	   	<table cellpadding="5" >
+	   		<tr>
+	   			<td>关联ID：</td>
+	   			<td><input type="text" name='cost_id' value='{$page_info.list.cost_id}' readonly style='background-color:#ddd'/></td>
+	   			<td>生效日期：</td>
+	   			<td><input type="text" name='effe_time' value='{$page_info.list.effe_time}'/></td>
+	   			<td>test time notice 編號：</td>
+	   			<td><input type="text" name='test_time_notice' value='{$page_info.list.test_time_notice}'/></td>
+	   			<td>产品型号：</td>
+	   			<td><input type="text" name='prdno' value='{$page_info.list.prdno}'  readonly/></td>
+	   		</tr>
+	   		<tr>
+	   			<td>ft測試程式：</td>
+	   			<td><input type="text" name='by25' value='{$page_info.list.by25}'/></td>
+	   			<td>F/t廠：</td>
+	   			<td><input type="text" name='F_T_Out' value='{$page_info.list.F_T_Out}' readonly/></td>
+	   			<td>F/t tester：</td>
+	   			<td><input type="text" name='F_T_Tester' value='{$page_info.list.F_T_Tester}'/></td>
+	   			<td>cpu time：</td>
+	   			<td><input type="text" name='cpu_time' value='{$page_info.list.cpu_time}'/></td>
+	   		</tr>
+	   		<tr>
+	   			<td>index time：</td>
+	   			<td><input type="text" name='index_time' value='{$page_info.list.index_time}'/></td>
+	   			<td>site數：</td>
+	   			<td><input type="text" name='site' value='{$page_info.list.site}'/></td>
+	   			<td>test time/ea：</td>
+	   			<td><input type="text" name='F_T_TWEO' value='{$page_info.list.F_T_TWEO}' readonly/></td>
+	   			<td>Qty/d(k)：</td>
+	   			<td><input type="text" name='qty_d' value='{$page_info.list.qty_d}' readonly/></td>
+	   		</tr>
+	   		<tr>
+	   			<td>已跨机台数量：</td>
+	   			<td><input type="text" name='cross_plat_ct' value='{$page_info.list.cross_plat_ct}'/></td>
+	   			<td>已跨机台编号：</td>
+	   			<td><input type="text" name='cross_plat_nb' value='{$page_info.list.cross_plat_nb}'/></td>
+	   			<td>日最大产能：</td>
+	   			<td><input type="text" name='max_daily_output' value='{$page_info.list.max_daily_output}' readonly/></td>
+	   			<td>FT price：</td>
+	   			<td><input type="text" name='ft_price' value='{$page_info.list.ft_price}' readonly/></td>
+	   		</tr>
+	   		<tr>
+	   			
+	   			<td>h/r：</td>
+	   			<td><input type="text" name='h_r' value='{$page_info.list.h_r}'/></td>
+	   			
+	   		</tr>	
+	   	
+	   	</table>
+   </div>
+    <div style="margin:3% 20% 2% 40%"><span>确认修改：</span><input type="checkbox" name="yes"/></div>
+</form>
+	<div style="margin:3% 0 10% 40%">
+	   	<button onclick="rowSubmit()" type="button" style='cursor:pointer;'>提交</button>
+	   	<button class='closeLayer' style='cursor:pointer;'>关闭</button>
+   	</div>
+<script>
+    function rowSubmit(){
+    	var $form = $('#rowForm');
+		var url = "{:url('cost/CostTableFt/editRow')}";
+		$.ajax({
+			type:$form.method || 'POST',
+//			url:$form.attr("action"),
+			url:url,
+			data:$form.serializeArray(),
+			dataType:"json",
+			success:function(result){
+				showMsg(result);
+//				if(result.statusCode == 1){
+//					reload_list();
+//				}
+			},
+		});
+    }
+    //F_T_TWEO=(cpu_time+index_time)/site
+    //qty_d=(3600/F_T_TWEO)*20*0.8/1000
+	//max_daily_output=qty_d*cross_plat_ct
+	//ft_price　= h_r/3600*F_T_TWEO
+//
+//  	$('input[name=cpu_time],input[name=index_time],input[name=site]').change(function(){
+//  		F_T_TWEO_val();
+//  		qty_d_val();
+//  		max_daily_output_val();
+//  		ft_price_val();
+//	});
+//  	$('input[name=qty_d],input[name=cross_plat_ct]').change(function(){
+//  		max_daily_output_val();
+//	});
+//	$('input[name=h_r]').change(function(){
+//		ft_price_val();
+//	});
+//    function F_T_TWEO_val(){
+//    	var F_T_TWEO = (Number($('input[name=cpu_time]').val())+Number($('input[name=index_time]').val()))/Number($('input[name=site]').val());
+//    	$('input[name=F_T_TWEO]').val(F_T_TWEO);
+//    }
+//    function qty_d_val(){
+//    	var qty_d = (57.6/Number($('input[name=F_T_TWEO]').val()));
+//    	$('input[name=qty_d]').val(qty_d);
+//    }
+//    function max_daily_output_val(){
+//    	var max_daily_output = Number($('input[name=qty_d]').val())*Number($('input[name=cross_plat_ct]').val());
+//    	$('input[name=max_daily_output]').val(max_daily_output);
+//    }
+//    function ft_price_val(){
+//    	var ft_price = Number($('input[name= h_r]').val())*Number($('input[name=F_T_TWEO]').val())/3600;
+//    	$('input[name=ft_price]').val(ft_price);
+//    }
+
+
+
+
+	$('input[name=cpu_time],input[name=index_time],input[name=site]').change(function(){
+		F_T_TWEO_val();
+		qty_d_val();
+		max_daily_output_val();
+		ft_price_val();
+	});
+	$('input[name=qty_d],input[name=cross_plat_ct]').change(function(){
+		max_daily_output_val();
+	});
+	$('input[name=h_r]').change(function(){
+		ft_price_val();
+	});
+	function F_T_TWEO_val(){
+		var cpu_time = '';
+		var index_time = '';
+		var site = '';
+
+		if(!$('input[name=cpu_time]').val()){cpu_time = 0;}else{cpu_time = Number($('input[name=cpu_time]').val());}
+		if(!$('input[name=index_time]').val()){index_time = 0;}else{index_time= Number($('input[name=index_time]').val());}
+		if(!$('input[name=site]').val()){site = 1;}else{site= Number($('input[name=site]').val());}
+
+		var F_T_TWEO = (cpu_time+index_time)/(site);
+
+		//    	var F_T_TWEO = (Number($('input[name=cpu_time]').val())+Number($('input[name=index_time]').val()))/Number($('input[name=site]').val());
+		$('input[name=F_T_TWEO]').val(F_T_TWEO.toFixed(10));
+	}
+	function qty_d_val(){
+		var F_T_TWEO = '';
+		if(!$('input[name=F_T_TWEO]').val()){F_T_TWEO = 1;}else{F_T_TWEO = Number($('input[name=F_T_TWEO]').val());}
+		var qty_d = (57.6/F_T_TWEO);
+//    	var qty_d = (57.6/Number($('input[name=F_T_TWEO]').val()));
+		$('input[name=qty_d]').val(qty_d.toFixed(10));
+	}
+	function max_daily_output_val(){
+		var qty_d = '';
+
+		var cross_plat_ct = '';
+
+		if(!$('input[name=qty_d]').val()){qty_d = 0;}else{qty_d = Number($('input[name=qty_d]').val());}
+
+		if(!$('input[name=cross_plat_ct]').val()){cross_plat_ct = 0;}else{cross_plat_ct = Number($('input[name=cross_plat_ct]').val());}
+
+		var max_daily_output = (qty_d*cross_plat_ct);
+//    	var max_daily_output = Number($('input[name=qty_d]').val())*Number($('input[name=cross_plat_ct]').val());
+		$('input[name=max_daily_output]').val(max_daily_output.toFixed(10));
+	}
+	function ft_price_val(){
+		var h_r = '';
+
+		var F_T_TWEO = '';
+
+		if(!$('input[name=h_r]').val()){h_r = 0;}else{ h_r = Number($('input[name=h_r]').val());}
+
+		if(!$('input[name=F_T_TWEO]').val()){F_T_TWEO = 0;}else{ F_T_TWEO = Number($('input[name=F_T_TWEO]').val());}
+
+		var ft_price = (h_r*F_T_TWEO)/3600;
+//    	var ft_price = Number($('input[name= h_r]').val())*Number($('input[name=F_T_TWEO]').val())/3600;
+		$('input[name=ft_price]').val(ft_price.toFixed(10));
+	}
+</script>
+

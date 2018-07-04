@@ -1,0 +1,31 @@
+<meta charset="utf-8" />
+<form  id="rowForm">
+    <div>你将要修改<span id='count' style="color:red">{$count}</span>条数据;</div>
+    <div style="margin-left:15%">
+        <table cellpadding="5" >
+            <tr>
+                <td>修改xmf04:</td>
+                <td><input type="text" name="xmf04"></td>
+            </tr>
+        </table>
+    </div>
+</form>
+<div><span style='color:red'>批量修改对数据进行批量操作，谨慎使用</span></div>
+<div style="margin:0% 0 10% 40%">
+    <button onclick="rowSubmit()" class="btn btn-primary" type="button" style='cursor:pointer;'>提交</button>
+    <button class='btn btn-primary closeLayer' style='cursor:pointer;'>关闭</button>
+</div>
+<script>
+    function rowSubmit(){
+        var xmf04 = $.trim($("input[name=xmf04]").val());
+        var xmf01_val = $.trim($("input[name=xmf01]").val());
+        var xmf02_val = $.trim($("input[name=xmf02]").val());
+        var xmf03_val = $.trim($("input[name=xmf03]").val());
+        $.post("{:url('erp/price_list/editBatch')}",{xmf04:xmf04,xmf01:xmf01_val,xmf02:xmf02_val,xmf03:xmf03_val},function(result){
+            showMsg(result);
+        },"JSON")
+
+    }
+
+</script>
+

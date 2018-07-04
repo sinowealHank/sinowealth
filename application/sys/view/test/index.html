@@ -1,0 +1,81 @@
+{extend name="index@index/base" /}
+{block name="main"}
+
+<div class="breadcrumbs" id="breadcrumbs">
+	<script type="text/javascript">
+		try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	</script>
+
+	<ul class="breadcrumb">
+		<li>
+			<i class="icon-home home-icon"></i>
+				<a href="#">首页</a>
+		</li>
+
+		<li>
+			<a href="#">后台管理</a>
+		</li>
+			<li class="active">Test</li>
+	</ul><!-- .breadcrumb -->
+    
+    
+    <div class="nav-search" id="nav-search">
+        <form class="form-search">
+            <span class="input-icon">
+                <input placeholder="搜索 ..." class="nav-search-input" id="nav-search-input" autocomplete="off" type="text">
+                <i class="icon-search nav-search-icon"></i>
+            </span>
+        </form>
+    </div>
+
+</div>
+
+<div class="page-content">
+	<div class="page-header col-xs-12">
+            <h1 class="col-xs-8">
+                站点设置
+                <small>
+                    <i class="icon-double-angle-right"></i>
+                    Test
+                </small>
+            </h1>
+        <div class="pull-right  clearfix">
+        	
+            <a href="javascript:void(0)" class="btn btn-info btn-sm" id="add_site"><span class="icon expand-icon glyphicon glyphicon-plus"></span>添加站点</a>
+        </div>        
+	</div><!-- /.page-header -->
+
+	<div class="row"><!-- /.col -->
+    	<div class="col-xs-12">
+        	
+            <ul id="privilege"></ul>
+            
+            
+            
+        </div>
+	</div><!-- /.row -->
+</div>
+
+
+<script>
+var json = eval('('+'{$page_info.tree}'+')');
+//alert(json);
+layui.use('tree', function(){
+    layui.tree({
+        elem: '#privilege' //传入元素选择器
+        ,skin: 'shihuang'
+        ,nodes: json
+        ,click: function(node){
+			//alert(node.id);
+			layerIframe('163','test_aa');
+        }
+    });
+});
+
+</script>
+
+
+
+
+{/block}
+

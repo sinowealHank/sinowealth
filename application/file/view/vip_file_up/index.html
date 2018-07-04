@@ -1,0 +1,292 @@
+{extend name="index@index/base" /}
+{block name="main"}
+	<div class="breadcrumbs" id="breadcrumbs">
+	    <script type="text/javascript">
+	        try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+	    </script>
+	    <ul class="breadcrumb">
+	        <li>
+	            <i class="icon-home home-icon"></i>
+	            <a href="#">快速上传></a>
+	        </li>
+	    </ul><!-- .breadcrumb -->
+	</div>
+	<div class="col-md-12">
+	    <div class="box">
+	        <div class="box-header">
+	        </div>
+		    <div class="box-body">
+		    	<div style="overflow-y: scroll;height:300px;">
+			    	<div id="dropzone">
+						<form action="{:url('Vip_file_up/vip_files_up')}" class="dropzone dz-clickable">
+							<div class="dz-default dz-message">
+								<span>
+									<span class="bigger-150 bolder"><i class="icon-caret-right red"></i> Drop files</span>
+									to upload
+									<span class="smaller-80 grey">(or click)</span> 
+									<br> 
+									<i class="upload-icon icon-cloud-upload blue icon-3x"></i>
+								</span>
+							</div>
+						</form>
+					</div>
+			    </div>
+				
+				<div>
+					 <div style="float:right;padding-right:30px;">
+	        			<span>精确查找：</span>
+	        			<label class="inline">
+							<input wtq_up_index_name='sql_jq' value="yes" class="" type="checkbox">
+							<span class="lbl"></span>
+						</label>
+		            	<span>关键字：</span><input wtq_up_index_name='name'><button onclick="return sour(this)" class="btn btn-sm btn-primary">搜索</button>
+	        		</div>
+					<table class="table table-hover">
+				        <thead>
+				            <tr>
+				                <th style="cursor:pointer;" onclick="paixu(this,'id')">编号<i wtq_up_index_i="i" class="icon-level-up" style="padding-left:5px;color:red;"></i></th>
+				                <th style="cursor:pointer;" onclick="paixu(this,'name')">名字<i wtq_up_index_i="i" style="padding-left:30px;color:red;"></i></th>
+				                <th>版本</th>
+				                <th>过期时间</th>
+				                <th>关键字</th>
+				                <th style="cursor:pointer;" onclick="paixu(this,'down')">是否允许下载<i wtq_up_index_i="i" style="padding-left:30px;color:red;"></i></th>
+				                <th>上传次数</th>
+				                <th>操作</th>
+				            </tr>
+				        </thead>
+				        <tbody>
+				        
+				        </tbody>
+				    </table>
+				    <div class="box-footer">
+				    	<div class="text-right">
+							
+				    	</div>
+				    </div>
+				</div>
+		    </div>
+		    
+		</div>
+	</div>
+{/block}
+{block name="script"}
+{include file="../application/file/view/up/time.html" /}
+<script src="__PUBLIC__/layer/laydate-v1.1/laydate/laydate.js"></script>
+
+<link rel="stylesheet" href="__PUBLIC__/static/assets/css/dropzone.css" />
+<link rel="stylesheet" href="__PUBLIC__/static/assets/css/ace.min.css" />
+<script src="__PUBLIC__/static/assets/js/dropzone.min.js"></script>
+	<script>
+		//修改文件配置
+		function change(id,name){
+			$('.loading').parent().css('display','');
+			$.post('{:url("Vip_file_up/vip_change_ajax")}',{id:id},
+                function (data) {
+					var data=data+'<hr><div><button wtq_add_close="close" class="btn btn-primary btn-small layui-layer-close" style="float:right;margin-right:20px;">关闭</button> '+
+		    		'<button onclick="change_ok(\'x\')" class="btn btn-primary btn-small" style="float:right;margin-right:5px;">保存并关闭</button> '+
+		    		'<button onclick="change_ok()" class="btn btn-primary btn-small" style="float:right;margin-right:5px;">保存</button></div> '
+					layer.open({
+				  		  type: 1,
+				  		  title: name+'配置',
+				  		  skin: 'layui-layer-rim', //加上边框
+				  		  area: ['650px', '740px'], //宽高
+				  		  content: data
+				  		});
+					$('.loading').parent().css('display','none');
+                },"json").erroe(function(){mythisalert(0,'失败');$('.loading').parent().css('display','none');});
+		}
+		//修改完成
+		function change_ok(a){
+			if($("input[biaoshi=all]:checked").val()=='all'){
+   		    	id='all';
+   		    }else{
+   		    	var diyu_id='';var bumen_id='';var geren_id='';
+   				
+   				var d = {};
+   			    var t = $('form[wtq_id=qx]').serializeArray();
+   			    $.each(t, function() {
+   			    	if(this.name=='site[]'){
+   			    		diyu_id=diyu_id+'{'+this.value+'}'
+   			    	}
+   			    	if(this.name=='dep[]'){
+   			    		bumen_id=bumen_id+'['+this.value+']'
+   			    	}
+   			    	if(this.name=='geren[]'){
+   			    		geren_id=geren_id+'('+this.value+')'
+   			    	}
+   		    	    });
+   			    id=diyu_id+bumen_id+geren_id;
+   		    }
+   			var form = new FormData($('form[wtq_form=id]')[0]);
+			$('.loading').parent().css('display','');
+   			$.ajax({
+                type: "POST",
+                url:'{:url("Vip_file_up/vip_change_ok")}?qx_id='+id,
+                data:form,// 你的formid
+                processData:false,
+                contentType:false,
+                dataType:'json',
+                error: function(request) {
+                    mythisalert(0,'失败')
+                    $('.loading').parent().css('display','none');
+                },
+                success: function(data) {
+                    mythisalert(data[0],data[1]);
+					if(a=='x'){
+						$('button[wtq_add_close=close]').trigger('click')
+	    			}
+					ajax(sour_text())
+                    $('.loading').parent().css('display','none');
+                }
+            });
+		}
+	</script>
+	<script>
+		//搜索个人
+		function ggr(){
+			var sour=$("input[wtq_this=gr_so]").val();
+			$('.loading').parent().css('display','');
+			var d = {};
+		    var t = $('form[wtq_id=qx]').serializeArray();
+		    var geren_id='';
+		    $.each(t, function() {
+		    	if(this.name=='geren[]'){
+		    		geren_id=geren_id+'('+this.value+')'
+		    	}
+			 });
+			$.post('{:url("Up/up_sour")}?sour='+sour+'&id='+geren_id,{},
+		            function (data) {
+						$('div[wtq_sour_del="yes"]').remove();
+						$('div[wtq_up_up_id=sour]').prepend('<div wtq_sour_del="yes">'+data+'</div>');
+						$('.loading').parent().css('display','none');
+		            },"json").erroe(function(){mythisalert(0,'失败');$('.loading').parent().css('display','none');});
+		}
+		//同步选中的个人出现在已选择
+		function user_change(thi){
+			if($(thi).is(':checked')){
+				if($('#user_all').find('input[value='+$(thi).val()+']').val()){return false;}
+				var div='<div del="del" style="cursor:pointer;float:left;padding-left:10px;">'+
+							'<input onchange="user_change(this)" onclick="var a=$(\'input[biaoshi=qx_geren][type=checkbox][value='+$(thi).val()+']\');if($(this).is(\':checked\')){a.prop(\'checked\',true)}else{a.prop(\'checked\',false)};" checked="checked" type="checkbox" value="'+$(thi).val()+'" /><span onclick="var a=$(\'input[biaoshi=qx_geren][type=checkbox][value='+$(thi).val()+']\');if($(this).prev(\'input\').is(\':checked\')){$(this).prev(\'input\').prop(\'checked\',false)}else{$(this).prev(\'input\').prop(\'checked\',true)};if($(this).is(\':checked\')){a.prop(\'checked\',true)}else{a.prop(\'checked\',false)}; user_change($(this).prev(\'input\'))">'+$(thi).next('span').html()+'</span>'+
+						'</div>'
+				$('#user_all').prepend(div);
+			}else{
+				var del=$('#user_all').find('input[value='+$(thi).val()+']').parents('div[ del="del"]').remove();
+			}
+		}
+		//权限勾选翻页
+		function qx(a,thi){
+			if(a=='geren'){
+				$("span[wtq_sour_gr_id=gr]").css('display','')
+			}else{
+				$("span[wtq_sour_gr_id=gr]").css('display','none')
+			}
+			$("button[wtq_this=b]").attr('class','btn btn-light')
+			$("div[wtq_this=a]").css('display','none')
+			$("div[wtq_up_my_file_fen="+a+"]").css('display','')
+			$(thi).attr('class','btn btn-purple')
+		}
+	</script>
+	<script>
+		//点击esc关闭弹框
+		$(window).keyup(function(e){
+	   		if(e.keyCode==27){
+	   			$('button[wtq_add_close=close]').trigger('click')
+	   		}
+	   	})
+	   	ajax()
+	   	//搜索内容
+	   	function sour_text(){
+			var sql_jq=$("input[ wtq_up_index_name=sql_jq]:checked").val();
+			var name=$("input[ wtq_up_index_name=name]").val();
+			var url='?name='+name+'&sql_jq='+sql_jq;
+			return url;
+		}
+		//搜索
+		function sour(){
+			ajax(sour_text())
+		}
+		//翻页
+		function page(url){
+			ajax(url)
+    	}
+		//排序
+		function paixu(thi,ii){
+    		if($(thi).children('i').attr('class')=='icon-level-down'){var a='&a=1';}else{var a='';}
+    		url=sour_text()+'&ii='+ii+a
+    		ajax(url,thi)
+    	}
+		//异步拉取页面数据
+		function ajax(url='',thi){
+			$('.loading').parent().css('display','');
+			$.post('{:url("Vip_file_up/vip_file_up_ajax")}'+url,{},
+	                function (data) {
+						index(data[1],data[0])
+						if(thi){
+    						$('i[wtq_up_index_i=i]').attr('class','')
+        					$(thi).children('i').attr('class',data[2])
+    					}
+	                },"json").erroe(function(){mythisalert(0,'失败');$('.loading').parent().css('display','none');});
+		}
+		//拼接页面
+		function index(data,foot){
+			var text;
+    		if(data==''){text='<tr><td colspan="7"><h2><p style="color:red;">没有数据</p></h2></td></tr>'}
+            
+    		$.each(data, function (index, item) {
+    			if(item.down==1){
+               		var dow='<span class="btn btn-minier btn-success">允许</span>'
+    			}else if(item.down==0){
+    				var dow='<span class="btn btn-minier btn-pink">禁止</span>'
+    			}else{
+    				var dow='<span class="btn btn-minier btn-inverse">未设置</span>'
+    			}
+                text=text+'<tr>'+
+                	'<td>'+item.id+'</td>'+
+                	'<td>'+item.name+'</td>'+
+                	'<td>'+item.bb+'</td>'+
+                	'<td>'+item.die_time+'</td>'+
+                	'<td>'+item.import_text+'</td>'+
+                	'<td>'+dow+'</td>'+
+                	'<td>'+item.up_cs+'</td>'+
+                	'<td>'+'<button onclick="return change(\''+item.id+'\',\''+item.name+'\');" class="btn btn-xs">修改</button> '+
+                	'</td>'
+                //输出0...aaa,bbb,ccc  1...ddd,eee,fff  2...ggg,hhh,iii   这时的index为数组下标,item相当于取这二维数组中的每一个数组
+                text=text+'</tr>';
+            });
+            $("div[class=box-body]").find('tbody').html(text);
+            var inn=$("div[class=box-footer]").find("div[class=text-right]");
+            if(foot==1){
+     	 		inn.html('')
+            }else{
+            	inn.html(foot)
+            }
+            $('.loading').parent().css('display','none');
+		}
+   	</script>
+	<script type="text/javascript">
+			//批量上传
+			jQuery(function($){
+			
+			try {
+			  $(".dropzone").dropzone({
+			    paramName: "file", // The name that will be used to transfer the file
+			    //maxFilesize: 1024, // MB
+			  
+				addRemoveLinks : true,
+				dictDefaultMessage :
+				'<span class="bigger-150 bolder"><i class="icon-caret-right red"></i> Drop files</span> to upload \
+				<span class="smaller-80 grey">(or click)</span> <br /> \
+				<i class="upload-icon icon-cloud-upload blue icon-3x"></i>'
+			,
+				dictResponseError: 'Error while uploading file!',
+				
+				//change the previewTemplate to use Bootstrap progress bars
+				previewTemplate: "<div class=\"dz-preview dz-file-preview\">\n  <div class=\"dz-details\">\n    <div class=\"dz-filename\"><span data-dz-name></span></div>\n    <div class=\"dz-size\" data-dz-size></div>\n    <img data-dz-thumbnail />\n  </div>\n  <div class=\"progress progress-small progress-striped active\"><div class=\"progress-bar progress-bar-success\" data-dz-uploadprogress></div></div>\n  <div class=\"dz-success-mark\"><span></span></div>\n  <div class=\"dz-error-mark\"><span></span></div>\n  <div class=\"dz-error-message\"><span data-dz-errormessage></span></div>\n</div>"
+			  });
+			} catch(e) {
+			  alert('Dropzone.js does not support older browsers!');
+			}
+			
+			});
+		</script>
+{/block}

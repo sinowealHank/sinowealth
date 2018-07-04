@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Pricelist审核页面</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black"> 
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="__PUBLIC__/static/assets/css/ace.min.css" />
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/demo.css">
+	<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.min.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/easyui-lang-zh_CN.js"></script>		
+	<script src="__PUBLIC__/static/assets/layer/layer.js"></script>	
+</head>
+<style>
+	body{padding: 0 0 0 0}
+	.fieldId{cursor:pointer;}
+	.fieldId:hover{display:block;color:#fff;background-color:#888;border:1px solid #ccc}
+</style>
+<body>
+	<table class="easyui-datagrid" id="tt" title="PriceList审核列表">
+		<thead data-options="frozen:true">
+			<tr>			
+				<th data-options="field:'id',width:50,sortable:true">ID</th>
+				<!-- pe可修改常规信息 -->
+				<th data-options="field:'prdno',width:160">Prd no</th>
+				<th data-options="field:'pkg',width:60">Pkg</th>
+				<th data-options="field:'description',width:60">描述</th>
+				<th data-options="field:'mk',width:60">Mask charge</th>
+				<th data-options="field:'pm',width:60">PM</th>
+				<th data-options="field:'lt',width:60">L/T Days</th>
+				<th data-options="field:'moq',width:60">MOQ</th>
+				<th data-options="field:'pack',width:120">Pack</th>
+				<th data-options="field:'refund_qty',width:120">Refund Qty</th>
+			</tr>
+		</thead>
+		<thead>
+		<!-- 1:pp查看 2:pp编辑 3:pe查看 4:pe编辑 5:te查看 6te编辑 7:qa查看 8:qa编辑 9:mt查看 -->
+			<tr>
+
+				<th data-options="field:'prd_rmb_price',width:120">标准品RMB(不含税)</th>
+				<th data-options="field:'prd_rmb_price_vat',width:120">标准品RMB(含税)</th>
+				<th data-options="field:'prd_usd_price',width:120">标准品 USD</th>
+				<th data-options="field:'prd_code_rmb_price',width:120">Code RMB(不含税)</th>
+				<th data-options="field:'prd_code_rmb_price_vat',width:120">Code RMB(含税)</th>
+				<th data-options="field:'prd_code_usd_price',width:120">Code USD</th>
+				<th data-options="field:'d_agent_sales',width:120">内销 agent</th>
+				<th data-options="field:'x_agent_sales',width:120">外销 agent</th>
+				<th data-options="field:'d_market_sales',width:120">内销 Market</th>
+				<th data-options="field:'x_market_sales',width:120">外销 Market</th>
+			</tr>
+		</thead>
+	</table>
+	<div id='tb'>
+		&nbsp;&nbsp;Prd no：<input type="text" name="prdno_val"  value="" style="width:200px;" />
+		&nbsp;&nbsp;描述：<input type="text" name="description_val"  value="" style="width:100px;" />
+		&nbsp;&nbsp;PM：<input type="text" name="pm_val"  value="" style="width:100px;"/>
+		&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="reload()">查询</a>
+	</div>
+</body>
+<script>
+
+	$(function (){
+		$('#tt').datagrid({
+			loadMsg : "正在加载数据",
+			singleSelect:true,
+			toolbar:'#tb',
+			pagination:true,//显示分页
+			pageSize:20,//分页大小
+			pageList:[10,20,30],
+			url:"get_price_check_data",
+			onDblClickRow :function(rowIndex,rowData){
+				var url = 'edit_price?id='+rowData.id;
+				layerIframe('编辑数据',url,'900px','500px');
+
+			}
+		})
+	});
+
+	//点击搜索触发此方法
+	function reload(){
+		var prdno_val = $("input[name=prdno_val]").val();
+		var description_val = $("input[name=description_val]").val();
+		var pm_val = $("input[name=pm_val]").val();
+		$('#tt').datagrid('reload',{prd:prdno_val,description:description_val,pm:pm_val});//重新加载datagrid
+	}
+
+</script>
+<script src="__PUBLIC__/static/assets/js/lds.js"></script>
+</html>
+

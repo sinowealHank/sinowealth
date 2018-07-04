@@ -1,0 +1,212 @@
+<div style="width:100%">
+	<div style="width:100%;text-align: center;">
+		<button onclick="$('[wtq_config_sour_name]').val('');" class="btn btn-success">清空</button>
+		<select wtq_config_sour_name="site_code">
+			<option value="">营运中心</option>
+			{volist name="\think\Config::get('site_code')" id="vo"}
+            	<option value="{$vo}">{$vo}</option>
+            {/volist}
+		</select>
+		<select wtq_config_sour_name="fac_num">
+			<option value="">厂商简称</option>
+			{volist name="$fac_num" id="num"}
+            	<option value="{$num['fac_num']}">{$num['fac_num']}</option>
+            {/volist}
+		</select>
+		<select wtq_config_sour_name="fac_name">
+			<option value="">厂商名称</option>
+			{volist name="$fac_name" id="name"}
+            	<option value="{$name['fac_name']}">{$name['fac_name']}</option>
+            {/volist}
+		</select>
+		<select wtq_config_sour_name="type_flag">
+			<option value="">全部</option>
+			<option value="1">联系人信息</option>
+			<option value="2">机台信息</option>
+		</select>
+		<button onclick="config_index_ajax()"  class="btn btn-success">搜索</button>
+		<button onclick="add_config()"  class="btn btn-success">新增</button>
+	</div>
+	<br>
+	<table wtq_config_table class="old_free">
+		
+	</table>
+	<div wtq_foot="factory_foot" style="width:100%;text-align: center;">
+	
+	</div>
+	<a style="display:none" wtq_up_index_alert_close="close" class="btn btn-success layui-layer-close">取消</a>
+
+<div wtq_config="config" style="display:none">
+	<table class="old_free_config">
+		<tr>
+			<td><div style="float:right">营运中心：</div></td>
+			<td>
+				<select style="width:150px" wtq_config="site_code" onchange="$('option[config_site_code]').parent('select').val('');$('option[config_site_code]').css('display','none');$('option[config_site_code='+$(this).val()+']').css('display','');">
+					<option value="">选择站点</option>
+					{volist name="\think\Config::get('site_code')" id="vo"}
+		            	<option value="{$vo}">{$vo}</option>
+		            {/volist}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td><div style="float:right">厂商编号：</div></td>
+			<td>
+				<select style="width:150px" wtq_config="fac_num" onchange="$('option[config_site_code='+$('select[wtq_config=site_code]:last').val()+'][config_fac_num='+$(this).val()+']:last').attr('selected','selected')">
+					<option value="">厂商编号</option>
+		            {foreach $ok_shop as $key=>$ok}
+						{foreach $ok as $ke=>$o}
+							<option style="display:none" config_site_code='{$key}' config_fac_name="{$o['PMC03']}" value="{$o['PMC01']}">{$o['PMC01']}</option>
+						{/foreach}
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td><div style="float:right">厂商名称：</div></td>
+			<td>
+				<select style="width:150px" wtq_config="fac_name" onchange="$('option[config_site_code='+$('select[wtq_config=site_code]:last').val()+'][config_fac_name='+$(this).val()+']:last').attr('selected','selected')">
+					<option value="">厂商名称</option>
+		            {foreach $ok_shop as $key=>$ok}
+						{foreach $ok as $ke=>$o}
+							<option style="display:none" config_site_code='{$key}' config_fac_num="{$o['PMC01']}" value="{$o['PMC03']}">{$o['PMC03']}</option>
+						{/foreach}
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td><div style="float:right">类型：</div></td>
+			<td>
+				<select style="width:150px" wtq_config="type_flag" onchange="type_flag($(this).val())">
+					<option value="1">联系人信息</option>
+					<option value="2">机台信息</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td type_flag="1"><div style="float:right">联系人：</div></td>
+			<td style="display:none" type_flag="2"><div style="float:right">机台：</div></td>
+			<td>
+				<input wtq_config="factory_val1">
+			</td>
+		</tr>
+		<tr>
+			<td type_flag="1"><div style="float:right">邮箱：</div></td>
+			<td style="display:none" type_flag="2"><div style="float:right">h_r：</div></td>
+			<td>
+				<input wtq_config="factory_val2">
+			</td>
+		</tr>
+		<tr style="display:none" type_flag="2">
+			<td><div style="float:right">p_sec：</div></td>
+			<td>
+				<input wtq_config="factory_val3">
+			</td>
+		</tr>
+	</table>
+	<hr>
+		<button wtq_click="ok" onclick="save_new_factory_config()" style="margin-left:20px;" class="btn btn-success">保存</button>&nbsp&nbsp&nbsp
+		<a wtq_up_index_alert_close="close" class="btn btn-success layui-layer-close">取消</a>
+</div>
+<br>
+<br>
+<br>
+</div>
+<script>
+
+var config_sour={};
+config_index_ajax();
+//排序
+function config_paixu(ii,a){
+	config_sour['ii']=ii;
+	if(a==1){a=0;}else{a=1;}
+	config_sour['a']=a;
+	config_index_ajax();
+}
+function factory_page(page){
+	config_sour['page']=page;
+	config_index_ajax();
+}
+	function config_index_ajax(){
+		config_sour['site_code']=$("select[wtq_config_sour_name=site_code]").val();
+		config_sour['fac_num']=$("select[wtq_config_sour_name=fac_num]").val();
+		config_sour['fac_name']=$("select[wtq_config_sour_name=fac_name]").val();
+		config_sour['type_flag']=$("select[wtq_config_sour_name=type_flag]").val();
+		
+		$.post('{:url("factory_config_ajax")}',config_sour,
+				function (data) {
+					$("table[wtq_config_table]").html(data[0]);
+					$("div[wtq_foot=factory_foot]").html(data[1]);
+					
+				}
+		,"json").error(
+	    		function() {mythisalert(0,'失败');}
+	    );
+	}
+
+	/*function del_config(id){
+		if(!confirm('确定删除么？？？')){
+			return false;
+		}
+		$.post('{:url("del_config")}',{id:id},
+				function (data) {
+					mythisalert(data[0],data[1]);
+					$("tr[wtq_id="+id+"]").remove();
+				}
+		,"json").error(
+	    		function() {mythisalert(0,'失败');}
+	    );
+	}*/
+	function add_config(id=''){
+		$("[wtq_config]").val('');
+		$("button[wtq_click=ok]").attr("onclick",'save_new_factory_config('+id+')');
+		if(id){var tit='修改';}else{var tit='新增';}
+		layer.open({
+			  type: 1,
+			  skin: 'layui-layer-rim', //加上边框
+			  area: ['450px', '350px'], //宽高
+			  content: $("div[wtq_config=config]").html(),
+			  title:tit,
+			});
+		if(id){
+			for(var i=1;i<=7;i++){
+				var html=$("tr[wtq_id="+id+"]").find("td").eq(i).find("div").html();
+				var type=$("tr[wtq_id="+id+"]").find("td").eq(i).attr("wtq_type");
+				
+				$("[wtq_config="+type+"]").val(html);
+				if(type=='type_flag'){
+					type_flag(html)
+				}
+			}
+		}else{
+			var html=$("select[wtq_config_sour_name=type_flag]:last").val();
+			if(html==''){html=1;}
+			type_flag(html);
+			$("select[wtq_config=type_flag]").val(html);
+		}
+	}
+	function type_flag(flag){
+		$('td[type_flag]').css('display','none');
+		$('tr[type_flag]').css('display','none');
+		$('td[type_flag='+flag+']').css('display','');
+		$('tr[type_flag='+flag+']').css('display','');
+	}
+	function save_new_factory_config(id=''){
+		var site_code=$("[wtq_config=site_code]:last").val();
+		var fac_num=$("[wtq_config=fac_num]:last").val();
+		var fac_name=$("[wtq_config=fac_name]:last").val();
+		var factory_val1=$("[wtq_config=factory_val1]:last").val();
+		var factory_val2=$("[wtq_config=factory_val2]:last").val();
+		var factory_val3=$("[wtq_config=factory_val3]:last").val();
+		var type_flag=$("[wtq_config=type_flag]:last").val();
+		$.post('{:url("save_new_factory_config")}',{id:id,site_code:site_code,fac_num:fac_num,fac_name:fac_name,factory_val1:factory_val1,factory_val2:factory_val2,factory_val3:factory_val3,type_flag:type_flag},
+				function (data) {
+					mythisalert(data[0],data[1]);
+					config_index_ajax();
+				}
+		,"json").error(
+	    		function() {mythisalert(0,'失败');}
+	    );
+	}
+</script>

@@ -1,0 +1,19 @@
+{extend name="index@index/base" /}
+{block name="main"}
+{include file="../application/file/view/up/public.html" /}
+{/block}
+{block name="script"}
+{include file="../application/file/view/up/up.html" /}
+	<script>
+		var vie;
+		//左侧菜单拼接
+		menu_ajax('i')
+		function menu_ajax(i='',vie,url=''){
+			menu_ajax_all(i,'One_up',url)
+		}
+		//建立新分类（文件夹）
+		function fenlei_add(id,dep_id,lv){
+			fenlei_add_all(id,dep_id,lv,'One_up')
+		}
+    </script>
+{/block}

@@ -1,0 +1,50 @@
+{extend name="index@index/base" /}
+{block name="main"}
+<style>
+    .page-header span{margin-left: 10px;}
+</style>
+<div class="breadcrumbs" id="breadcrumbs">
+    <script type="text/javascript">
+        try{ace.settings.check('breadcrumbs','fixed')}catch(e){}
+    </script>
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">首页</a>
+        </li>
+
+        <li>
+            <a href="#">后台管理</a>
+        </li>
+        <li class="active">资产管理页面</li>
+    </ul><!-- .breadcrumb -->
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <span><button class="btn btn-primary layerIframe" title="添加资产分类" hig="300px;" url="{:url('prop/config/add')}"><i class="icon-plus"></i>添加资产分类</button></span>
+        <span><button class="btn btn-primary layerIframe" title="指定采购人以及验收人" hig="300px;" url="{:url('prop/config/appoint')}">指定验收、采购</button></span>
+    </div><!-- /.page-header -->
+    <div>
+        <ul id="Tree"></ul>
+    </div>
+</div>
+{/block}
+{block name="script"}
+
+<script>
+    var json = '{$page_info.tree}';
+    json = JSON.parse(json);
+    layui.use('tree', function(){
+        var tree = layui.tree({
+            elem: '#Tree' //传入元素选择器
+            ,skin: 'shihuang'
+            ,nodes: json
+            ,click: function(node){
+                var id = node.id;
+                layerIframe('修改资产分类',"{:url('/prop/config/edit/id/')}"+id,wid='550px',hig='300px');
+            }
+        });
+    });
+
+</script>
+{/block}

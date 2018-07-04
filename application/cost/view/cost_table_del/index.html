@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Cost Table已删除数据列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="__PUBLIC__/static/assets/css/ace.min.css" />
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/assets/easy-ui/demo.css">
+    <script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/assets/easy-ui/easyui-lang-zh_CN.js"></script>
+    <script src="__PUBLIC__/static/assets/layer/layer.js"></script>
+</head>
+<style>
+    /*.fieldId{cursor:pointer;}*/
+    /*.fieldId:hover{display:block;color:#fff;background-color:#888;border:1px solid #ccc}*/
+</style>
+<body>
+<table class="easyui-datagrid" id="tt" title="已删除数据列表">
+    <thead data-options="frozen:true">
+
+        <tr>
+            <th data-options="field:'id',width:50,sortable:true">ID</th>
+            <th data-options="field:'line',width:60,sortable:true">产品线</th>
+            <th data-options="field:'type',width:130,sortable:true">Type no</th>
+            <th data-options="field:'prdno',width:175,sortable:true">Prd no</th>
+        </tr>
+    </thead>
+    <thead>
+        <tr>
+            {volist name="page_info.field" id="vo"}
+            <th data-options='field:"{$vo.field}",width:120,sortable:true'>{$vo.field_show}</th>
+            {/volist}
+        </tr>
+    </thead>
+</table>
+<div id="tb">
+    <form name="search_form">
+    产品线:
+    <select name="line">
+        <option value="1">全部</option>
+        {volist name="page_info.line" id="v"}
+        <option value = "{$v}">{$v}</option >
+        {/volist}
+    </select>
+    &nbsp;&nbsp;Type no:<input type="text" name="type" value="" style="width:120px;"/>
+    &nbsp;&nbsp;Prd no:<input type="text" name="prdno" value="" style="width:120px;"/>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="search_info()">查询</a>
+    </form>
+</div>
+
+</body>
+<script>
+
+    $(function (){
+        $('#tt').datagrid({
+            loadMsg : "正在加载数据",
+            singleSelect:true,
+            toolbar:'#tb',
+            pagination:true,//显示分页
+            pageSize:20,//分页大小
+            pageList:[10,20,30],
+            url:"costData",
+            onDblClickRow :function(rowIndex,rowData){
+                layerIframe('查看信息',"{:url('/cost/cost_table_del/action/id/')}"+rowData.id,wid="400px;",hig="200px;");
+            }
+        })
+    });
+
+
+    function search_info(){
+        var formdata = $("form[name=search_form]").serializeArray();
+        $('#tt').datagrid('reload',{data:formdata});
+    }
+</script>
+<script src="__PUBLIC__/static/assets/js/lds.js"></script>
+</html>

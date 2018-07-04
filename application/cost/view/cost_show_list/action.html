@@ -1,0 +1,19 @@
+<meta charset="utf-8" />
+<script type="text/javascript" src="__PUBLIC__/static/assets/js/zrj.js"></script>
+<input type="hidden" name='id' value="{$page_info.id}"/>
+<input type="hidden" name="indexRow" value="{$page_info.indexRow}"/>
+<div style="margin:3% 0 10% 20%">
+	<button  onclick='el()'>查看本行</button>
+	
+</div>
+
+<script>
+	//修改
+	function el(){
+		layer.close(index);
+		var url = 'showDetail?id='+$('input[name=id]').val()+'&indexRow='+$('input[name=indexRow]').val();
+		layerIframe('修改整行',url,'','','','true');
+	};
+
+</script>
+	
